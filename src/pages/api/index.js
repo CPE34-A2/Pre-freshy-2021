@@ -1,3 +1,5 @@
 export default function handler(req, res) {
-    res.status(200).send('Hello :)');
+  res.status(200).json({
+    message: 'hello',
+  })
 }
