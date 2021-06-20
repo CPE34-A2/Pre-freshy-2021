@@ -11,21 +11,21 @@ if (!MONGODB_DB) {
 }
 
 // Prevents connections growing during API Route usage on ho reloads in development
-const cache = global.mongo
+global.mongo = global.mongo || {}
 
 // MongoDB client instance can be reused later by this middleware
 export default async function database(req, res, next) {
-  if (!cache.client) {
-    const client = new MongoClient.connect(MONGODB_URI, {
+  if (!global.mongo.client) {
+    global.mongo.client = new MongoClient(MONGODB_URI, {
       useNewUrlParser: true,
       useUnifiedTopology: true
     })
 
-    cache.client = await client.connect()
+    await global.mongo.client.connect()
     console.log('Cached new mongodb instance')
   }
 
-  req.dbClient = cache.client
-  req.db = cache.client.db(MONGODB_DB)
+  req.dbClient = global.mongo.client
+  req.db = global.mongo.client.db(MONGODB_DB)
   return next()
 }
