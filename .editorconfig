@@ -1,0 +1,8 @@
+[*]
+trim_trailing_whitespace = true
+
+[*{js,jsx}]
+indent_size = 2
+
+[*.md]
+trim_trailing_whitespace = false
