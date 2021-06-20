@@ -1,10 +1,21 @@
 import passport from 'passport'
 import { Strategy as LocalStrategy } from 'passport-local'
+import bcrypt from 'bcryptjs'
 
-// Todo user getter logic
-passport.use(new LocalStrategy({
+passport.use(
+  new LocalStrategy(
+    { passReqToCallback: true },
+    async (req, username, password, done) => {
+      const user = await req.db
+        .collection('users')
+        .findOne({ username: username })
 
-}))
+      const isPasswordCorrect = await bcrypt.compare(password, user.password)
+      
+      return done(null, (isPasswordCorrect ? user : false))
+    }
+  )
+)
 
 passport.serializeUser((user, done) => {
   done(null, user.id)
