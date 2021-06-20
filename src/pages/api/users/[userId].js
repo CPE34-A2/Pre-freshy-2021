@@ -1,6 +1,4 @@
-import { user } from '@database.js'
-
-export default function personHandler(req, res) {
+export default function handler(req, res) {
   const { userId } = req.query
   const filtered = user.filter((e) => e.user_id === userId)
 
