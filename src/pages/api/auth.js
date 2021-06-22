@@ -6,11 +6,18 @@ const handler = nextConnect()
 
 handler.use(middleware)
 
-// Todo login logic
-handler.post(
-  passport.authenticate(('local'), (req, res) => {
-    res.json('')
+handler.get((req, res) => {
+  res.status(200).json({
+    data: req.user,
+    message: req.isAuthenticated() ? 'logged in' : 'not logged in'
   })
+})
+
+handler.post(
+  passport.authenticate('local'),
+  (req, res) => {
+    res.status(200).end()
+  }
 )
 
 handler.delete((req, res) => {

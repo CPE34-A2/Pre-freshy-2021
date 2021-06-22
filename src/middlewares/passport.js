@@ -1,24 +1,27 @@
 import passport from 'passport'
 import { Strategy as LocalStrategy } from 'passport-local'
 import bcrypt from 'bcryptjs'
+import User from '@/models/user'
 
 passport.use(
   new LocalStrategy(
     { passReqToCallback: true },
     async (req, username, password, done) => {
-      const user = await req.db
-        .collection('users')
+      const user = await User
         .findOne({ username: username })
+        .exec()
 
-      const isPasswordCorrect = await bcrypt.compare(password, user.password)
-      
-      return done(null, (isPasswordCorrect ? user : false))
+      if (user && await bcrypt.compare(password, user.password)) {
+        done(null, user)
+      } else {
+        done(null, false, { message: 'Username or password is incorrect' })
+      }
     }
   )
 )
 
 passport.serializeUser((user, done) => {
-  done(null, user.id)
+  done(null, { id: user._id })
 })
 
 passport.deserializeUser((id, done) => {
