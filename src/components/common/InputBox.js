@@ -1,20 +1,18 @@
-import { useState } from 'react'
 import * as Util from '@/utils/common'
 
 export default function InputBox(props) {
   return (
-    <div>
+    <>
       <input
         placeholder = {props.placeholder} 
         type = {props.type} 
         onChange = {props.onChange} 
-        className = {Util.concatClasses("outline-none ring-2 ring-gray-200 focus:border-opacity-0 rounded-xl p-0.5 pl-1", props.error.isError ? 'ring-red-500 text-red-500' : props.className)}
+        className = {Util.concatClasses(
+          'px-3 ring-1 shadow-md focus:outline-none focus:ring-1',
+          props.style,
+          props.error ? 'ring-red-500 focus:ring-red-500' : 'ring-gray-200 focus:ring-blue-500'
+        )}
       />
-      {props.error.isError && 
-        <p className="text-red-500">
-          {props.error.message}  
-        </p>
-      }
-    </div>
+    </>
   )
 }
