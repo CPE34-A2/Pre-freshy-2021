@@ -15,4 +15,4 @@ You need `yarn` package management for run our website if you don't have just us
 
 We also have [docker-compose](https://www.docker.com/)
 
-so you can easily make [MongoDB](https://github.com/mongodb/mongo) server, just type `docker-compose --env-file=./env.local up -d` on your console or terminal.
+so you can easily make [MongoDB](https://github.com/mongodb/mongo) server, just type `docker-compose --env-file=./.env.local up -d` on your console or terminal.
