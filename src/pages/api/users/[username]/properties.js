@@ -12,13 +12,13 @@ handler.get(async (req, res) => {
 		return res.status(401).json({ message: 'Please login in' })
 	}
 
-	const users = await User
-    .find()
-		.select('-password')
+	const user = await User
+    .findOne({'username': req.query.username})
+    .select('properties')
     .lean()
 		.exec()
 
-  res.status(200).json({users})
+  res.status(200).json({user})
 
 })
 

@@ -1,24 +1,31 @@
 import nextConnect from 'next-connect'
 import middleware from '@/middlewares/middleware'
 
-import User from '@/models/user'
+import Clan from '@/models/clan'
 
 const handler = nextConnect()
 
 handler.use(middleware)
 
+/**
+ * @method GET
+ * @endpoint /api/clans/:clanId
+ * @description Get the specific clan's data
+ * 
+ * @require User authentication
+ */
 handler.get(async (req, res) => {
 	if (!req.isAuthenticated()) {
 		return res.status(401).json({ message: 'Please login in' })
 	}
 
-	const users = await User
-    .find()
-		.select('-password')
-    .lean()
+	const clan = await Clan
+  	.findOne({'_id': req.query.clanId})
+  	.lean()
 		.exec()
-
-  res.status(200).json({users})
+	console.log(clan)
+	
+	res.status(200).json({clan})
 
 })
 
