@@ -1,0 +1,42 @@
+stages:
+  - build
+  - docker-build
+  - deploy
+
+build:
+  stage: build
+  only:
+    - master
+  image: node
+  script: 
+    - echo "Start building App"
+    - npm install
+    - npm run build
+    - echo "Build successfully!"
+
+docker-build:
+  stage: docker-build
+  image: docker:latest
+  only:
+    - master
+  services: 
+    - name: docker:19.03.8-dind
+  before_script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+  script:
+    - docker build --pull -t "$CI_REGISTRY_IMAGE" .
+    - docker push "$CI_REGISTRY_IMAGE"
+
+deploy:
+  stage: deploy
+  image: kroniak/ssh-client
+  only:
+    - master
+  before_script:
+    - echo "Deploying app"
+  script:
+    - chmod 400 $SSH_PRIVATE_KEY
+    - ssh -o StrictHostKeyChecking=no -i $SSH_PRIVATE_KEY root@$PROD_SERVER_IP "docker pull registry.gitlab.com/admissions-kmutt/active-recruitment-registration-2021"
+    - ssh -o StrictHostKeyChecking=no -i $SSH_PRIVATE_KEY root@$PROD_SERVER_IP "docker stop PreFreshy2021 || true && docker rm PreFreshy2021 || true"
+    - ssh -o StrictHostKeyChecking=no -i $SSH_PRIVATE_KEY root@$PROD_SERVER_IP "docker run -p 8000:3000 -d --name PreFreshy2021 registry.gitlab.com/admissions-kmutt/active-recruitment-registration-2021"
+
