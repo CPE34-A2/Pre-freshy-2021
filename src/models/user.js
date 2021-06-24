@@ -14,7 +14,7 @@ const userSchema = new mongoose.Schema({
 		type: Number
 	},
 	properties: {
-		coin: {
+		money: {
 			type: Number,
 			default: 0
 		},

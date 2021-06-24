@@ -9,15 +9,15 @@ const clanSchema = new mongoose.Schema({
 	},
 	members: {
 		leader_id: {
-			type: Number
+			type: String
 		},
 		crew_ids: [{
-			type: Number
+			type: String
 		}]
 	},
 	properties: {
 		coin: {
-			type: Number,
+			money: Number,
 			default: 0
 		},
 		fuel: {
