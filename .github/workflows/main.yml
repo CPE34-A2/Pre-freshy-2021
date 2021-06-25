@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 name: GitlabSync
+=======
+name: SyncToGitLab
+>>>>>>> 166335dfef45d9b3c43d4f36b509b49e88331673
 
 on:
   - push
@@ -14,6 +18,12 @@ jobs:
         fetch-depth: 0
     - uses: wangchucheng/git-repo-sync@v0.1.0
       with:
+<<<<<<< HEAD
         target-url: "https://gitlab.com/cpe-prefreshy-2021/pre-freshy-2021-mirror.git"
         target-username: "waranatcpe"
         target-token: "7Dg_XurSgGdQD-WLx6dU"
+=======
+        target-url: ${{ secrets.GITLAB_REPO }}
+        target-username: ${{ secrets.GITLAB_USER }}
+        target-token: ${{ secrets.GITLAB_DEV_TOKEN }}
+>>>>>>> 166335dfef45d9b3c43d4f36b509b49e88331673
