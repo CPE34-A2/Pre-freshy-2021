@@ -7,6 +7,10 @@ const userSchema = new mongoose.Schema({
 	password: {
 		type: String
 	},
+	role: {
+		type: String,
+		default: 'user'
+	},
 	display_name: {
 		type: String
 	},
@@ -21,7 +25,7 @@ const userSchema = new mongoose.Schema({
 		stock_ids: [{
 			type: mongoose.Types.ObjectId
 		}]
-	}
+	},
 }, { timestamps: true })
 
 export default mongoose.models.User || mongoose.model('User', userSchema)
