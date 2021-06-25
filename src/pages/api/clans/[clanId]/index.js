@@ -20,12 +20,11 @@ handler.get(async (req, res) => {
 	}
 
 	const clan = await Clan
-  	.findOne({'_id': req.query.clanId})
+  	.findById(req.query.clanId)
   	.lean()
 		.exec()
-	console.log(clan)
 	
-	res.status(200).json({clan})
+	res.status(200).json({sucesss: true, data: clan, timestamp: new Date()})
 
 })
 

@@ -8,20 +8,13 @@ const handler = nextConnect()
 
 handler.use(middleware)
 
-/**
- * @method GET
- * @endpoint /api/clans/:clanId/crews
- * @description Get the crews' data by the specific clan
- * 
- * @require User authentication
- */
 handler.get(async (req, res) => {
 	if (!req.isAuthenticated()) {
 		return res.status(401).json({ message: 'Please login in' })
 	}
-
+  
 	const clan = await Clan
-    .findOne({'_id': req.query.clanId})
+    .findById(req.query.clanId)
     .lean()
 	  .exec()
 
@@ -31,7 +24,7 @@ handler.get(async (req, res) => {
     .lean()
     .exec()
 
-  res.status(200).json({crews})
+  res.status(200).json({sucesss: true, data: crews, timestamp: new Date()})
 
 })
 

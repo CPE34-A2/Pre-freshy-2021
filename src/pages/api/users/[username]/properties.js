@@ -18,7 +18,7 @@ handler.get(async (req, res) => {
     .lean()
 		.exec()
 
-  res.status(200).json({user})
+	res.status(200).json({sucesss: true, data: user.properties, timestamp: new Date()})
 
 })
 

@@ -21,9 +21,9 @@ handler.get(async (req, res) => {
 	}
 
 	const clan = await Clan
-    .findOne({'_id': req.query.clanId})
+    .findById(req.query.clanId)
     .lean()
-	  .exec()
+		.exec()
 
     const member_ids = [clan.members.leader_id]
     clan.members.crew_ids.forEach((element)=>{member_ids.push(element)})
@@ -34,7 +34,7 @@ handler.get(async (req, res) => {
     .lean()
     .exec()
 
-    res.status(200).json({members})
+    res.status(200).json({sucesss: true, data: members, timestamp: new Date()})
 
 })
 

@@ -21,17 +21,17 @@ handler.get(async (req, res) => {
 	}
 
 	const clan = await Clan
-    .findOne({'_id': req.query.clanId})
+    .findById(req.query.clanId)
     .lean()
 	  .exec()
 
-    const leader = await User
+  const leader = await User
     .findById(clan.members.leader_id)
     .select('-password')
     .lean()
     .exec()
 
-  res.status(200).json({leader})
+  res.status(200).json({sucesss: true, data: leader, timestamp: new Date()})
 
 })
 

@@ -11,6 +11,7 @@ handler.get(async (req, res) => {
 	if (!req.isAuthenticated()) {
 		return res.status(401).json({ message: 'Please login in' })
 	}
+	console.log(req.user)
 
 	const user = await User
 		.findOne({'username': req.query.username})
@@ -18,7 +19,7 @@ handler.get(async (req, res) => {
 		.lean()
 		.exec()
 
-	res.status(200).json({user})
+	res.status(200).json({sucesss: true, data: user, timestamp: new Date()})
 
 })
 
