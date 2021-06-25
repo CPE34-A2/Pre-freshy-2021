@@ -41,14 +41,11 @@ passport.use(
 )
 
 passport.serializeUser((user, done) => {
-  done(null, user._id)
+  done(null, { id: user._id })
 })
 
-passport.deserializeUser((id, done) => {
-  User
-    .findById(id)
-    .then((user) => done(null, user))
-    .catch(done)
+passport.deserializeUser((user, done) => {
+  done(null, user)
 })
 
 export default passport
