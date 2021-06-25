@@ -18,7 +18,7 @@ docker-build:
   stage: docker-build
   image: docker:latest
   only:
-    - feat/CI-Gitlab
+    - feat/CI-GitLab
   services: 
     - name: docker:19.03.8-dind
   before_script:
@@ -31,7 +31,7 @@ deploy:
   stage: deploy
   image: kroniak/ssh-client
   only:
-    - feat/CI-Gitlab
+    - feat/CI-GitLab
   before_script:
     - echo "Deploying app"
   script:
