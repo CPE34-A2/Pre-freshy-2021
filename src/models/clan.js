@@ -7,14 +7,12 @@ const clanSchema = new mongoose.Schema({
 	name: {
 		type: String,
 	},
-	members: {
-		leader_id: {
-			type: String
-		},
-		crew_ids: [{
-			type: String
-		}]
+	leader: {
+		type: String
 	},
+	members: [{
+		type: String
+	}],
 	properties: {
 		coin: {
 			money: Number,

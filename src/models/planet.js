@@ -13,14 +13,9 @@ const planetSchema = new mongoose.Schema({
 	characteristic_ids: [{
 		type: Number
 	}],
-	relation: [{
-		planet_id: {
-			type: Number
-		},
-		distance: {
-			type: Number
-		}
-	}]
+	tier: {
+		type: Number
+	}
 })
 
 export default mongoose.models.Planet || mongoose.model('Planet', planetSchema)

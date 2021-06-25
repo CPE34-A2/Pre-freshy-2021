@@ -1,7 +1,11 @@
 import mongoose from 'mongoose'
 
 const userSchema = new mongoose.Schema({
-	username: {
+	// _id is username for logging in, e.g. 63070501002
+	_id: {
+		type: String
+	},
+	display_name: {
 		type: String
 	},
 	password: {
@@ -10,9 +14,6 @@ const userSchema = new mongoose.Schema({
 	role: {
 		type: String,
 		default: 'user'
-	},
-	display_name: {
-		type: String
 	},
 	clan_id: {
 		type: Number
