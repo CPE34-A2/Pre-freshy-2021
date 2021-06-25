@@ -7,18 +7,18 @@ const IS_AUTO_REGISTER = true
 
 const handleAuthentication = async (req, username, password, done) => {
   try {
-    let user = await User.findOne({ username: username }).lean().exec()
+    let user = await User.findById(username).lean().exec()
 
     // Create new user into users collection if user doesn't exists
     // In other words, auto register when login as the first time
     if (!user && IS_AUTO_REGISTER) {
       const hashedPassword = await bcrypt.hash(password, 10)
       
-      user = new User({
-        username: username,
-        password: hashedPassword
+      user = await User.create({
+        _id: username,
+        password: hashedPassword,
+        display_name: username
       })
-      await user.save()
 
       console.log(`User ${username} has been created!`)
     }
