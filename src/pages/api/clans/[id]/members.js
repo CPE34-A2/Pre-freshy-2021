@@ -25,7 +25,7 @@ handler.get(async (req, res) => {
     .select('members')
     .lean()
     .exec()
-  
+
   let members = null
 
   if (clan) {

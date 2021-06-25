@@ -13,15 +13,15 @@ handler.get(async (req, res) => {
 	}
 
 	const users = await User
-    .find()
+		.find()
 		.select('-password')
-    .lean()
+		.lean()
 		.exec()
 
 	res.status(200)
 		.json({
-			sucesss: true, 
-			data: users, 
+			sucesss: true,
+			data: users,
 			timestamp: new Date()
 		})
 

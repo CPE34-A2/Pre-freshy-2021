@@ -13,14 +13,14 @@ handler.get(async (req, res) => {
 	}
 
 	const clans = await Clan
-    .find()
-    .lean()
+		.find()
+		.lean()
 		.exec()
 
 	res.status(200)
 		.json({
-			sucesss: true, 
-			data: clans, 
+			sucesss: true,
+			data: clans,
 			timestamp: new Date()
 		})
 })

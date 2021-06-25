@@ -20,8 +20,8 @@ handler.get(async (req, res) => {
 
 	res.status(200)
 		.json({
-			sucesss: true, 
-			data: user, 
+			sucesss: true,
+			data: user,
 			timestamp: new Date()
 		})
 })

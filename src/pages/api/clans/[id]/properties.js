@@ -13,15 +13,15 @@ handler.get(async (req, res) => {
 	}
 
 	const clan = await Clan
-    .findById(req.query.id)
-    .select('properties')
-    .lean()
+		.findById(req.query.id)
+		.select('properties')
+		.lean()
 		.exec()
 
 	res.status(200)
 		.json({
-			sucesss: true, 
-			data: clan.properties, 
+			sucesss: true,
+			data: clan.properties,
 			timestamp: new Date()
 		})
 })

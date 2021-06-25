@@ -13,15 +13,15 @@ handler.get(async (req, res) => {
 	}
 
 	const user = await User
-    .findById(req.query.id)
-    .select('properties.money')
-    .lean()
-	  .exec()
+		.findById(req.query.id)
+		.select('properties.money')
+		.lean()
+		.exec()
 
-  res.status(200)
+	res.status(200)
 		.json({
-			sucesss: true, 
-			data: user.properties.money, 
+			sucesss: true,
+			data: user.properties.money,
 			timestamp: new Date()
 		})
 })
