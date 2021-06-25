@@ -16,31 +16,33 @@ handler.use(middleware)
  * @require User authentication
  */
 handler.get(async (req, res) => {
-	if (!req.isAuthenticated()) {
-		return res.status(401).json({ message: 'Please login in' })
-	}
+  if (!req.isAuthenticated()) {
+    return res.status(401).json({ message: 'Please login in' })
+  }
 
-	const clan = await Clan
-    .findById(req.query.clanId)
+  const clan = await Clan
+    .findById(req.query.id)
+    .select('members')
     .lean()
-		.exec()
+    .exec()
+  
+  let members = null
 
-  const member_ids = [clan.members.leader_id]
-  clan.members.crew_ids.forEach((element)=>{member_ids.push(element)})
-
-    const members = await User
-      .find({ '_id': { $in: member_ids } })
+  if (clan) {
+    members = await User
+      .find({ '_id': { $in: clan.members } })
       .select('-password')
       .lean()
       .exec()
+  }
 
-    res.status(200)
-      .json({
-        sucesss: true, 
-        data: members, 
-        timestamp: new Date()
-      })
-
+  res
+    .status(200)
+    .json({
+      sucesss: !!members,
+      data: members,
+      timestamp: new Date()
+    })
 })
 
 export default handler

@@ -14,8 +14,8 @@ const clanSchema = new mongoose.Schema({
 		type: String
 	}],
 	properties: {
-		coin: {
-			money: Number,
+		money: {
+			type: Number,
 			default: 0
 		},
 		fuel: {

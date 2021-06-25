@@ -2,7 +2,6 @@ import nextConnect from 'next-connect'
 import middleware from '@/middlewares/middleware'
 
 import User from '@/models/user'
-import Clan from '@/models/clan'
 
 const handler = nextConnect()
 
@@ -14,23 +13,17 @@ handler.get(async (req, res) => {
 	}
 
 	const user = await User
-  	.findOne({'username': req.query.username})
-		.select('clan_id')
-  	.lean()
-		.exec()
-
-	const clan = await Clan
-		.findById(user.clan_id)
-		.lean()
+    .findById(req.query.id)
+    .select('properties')
+    .lean()
 		.exec()
 
 	res.status(200)
 		.json({
-			sucesss: true, 
-			data: clan, 
+			sucesss: true,
+			data: user.properties, 
 			timestamp: new Date()
 		})
-
 })
 
 export default handler

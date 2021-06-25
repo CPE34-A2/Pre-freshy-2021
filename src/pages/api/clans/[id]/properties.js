@@ -1,7 +1,7 @@
 import nextConnect from 'next-connect'
 import middleware from '@/middlewares/middleware'
 
-import User from '@/models/user'
+import Clan from '@/models/clan'
 
 const handler = nextConnect()
 
@@ -12,19 +12,18 @@ handler.get(async (req, res) => {
 		return res.status(401).json({ message: 'Please login in' })
 	}
 
-	const user = await User
-    .findOne({'username': req.query.username})
+	const clan = await Clan
+    .findById(req.query.id)
     .select('properties')
     .lean()
 		.exec()
 
 	res.status(200)
 		.json({
-			sucesss: true,
-			data: user.properties, 
+			sucesss: true, 
+			data: clan.properties, 
 			timestamp: new Date()
 		})
-
 })
 
 export default handler

@@ -2,7 +2,6 @@ import nextConnect from 'next-connect'
 import middleware from '@/middlewares/middleware'
 
 import Clan from '@/models/clan'
-import User from '@/models/user'
 
 const handler = nextConnect()
 
@@ -10,8 +9,8 @@ handler.use(middleware)
 
 /**
  * @method GET
- * @endpoint /api/clans/:clanId/leader
- * @description Get the leader's data by the specific clan
+ * @endpoint /api/clans/:clanId
+ * @description Get the specific clan's data
  * 
  * @require User authentication
  */
@@ -21,23 +20,16 @@ handler.get(async (req, res) => {
 	}
 
 	const clan = await Clan
-    .findById(req.query.clanId)
-    .lean()
-	  .exec()
-
-  const leader = await User
-    .findById(clan.members.leader_id)
-    .select('-password')
-    .lean()
-    .exec()
-
-  res.status(200)
-    .json({
-      sucesss: true, 
-      data: leader, 
-      timestamp: new Date()
-    })
-
+  	.findById(req.query.id)
+  	.lean()
+		.exec()
+	
+	res.status(200)
+		.json({
+			sucesss: true, 
+			data: clan, 
+			timestamp: new Date()
+		})
 })
 
 export default handler

@@ -23,7 +23,6 @@ handler.get(async (req, res) => {
 			data: clans, 
 			timestamp: new Date()
 		})
-
 })
 
 export default handler

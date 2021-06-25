@@ -20,7 +20,7 @@ handler.get(async (req, res) => {
 	}
 
 	const clan = await Clan
-    .findById(req.query.clanId)
+    .findById(req.query.id)
     .select('properties.money')
     .lean()
 	  .exec()
@@ -31,7 +31,6 @@ handler.get(async (req, res) => {
 			data: clan.properties.money, 
 			timestamp: new Date()
 		})
-
 })
 
 export default handler

@@ -11,21 +11,19 @@ handler.get(async (req, res) => {
 	if (!req.isAuthenticated()) {
 		return res.status(401).json({ message: 'Please login in' })
 	}
-	console.log(req.user)
 
 	const user = await User
-		.findOne({'username': req.query.username})
-		.select('-password')
-		.lean()
-		.exec()
+    .findById(req.query.id)
+    .select('properties.money')
+    .lean()
+	  .exec()
 
-	res.status(200)
+  res.status(200)
 		.json({
 			sucesss: true, 
-			data: user, 
+			data: user.properties.money, 
 			timestamp: new Date()
 		})
-
 })
 
 export default handler
