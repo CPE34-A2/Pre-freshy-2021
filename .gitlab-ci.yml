@@ -6,7 +6,7 @@ stages:
 build:
   stage: build
   only:
-    - master
+    - main
   image: node
   script: 
     - echo "Start building App"
@@ -18,7 +18,7 @@ docker-build:
   stage: docker-build
   image: docker:latest
   only:
-    - master
+    - feat/CI-Gitlab
   services: 
     - name: docker:19.03.8-dind
   before_script:
@@ -31,7 +31,7 @@ deploy:
   stage: deploy
   image: kroniak/ssh-client
   only:
-    - master
+    - feat/CI-Gitlab
   before_script:
     - echo "Deploying app"
   script:
