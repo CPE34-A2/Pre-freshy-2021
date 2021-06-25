@@ -33,6 +33,7 @@ deploy:
   only:
     - feat/CI-GitLab
   before_script:
+    - echo $SSH_PRIVATE_KEY
     - echo "Deploying app"
   script:
     - chmod 400 $SSH_PRIVATE_KEY
