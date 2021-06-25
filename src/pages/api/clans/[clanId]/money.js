@@ -25,7 +25,12 @@ handler.get(async (req, res) => {
     .lean()
 	  .exec()
 
-	res.status(200).json({sucesss: true, data: clan.properties.money, timestamp: new Date()})
+	res.status(200)
+		.json({
+			sucesss: true, 
+			data: clan.properties.money, 
+			timestamp: new Date()
+		})
 
 })
 

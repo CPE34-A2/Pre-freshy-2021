@@ -31,7 +31,12 @@ handler.get(async (req, res) => {
     .lean()
     .exec()
 
-  res.status(200).json({sucesss: true, data: leader, timestamp: new Date()})
+  res.status(200)
+    .json({
+      sucesss: true, 
+      data: leader, 
+      timestamp: new Date()
+    })
 
 })
 

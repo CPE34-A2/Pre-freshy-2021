@@ -25,16 +25,21 @@ handler.get(async (req, res) => {
     .lean()
 		.exec()
 
-    const member_ids = [clan.members.leader_id]
-    clan.members.crew_ids.forEach((element)=>{member_ids.push(element)})
+  const member_ids = [clan.members.leader_id]
+  clan.members.crew_ids.forEach((element)=>{member_ids.push(element)})
 
     const members = await User
-    .find({ '_id': { $in: member_ids } })
-    .select('-password')
-    .lean()
-    .exec()
+      .find({ '_id': { $in: member_ids } })
+      .select('-password')
+      .lean()
+      .exec()
 
-    res.status(200).json({sucesss: true, data: members, timestamp: new Date()})
+    res.status(200)
+      .json({
+        sucesss: true, 
+        data: members, 
+        timestamp: new Date()
+      })
 
 })
 
