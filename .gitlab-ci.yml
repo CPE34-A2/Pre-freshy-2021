@@ -1,6 +1,6 @@
 stages:
   - build
-  - build-deploy
+  - deploy
 
 build:
   stage: build
@@ -13,8 +13,8 @@ build:
     - npm run build
     - echo "Build successfully!"
 
-build-deploy:
-  stage: build-deploy
+deploy:
+  stage: deploy
   image: kroniak/ssh-client
   only:
     - feat/CI-GitLab
@@ -27,7 +27,7 @@ build-deploy:
     - ssh -o StrictHostKeyChecking=no -i $SSH_PRIVATE_KEY root@$PROD_SERVER_IP "cd /public/pre-freshy-2021-frontend/ && git pull"
     - ssh -o StrictHostKeyChecking=no -i $SSH_PRIVATE_KEY root@$PROD_SERVER_IP "cp /public/env/.env.local /public/pre-freshy-2021-frontend/.env.local"
     - ssh -o StrictHostKeyChecking=no -i $SSH_PRIVATE_KEY root@$PROD_SERVER_IP "cp /public/env/Dockerfile /public/pre-freshy-2021-frontend/Dockerfile"
-    - ssh -o StrictHostKeyChecking=no -i $SSH_PRIVATE_KEY root@$PROD_SERVER_IP "cd /public/pre-freshy-2021-frontend/ docker build --pull -t $CI_REGISTRY_IMAGE ."
+    - ssh -o StrictHostKeyChecking=no -i $SSH_PRIVATE_KEY root@$PROD_SERVER_IP "cd /public/pre-freshy-2021-frontend/ && docker build --pull -t $CI_REGISTRY_IMAGE ."
     - ssh -o StrictHostKeyChecking=no -i $SSH_PRIVATE_KEY root@$PROD_SERVER_IP "docker push $CI_REGISTRY_IMAGE"
     - ssh -o StrictHostKeyChecking=no -i $SSH_PRIVATE_KEY root@$PROD_SERVER_IP "docker stop PreFreshy2021 || true && docker rm PreFreshy2021 || true"
     - ssh -o StrictHostKeyChecking=no -i $SSH_PRIVATE_KEY root@$PROD_SERVER_IP "docker run -p 8000:3000 -d --name PreFreshy2021 $CI_REGISTRY_IMAGE"
