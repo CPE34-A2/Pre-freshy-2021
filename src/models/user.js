@@ -22,10 +22,7 @@ const userSchema = new mongoose.Schema({
 		money: {
 			type: Number,
 			default: 0
-		},
-		stock_ids: [{
-			type: mongoose.Types.ObjectId
-		}]
+		}
 	},
 }, { timestamps: true })
 

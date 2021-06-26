@@ -22,6 +22,33 @@ const clanSchema = new mongoose.Schema({
 			type: Number,
 			default: 0
 		},
+		stocks: {
+			// MazdaIsusuNissanToyota
+			MINT: {
+				type: Number,
+				default: 0
+			},
+			// EspressoCappuccinoMoccaLatte
+			ECML: {
+				type: Number,
+				default: 0
+			},
+			// HouseCondoApartment
+			HCA: {
+				type: Number,
+				default: 0
+			},
+			// LuffyIchigoNarutoGoku
+			LING: {
+				type: Number,
+				default: 0
+			},
+			// MangoAppleLemonPapaya
+			MALP: {
+				type: Number,
+				default: 0
+			},
+		}
 	},
 	owned_planet_ids: [{
 		type: Number,

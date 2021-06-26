@@ -2,11 +2,11 @@ import mongoose from 'mongoose'
 
 const stockSchema = new mongoose.Schema({
   symbol: {
-    type: String,
+    type: String
   },
-  amount: {
-    type: Number,
-  }
+  rate: {
+    type: Number
+  },
 }, { timestamps: true })
 
 export default mongoose.models.Stock || mongoose.model('Stock', stockSchema)
