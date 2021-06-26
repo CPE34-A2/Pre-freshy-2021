@@ -4,14 +4,17 @@ stages:
 
 build:
   stage: build
+  image: docker:latest
   only:
-    - main
-  image: node
-  script: 
-    - echo "Start building App"
-    - npm install
-    - npm run build
-    - echo "Build successfully!"
+    - feat/CI-GitLab
+  services: 
+    - name: docker:19.03.8-dind
+  before_script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+  script:
+    - echo "$ENV_LOCAL" > .env.local
+    - docker build --pull -t "$CI_REGISTRY_IMAGE" .
+    - docker push "$CI_REGISTRY_IMAGE"
 
 deploy:
   stage: deploy
@@ -19,16 +22,9 @@ deploy:
   only:
     - feat/CI-GitLab
   before_script:
-    - echo $SSH_PRIVATE_KEY
     - echo "Deploying app"
   script:
     - chmod 400 $SSH_PRIVATE_KEY
-    - ssh -o StrictHostKeyChecking=no -i $SSH_PRIVATE_KEY root@$PROD_SERVER_IP "rm -rf /public/pre-freshy-2021-frontend/.env.local /public/pre-freshy-2021-frontend/Dockerfile"
-    - ssh -o StrictHostKeyChecking=no -i $SSH_PRIVATE_KEY root@$PROD_SERVER_IP "cd /public/pre-freshy-2021-frontend/ && git pull"
-    - ssh -o StrictHostKeyChecking=no -i $SSH_PRIVATE_KEY root@$PROD_SERVER_IP "cp /public/env/.env.local /public/pre-freshy-2021-frontend/.env.local"
-    - ssh -o StrictHostKeyChecking=no -i $SSH_PRIVATE_KEY root@$PROD_SERVER_IP "cp /public/env/Dockerfile /public/pre-freshy-2021-frontend/Dockerfile"
-    - ssh -o StrictHostKeyChecking=no -i $SSH_PRIVATE_KEY root@$PROD_SERVER_IP "cd /public/pre-freshy-2021-frontend/ && docker build --pull -t $CI_REGISTRY_IMAGE ."
-    - ssh -o StrictHostKeyChecking=no -i $SSH_PRIVATE_KEY root@$PROD_SERVER_IP "docker push $CI_REGISTRY_IMAGE"
+    - ssh -o StrictHostKeyChecking=no -i $SSH_PRIVATE_KEY root@$PROD_SERVER_IP "docker pull $CI_REGISTRY_IMAGE"
     - ssh -o StrictHostKeyChecking=no -i $SSH_PRIVATE_KEY root@$PROD_SERVER_IP "docker stop PreFreshy2021 || true && docker rm PreFreshy2021 || true"
     - ssh -o StrictHostKeyChecking=no -i $SSH_PRIVATE_KEY root@$PROD_SERVER_IP "docker run -p 8000:3000 -d --name PreFreshy2021 $CI_REGISTRY_IMAGE"
-
