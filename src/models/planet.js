@@ -7,20 +7,18 @@ const planetSchema = new mongoose.Schema({
 	name: {
 		type: String
 	},
+	tier: {
+		type: String
+	},
 	point: {
 		type: Number
 	},
-	characteristic_ids: [{
+	travel_cost: {
 		type: Number
-	}],
-	relation: [{
-		planet_id: {
-			type: Number
-		},
-		distance: {
-			type: Number
-		}
-	}]
+	},
+	owner: {
+		type: Number
+	}
 })
 
 export default mongoose.models.Planet || mongoose.model('Planet', planetSchema)

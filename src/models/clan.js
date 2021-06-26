@@ -7,16 +7,14 @@ const clanSchema = new mongoose.Schema({
 	name: {
 		type: String,
 	},
-	members: {
-		leader_id: {
-			type: Number
-		},
-		crew_ids: [{
-			type: Number
-		}]
+	leader: {
+		type: String
 	},
+	members: [{
+		type: String
+	}],
 	properties: {
-		coin: {
+		money: {
 			type: Number,
 			default: 0
 		},
@@ -24,6 +22,33 @@ const clanSchema = new mongoose.Schema({
 			type: Number,
 			default: 0
 		},
+		stocks: {
+			// MazdaIsusuNissanToyota
+			MINT: {
+				type: Number,
+				default: 0
+			},
+			// EspressoCappuccinoMoccaLatte
+			ECML: {
+				type: Number,
+				default: 0
+			},
+			// HouseCondoApartment
+			HCA: {
+				type: Number,
+				default: 0
+			},
+			// LuffyIchigoNarutoGoku
+			LING: {
+				type: Number,
+				default: 0
+			},
+			// MangoAppleLemonPapaya
+			MALP: {
+				type: Number,
+				default: 0
+			},
+		}
 	},
 	owned_planet_ids: [{
 		type: Number,

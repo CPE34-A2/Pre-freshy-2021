@@ -9,8 +9,8 @@ handler.use(middleware)
 
 /**
  * @method GET
- * @endpoint /api/clans
- * @description Get all user's data accept only admin role
+ * @endpoint /api/users/:id/properties
+ * @description Get the user's properties
  * 
  * @require User authentication
  */
@@ -19,24 +19,21 @@ handler.get(async (req, res) => {
 		return res.status(401).json({ message: 'Please login in' })
 	}
 
-	const role = User
-		.findById(req.user.id)		
-		.select('role')
-		.lean()
-		.exec()
+	const userId = req.user.id
+	let user = null
 
-	if (role == 'admin') {
-		users = await User
-			.find()
-			.select('-password')
+	if (userId.length == 11 && !isNaN(userId)) {
+		user = await User
+			.findById(userId)
+			.select('properties')
 			.lean()
 			.exec()
 	}
 
 	res.status(200)
 		.json({
-			sucesss: !!users,
-			data: users,
+			sucesss: !!user,
+			data: user && user.properties,
 			timestamp: new Date()
 		})
 })

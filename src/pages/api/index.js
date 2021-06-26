@@ -1,5 +1,6 @@
 import nextConnect from 'next-connect'
 import middleware from '@/middlewares/middleware'
+import mongoose from 'mongoose'
 
 const handler = nextConnect()
 
@@ -14,7 +15,11 @@ handler.all((req, res) => {
   res.status(200).json({
     success: true,
     message: 'prefreshy-2021-api',
-    version: process.env.npm_package_version
+    status: {
+      database: mongoose.STATES[mongoose.connection.readyState],
+    },
+    version: process.env.npm_package_version,
+    timestamp: new Date()
   })
 })
 
