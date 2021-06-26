@@ -7,13 +7,16 @@ const planetSchema = new mongoose.Schema({
 	name: {
 		type: String
 	},
+	tier: {
+		type: Number
+	},
 	point: {
 		type: Number
 	},
-	characteristic_ids: [{
+	travel_exprense: {
 		type: Number
-	}],
-	tier: {
+	},
+	owner: {
 		type: Number
 	}
 })
