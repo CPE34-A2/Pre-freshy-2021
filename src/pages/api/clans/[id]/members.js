@@ -20,20 +20,22 @@ handler.get(async (req, res) => {
     return res.status(401).json({ message: 'Please login in' })
   }
 
-  const clan = await Clan
-    .findById(req.query.id)
-    .select('members')
-    .lean()
-    .exec()
-
   let members = null
 
-  if (clan) {
-    members = await User
-      .find({ '_id': { $in: clan.members } })
-      .select('-password')
+  if (!isNaN(req.query.id)) {
+    const clan = await Clan
+      .findById(req.query.id)
+      .select('members')
       .lean()
       .exec()
+      
+    if (clan) {
+      members = await User
+        .find({ '_id': { $in: clan.members } })
+        .select('-password')
+        .lean()
+        .exec()
+    }
   }
 
   res

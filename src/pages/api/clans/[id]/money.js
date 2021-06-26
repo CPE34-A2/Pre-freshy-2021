@@ -18,17 +18,18 @@ handler.get(async (req, res) => {
 	if (!req.isAuthenticated()) {
 		return res.status(401).json({ message: 'Please login in' })
 	}
-
-	const clan = await Clan
+	let clan = null
+	if (!isNaN(req.query.id)){
+		clan = await Clan
 		.findById(req.query.id)
 		.select('properties.money')
 		.lean()
 		.exec()
-
+	}
 	res.status(200)
 		.json({
-			sucesss: true,
-			data: clan.properties.money,
+			sucesss: !!clan,
+			data: clan && clan.properties.money,
 			timestamp: new Date()
 		})
 })

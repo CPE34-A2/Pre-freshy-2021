@@ -12,16 +12,20 @@ handler.get(async (req, res) => {
 		return res.status(401).json({ message: 'Please login in' })
 	}
 
-	const user = await User
-		.findById(req.query.id)
-		.select('properties')
-		.lean()
-		.exec()
+	let user = null
+
+	if (req.query.id.length == 11 && !isNaN(req.query.id)) {
+		user = await User
+			.findById(req.query.id)
+			.select('properties')
+			.lean()
+			.exec()
+	}
 
 	res.status(200)
 		.json({
-			sucesss: true,
-			data: user.properties,
+			sucesss: !!user,
+			data: user && user.properties,
 			timestamp: new Date()
 		})
 })

@@ -12,15 +12,18 @@ handler.get(async (req, res) => {
 		return res.status(401).json({ message: 'Please login in' })
 	}
 
-	const user = await User
+	let user = null
+
+	if (req.query.id.length == 11 && !isNaN(req.query.id)) {
+		user = await User
 		.findById(req.query.id)
 		.select('-password')
 		.lean()
 		.exec()
-
+	}
 	res.status(200)
 		.json({
-			sucesss: true,
+			sucesss: !!user,
 			data: user,
 			timestamp: new Date()
 		})
