@@ -20,11 +20,12 @@ handler.get(async (req, res) => {
 		return res.status(401).json({ message: 'Please login in' })
 	}
 
+	const userId = req.query.id
   let clan = null
 
-  if (req.query.id.length == 11 && !isNaN(req.query.id)) {
+  if (userId.length == 11 && !isNaN(userId)) {
 		const user = await User
-			.findById(req.query.id)
+			.findById(userId)
 			.select('clan_id')
 			.lean()
 			.exec()

@@ -18,14 +18,12 @@ handler.get(async (req, res) => {
 	if (!req.isAuthenticated()) {
 		return res.status(401).json({ message: 'Please login in' })
 	}
-	
+
 	const role = User
 		.findById(req.user.id)		
 		.select('role')
 		.lean()
 		.exec()
-
-	let users = null
 
 	if (role == 'admin') {
 		users = await User

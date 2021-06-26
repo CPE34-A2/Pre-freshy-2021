@@ -10,7 +10,7 @@ handler.use(middleware)
 /**
  * @method GET
  * @endpoint /api/clans
- * @description Get all clans' data
+ * @description Get all clans' data only admin role
  * 
  * @require User authentication
  */
@@ -19,14 +19,23 @@ handler.get(async (req, res) => {
 		return res.status(401).json({ message: 'Please login in' })
 	}
 
-	const clans = await Clan
-		.find()
+	let clans = null
+	const role = User
+		.findById(req.user.id)		
+		.select('role')
 		.lean()
 		.exec()
 
+	if (role == 'admin') {
+		clans = await Clan
+			.find()
+			.lean()
+			.exec()
+	}
+
 	res.status(200)
 		.json({
-			sucesss: true,
+			sucesss: !!clans,
 			data: clans,
 			timestamp: new Date()
 		})
