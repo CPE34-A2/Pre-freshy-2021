@@ -8,7 +8,7 @@ const planetSchema = new mongoose.Schema({
 		type: String
 	},
 	tier: {
-		type: Number
+		type: String
 	},
 	point: {
 		type: Number
