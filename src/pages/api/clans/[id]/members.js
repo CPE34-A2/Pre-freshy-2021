@@ -10,8 +10,8 @@ handler.use(middleware)
 
 /**
  * @method GET
- * @endpoint /api/clans/:clanId/members
- * @description Get the members' data by the specific clan
+ * @endpoint /api/clans/:id/members
+ * @description Get the data of clan's members
  * 
  * @require User authentication
  */

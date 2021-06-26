@@ -8,6 +8,13 @@ const handler = nextConnect()
 
 handler.use(middleware)
 
+/**
+ * @method GET
+ * @endpoint /api/users/:id/clan
+ * @description Get the data of user's clan
+ * 
+ * @require User authentication
+ */
 handler.get(async (req, res) => {
 	if (!req.isAuthenticated()) {
 		return res.status(401).json({ message: 'Please login in' })

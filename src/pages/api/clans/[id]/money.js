@@ -9,8 +9,8 @@ handler.use(middleware)
 
 /**
  * @method GET
- * @endpoint /api/clans/:clanId/money
- * @description Get the total money of the clan
+ * @endpoint /api/clans/:id/money
+ * @description Get the clan's total money
  * 
  * @require User authentication
  */

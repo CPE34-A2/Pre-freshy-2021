@@ -7,6 +7,13 @@ const handler = nextConnect()
 
 handler.use(middleware)
 
+/**
+ * @method GET
+ * @endpoint /api/users/:id/properties
+ * @description Get the user's properties
+ * 
+ * @require User authentication
+ */
 handler.get(async (req, res) => {
 	if (!req.isAuthenticated()) {
 		return res.status(401).json({ message: 'Please login in' })
