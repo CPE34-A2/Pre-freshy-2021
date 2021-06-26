@@ -13,7 +13,7 @@ const planetSchema = new mongoose.Schema({
 	point: {
 		type: Number
 	},
-	travel_exprense: {
+	travel_cost: {
 		type: Number
 	},
 	owner: {
