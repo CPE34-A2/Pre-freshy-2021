@@ -20,6 +20,7 @@ handler.get(async (req, res) => {
 	}
 
 	let users = null
+	
 	const role = User
 		.findById(req.user.id)		
 		.select('role')

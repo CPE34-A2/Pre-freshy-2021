@@ -1,6 +1,6 @@
 import nextConnect from 'next-connect'
 import middleware from '@/middlewares/middleware'
-import credentials from '@/middlewares/credentials'
+import permission from '@/middlewares/permission'
 
 import User from '@/models/user'
 import Clan from '@/models/clan'
@@ -9,7 +9,7 @@ const handler = nextConnect()
 
 handler
 	.use(middleware)
-	.use(credentials)
+	.use(permission)
 
 /**
  * @method GET
@@ -19,10 +19,6 @@ handler
  * @require User authentication
  */
 handler.get(async (req, res) => {
-	if (!req.isAuthenticated()) {
-		return res.status(401).json({ message: 'Please login in' })
-	}
-
 	const userId = req.query.id
   let clan = null
 

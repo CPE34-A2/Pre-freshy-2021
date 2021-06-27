@@ -1,6 +1,6 @@
 import nextConnect from 'next-connect'
 import middleware from '@/middlewares/middleware'
-import credentials from '@/middlewares/credentials'
+import permission from '@/middlewares/permission'
 
 import Clan from '@/models/clan'
 import User from '@/models/user'
@@ -9,7 +9,7 @@ const handler = nextConnect()
 
 handler
   .use(middleware)
-  .use(credentials)
+  .use(permission)
 
 /**
  * @method GET
