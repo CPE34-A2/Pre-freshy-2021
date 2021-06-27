@@ -18,7 +18,7 @@ handler
  * @require User authentication
  */
 handler.get(async (req, res) => {	
-	const userId = req.user.id
+	const userId = req.query.id
 	let user = null
 
 	if (userId.length == 11 && !isNaN(userId)) {

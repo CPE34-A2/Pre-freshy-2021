@@ -1,6 +1,6 @@
 import User from '@/models/user'
 
-export default function permission(req, res, next) {
+export default async function permission(req, res, next) {
   // Login validation with PassportJS
   if (!req.isAuthenticated()) {
 		return res.status(401).json({ message: 'Please login in' })
@@ -11,13 +11,13 @@ export default function permission(req, res, next) {
   const idFromSession = req.user.id
 
   if (idFromQuery != idFromSession) {
-    const userRole = User
+    const user = await User
       .findById(idFromSession)
       .select('role')
       .lean()
       .exec()
 
-    if (userRole == 'admin') {
+    if (user.role != 'admin') {
       return res.status(403).json({ message: `Sorry but you can't ¯\_(ツ)_/¯` })
     }
   }

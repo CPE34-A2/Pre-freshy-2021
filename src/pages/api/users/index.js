@@ -21,13 +21,13 @@ handler.get(async (req, res) => {
 
 	let users = null
 	
-	const role = User
+	const user = User
 		.findById(req.user.id)		
 		.select('role')
 		.lean()
 		.exec()
 
-	if (role == 'admin') {
+	if (user.role == 'admin') {
 		users = await User
 			.find()
 			.select('-password')

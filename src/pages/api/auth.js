@@ -1,6 +1,7 @@
 import nextConnect from 'next-connect'
 import middleware from '@/middlewares/middleware'
 import passport from '@/middlewares/passport'
+import User from '@/models/user'
 
 const handler = nextConnect()
 
@@ -11,7 +12,7 @@ handler.use(middleware)
  * @endpoint /api/auth
  * @description For getting user credentials if exists
  */
-handler.get((req, res) => {
+handler.get(async (req, res) => {
   const isAuthenticated = req.isAuthenticated()
 
   res.status(isAuthenticated ? 200 : 401)
@@ -19,7 +20,7 @@ handler.get((req, res) => {
       success: true,
       message: isAuthenticated ? 'Credentials found' : 'No credentials found',
       data: {
-        user: req.user,
+        user: await User.findById(req.user.id),
         timestamp: req.user && new Date()
       }
     })

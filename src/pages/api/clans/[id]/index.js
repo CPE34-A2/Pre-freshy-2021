@@ -21,12 +21,13 @@ handler.get(async (req, res) => {
 	const clanId = req.query.id
 	let clan = null
 
-	if (!isNaN(clanId)){
-	 	clan = await Clan
-		.findById(clanId)
-		.lean()
-		.exec()
+	if (!isNaN(clanId)) {
+		clan = await Clan
+			.findById(clanId)
+			.lean()
+			.exec()
 	}
+	
 	res.status(200)
 		.json({
 			sucesss: !!clan,

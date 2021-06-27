@@ -22,13 +22,13 @@ handler.get(async (req, res) => {
 
 	let clans = null
 
-	const role = User
+	const user = User
 		.findById(req.user.id)		
 		.select('role')
 		.lean()
 		.exec()
 
-	if (role == 'admin') {
+	if (user.role == 'admin') {
 		clans = await Clan
 			.find()
 			.lean()
