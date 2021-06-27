@@ -1,11 +1,14 @@
 import nextConnect from 'next-connect'
 import middleware from '@/middlewares/middleware'
+import credentials from '@/middlewares/credentials'
 
 import User from '@/models/user'
 
 const handler = nextConnect()
 
-handler.use(middleware)
+handler
+	.use(middleware)
+	.use(credentials)
 
 /**
  * @method GET
@@ -15,10 +18,6 @@ handler.use(middleware)
  * @require User authentication
  */
 handler.get(async (req, res) => {
-	if (!req.isAuthenticated()) {
-		return res.status(401).json({ message: 'Please login in' })
-	}
-
 	const userId = req.user.id
 	let user = null
 

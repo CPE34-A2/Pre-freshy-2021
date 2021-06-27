@@ -1,12 +1,15 @@
 import nextConnect from 'next-connect'
 import middleware from '@/middlewares/middleware'
+import credentials from '@/middlewares/credentials'
 
 import User from '@/models/user'
 import Clan from '@/models/clan'
 
 const handler = nextConnect()
 
-handler.use(middleware)
+handler
+	.use(middleware)
+	.use(credentials)
 
 /**
  * @method GET

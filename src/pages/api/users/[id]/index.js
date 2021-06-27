@@ -1,11 +1,14 @@
 import nextConnect from 'next-connect'
 import middleware from '@/middlewares/middleware'
+import credentials from '@/middlewares/credentials'
 
 import User from '@/models/user'
 
 const handler = nextConnect()
 
-handler.use(middleware)
+handler
+	.use(middleware)
+	.use(credentials)
 
 /**
  * @method GET
@@ -15,20 +18,17 @@ handler.use(middleware)
  * @require User authentication
  */
 handler.get(async (req, res) => {
-	if (!req.isAuthenticated()) {
-		return res.status(401).json({ message: 'Please login in' })
-	}
-
 	const userId = req.query.id
 	let user = null
 
 	if (userId.length == 11 && !isNaN(userId)) {
 		user = await User
-		.findById(userId)
-		.select('-password')
-		.lean()
-		.exec()
+			.findById(userId)
+			.select('-password')
+			.lean()
+			.exec()
 	}
+	
 	res.status(200)
 		.json({
 			sucesss: !!user,

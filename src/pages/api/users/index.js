@@ -19,6 +19,7 @@ handler.get(async (req, res) => {
 		return res.status(401).json({ message: 'Please login in' })
 	}
 
+	let users = null
 	const role = User
 		.findById(req.user.id)		
 		.select('role')
