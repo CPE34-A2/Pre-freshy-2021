@@ -13,7 +13,8 @@ const userSchema = new mongoose.Schema({
 	},
 	role: {
 		type: String,
-		default: 'user'
+		default: 'user',
+		enum: ['user', 'admin']
 	},
 	clan_id: {
 		type: Number
@@ -25,5 +26,9 @@ const userSchema = new mongoose.Schema({
 		}
 	},
 }, { timestamps: true })
+
+userSchema.methods.isAdmin = function() {
+	return this.role === 'admin'
+}
 
 export default mongoose.models.User || mongoose.model('User', userSchema)
