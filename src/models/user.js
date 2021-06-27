@@ -27,8 +27,4 @@ const userSchema = new mongoose.Schema({
 	},
 }, { timestamps: true })
 
-userSchema.methods.isAdmin = function() {
-	return this.role === 'admin'
-}
-
 export default mongoose.models.User || mongoose.model('User', userSchema)

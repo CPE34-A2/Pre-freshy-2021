@@ -11,13 +11,13 @@ export default function permission(req, res, next) {
   const idFromSession = req.user.id
 
   if (idFromQuery != idFromSession) {
-    const user = User
+    const userRole = User
       .findById(idFromSession)
       .select('role')
       .lean()
       .exec()
 
-    if (!user.isAdmin()) {
+    if (userRole == 'admin') {
       return res.status(403).json({ message: `Sorry but you can't ¯\_(ツ)_/¯` })
     }
   }
