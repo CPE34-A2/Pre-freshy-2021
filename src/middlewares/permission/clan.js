@@ -11,13 +11,13 @@ export default async function clanPermission(req, res, next) {
   const idFromQuery = req.query.id
   const idFromSession = req.user.clan_id
 
-  if (idFromQuery != idFromSession) {
-    const user = await User
-      .findById(idFromSession)
+  const user = await User
+      .findById(req.user.id)
       .select('role')
       .lean()
       .exec()
 
+  if (idFromQuery != idFromSession) {
     if (user.role != 'admin') {
       return res.status(403).json({ message: `Sorry but you can't ¯\_(ツ)_/¯` })
     }
@@ -30,7 +30,7 @@ export default async function clanPermission(req, res, next) {
     .lean()
     .exec()
 
-  if (clan.leader != req.user.id) {
+  if ((clan.leader != req.user.id) && (user.role != 'admin')) {
     return res.status(403).json({ message: `You are't clan leader` })
   }
   
