@@ -10,7 +10,13 @@ import Transaction from '@/models/transaction'
 import User from '@/models/user'
 
 const handler = nextConnect()
-
+/**
+ * @method post
+ * @endpoint /api/clans/:id/transfer/planet
+ * @description Get owner on planet (need summit)
+ * 
+ * @require User authentication
+ */
 
 handler
   .use(middleware)
@@ -75,7 +81,13 @@ handler
     })
 
 })
-
+/**
+ * @method patch
+ * @endpoint /api/clans/:id/transfer/planet
+ * @description submmit to confirm
+ * 
+ * @require User authentication
+ */
 handler.patch(async (req, res)=>{
   let transactionid = req.body.transactionid
   let transaction = await Transaction
