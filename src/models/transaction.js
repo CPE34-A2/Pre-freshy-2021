@@ -42,6 +42,14 @@ const transactionSchema = new mongoose.Schema({
     fuel: {
       type: Number
     },
+    stock: {
+      symbol: {
+        type: String
+      },
+      rate: {
+        type: Number
+      }
+    },
     planets: [{
       type: Number
     }]
