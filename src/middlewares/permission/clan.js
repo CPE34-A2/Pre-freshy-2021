@@ -30,7 +30,7 @@ export default async function clanPermission(req, res, next) {
     .lean()
     .exec()
 
-  if (clan.leader != req.user.id) {
+  if ((clan.leader != req.user.id) && (user.role != 'admin')) {
     return res.status(403).json({ message: `You are't clan leader` })
   }
   
