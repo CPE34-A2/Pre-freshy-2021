@@ -1,5 +1,4 @@
 import User from '@/models/user'
-import Clan from '@/models/clan'
 
 export default async function clanPermission(req, res, next) {
   // Login validation with PassportJS
@@ -17,10 +16,8 @@ export default async function clanPermission(req, res, next) {
       .lean()
       .exec()
 
-  if (idFromQuery != idFromSession) {
-    if (user.role != 'admin') {
-      return res.status(403).json({ message: `Sorry but you can't ¯\_(ツ)_/¯` })
-    }
+  if ((idFromQuery != idFromSession) && (user.role != 'admin')) {
+    return res.status(403).json({ message: `Sorry but you can't ¯\_(ツ)_/¯` })
   }
 
   return next()
