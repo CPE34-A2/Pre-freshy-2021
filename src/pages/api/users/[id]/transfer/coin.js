@@ -1,6 +1,7 @@
 import nextConnect from 'next-connect'
 import middleware from '@/middlewares/middleware'
-import permission from '@/middlewares/permission'
+import permission from '@/middlewares/permission/user'
+
 import * as Response from '@/utils/response'
 
 import User from '@/models/user'
