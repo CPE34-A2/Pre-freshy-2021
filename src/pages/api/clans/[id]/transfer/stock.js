@@ -18,6 +18,17 @@ const EXPECTED_REQUIRER = 3
 const SYMBOL = ['MINT', 'ECML', 'HCA', 'LING', 'MALP']
 const METHOD = ['BUY', 'SELL']
 
+/**
+ * @method POST
+ * @endpoint /api/clans/:id/stock
+ * @description Make new pending trasaction of stock trading
+ * 
+ * @require User authentication, the user must be a clan leadership
+ * 
+ * @body method
+ * @body symbol
+ * @body amount
+ */
 handler.post(async (req, res) => {
   const method = req.body.method
   const symbol = req.body.symbol
@@ -86,6 +97,15 @@ handler.post(async (req, res) => {
   })
 })
 
+/**
+ * @method PATCH
+ * @endpoint /api/clans/:id/stock
+ * @description Confirm the pending transaction of stock trading 
+ * 
+ * @require User authentication
+ * 
+ * @body transaction_id
+ */
 handler.patch(async (req, res) => {
   const transactionId = req.body.transaction_id
 
