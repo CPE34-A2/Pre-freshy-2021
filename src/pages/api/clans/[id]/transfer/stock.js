@@ -46,11 +46,19 @@ handler.post(async (req, res) => {
   if (amount <= 0)
     return Response.denined(res, 'amount must be greater than 0')
 
+  const duplicateBuyTransaction = await Transaction.findOne({'owner.id': req.user.clan_id, 'status': 'PENDING'})
+  const duplicateSellTransaction = await Transaction.findOne({'receiver.id': req.user.clan_id, 'status': 'PENDING'})
+
+  if (duplicateBuyTransaction || duplicateSellTransaction)
+    return Response.denined(res, 'There are still pending transaction')
+
   const stock = await Stock
     .findOne({ symbol: symbol })
     .select()
     .lean()
     .exec()
+
+  const total = stock.rate * amount
 
   const clan = await Clan
     .findById(req.user.clan_id)
@@ -67,14 +75,14 @@ handler.post(async (req, res) => {
     return Response.denined(res, 'get buy something, lol')
 
   // money as perspective
-  const transaction = await Transaction.create({
+  const newTransaction = await Transaction.create({
     owner: {
-      id: method === 'BUY' ? req.user.clan_id : '0',
+      id: method === 'BUY' ?  req.user.clan_id : '0',
       type: method === 'BUY' ? 'clan' : 'market'
     },
     receiver: {
-      id: method === 'SELL' ? '0' : req.user.clan_id,
-      type: method === 'SELL' ? 'market' : 'clan'
+      id: method === 'SELL' ? req.user.clan_id : '0',
+      type: method === 'SELL' ? 'clan' : 'market'
     },
     status: 'PENDING',
     confirm_require: EXPECTED_REQUIRER,
@@ -89,11 +97,12 @@ handler.post(async (req, res) => {
   })
 
   Response.success(res, {
-    transaction_id: transaction._id,
-    transaction_status: transaction.status,
-    symbol: transaction.item.stock.symbol,
-    rate: transaction.item.stock.rate,
-    amount: transaction.item.stock.amount
+    transaction_id: newTransaction._id,
+    transaction_status: newTransaction.status,
+    symbol: newTransaction.item.stock.symbol,
+    rate: newTransaction.item.stock.rate,
+    amount: newTransaction.item.stock.amount,
+    current_money: clan.properties.money
   })
 })
 
