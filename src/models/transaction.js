@@ -48,6 +48,9 @@ const transactionSchema = new mongoose.Schema({
       },
       rate: {
         type: Number
+      },
+      amount: {
+        type: Number
       }
     },
     planets: [{
