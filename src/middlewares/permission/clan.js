@@ -23,16 +23,5 @@ export default async function clanPermission(req, res, next) {
     }
   }
 
-  // Clan leader check
-  const clan = await Clan
-    .findById(idFromQuery)
-    .select('leader')
-    .lean()
-    .exec()
-
-  if ((clan.leader != req.user.id) && (user.role != 'admin')) {
-    return res.status(403).json({ message: `You are't clan leader` })
-  }
-  
   return next()
 }
