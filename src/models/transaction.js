@@ -31,9 +31,9 @@ const transactionSchema = new mongoose.Schema({
     type: Number,
     default: 0
   },
-  confirmer: {
+  confirmer: [{
     type: String,
-  },
+  }],
 
   item: {
     money: {
