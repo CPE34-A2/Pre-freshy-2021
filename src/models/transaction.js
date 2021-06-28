@@ -52,9 +52,9 @@ const transactionSchema = new mongoose.Schema({
         type: Number
       }
     },
-    planets: [{
-      type: Number
-    }]
+    planets: {
+      type: Array
+    }
   }
 }, { timestamps: true })
 
