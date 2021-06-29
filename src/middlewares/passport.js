@@ -41,7 +41,7 @@ passport.use(
 )
 
 passport.serializeUser((user, done) => {
-  done(null, { id: user._id })
+  done(null, { id: user._id, clan_id: user.clan_id })
 })
 
 passport.deserializeUser((user, done) => {

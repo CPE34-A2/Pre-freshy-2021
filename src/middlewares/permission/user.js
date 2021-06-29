@@ -1,6 +1,6 @@
 import User from '@/models/user'
 
-export default async function permission(req, res, next) {
+export default async function userPermission(req, res, next) {
   // Login validation with PassportJS
   if (!req.isAuthenticated()) {
 		return res.status(401).json({ message: 'Please login in' })
