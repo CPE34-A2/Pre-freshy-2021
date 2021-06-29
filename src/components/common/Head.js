@@ -4,6 +4,8 @@ export default function Header() {
   return (
     <Head>
       <title>PRE-FRESHY CPE KMUTT 2021</title>
+      <link rel="icon" type="image/png" href="/logo.png" />
+
       <meta name="title" content="PRE-FRESHY CPE KMUTT 2021" />
       <meta name="description" content="Activities website for pre-freshy cpe of KMUTT 2021" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
