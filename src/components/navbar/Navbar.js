@@ -13,7 +13,7 @@ export default function Navbar() {
       {({ open }) => (
         <>
           <div className="flex flex-col w-full md:border-r-2 md:w-60 bg-white">
-            <div className="flex flex-row flex-shrink-0 items-center justify-between mt-2 px-8 pt-4 pb-2">
+            <div className="flex flex-row flex-shrink-0 items-center justify-between mt-2 px-8 pt-4 pb-4 md:pb-2">
               <a href="#" className="text-lg font-bold tracking-widest rounded-lg focus:outline-none">PREFRESHY 2021</a>
               <Disclosure.Button type="button" className="rounded-lg md:hidden focus:outline-none">
                 <MenuIcon className="w-6 h-6" />
