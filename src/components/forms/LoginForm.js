@@ -45,8 +45,8 @@ export default function LoginForm() {
   }
 
   return (
-    <form className="mx-auto ring-0 shadow-lg rounded-xl bg-white" onSubmit={login}>
-      <div className="flex flex-col px-12 py-8">
+    <form className="mx-12 md:mx-auto ring-0 shadow-lg rounded-xl bg-white" onSubmit={login}>
+      <div className="flex flex-col px-10 md:px-12 py-8">
         <div className="mb-5 pb-4 mx-auto">
           <img src="/logo-with-text-alt.png" className="w-32 h-32" alt="" />
         </div>
