@@ -1,5 +1,5 @@
 import middleware from '@/middlewares/middleware'
-import axios from 'axios'
+import { getUserData } from '../services/user'
 
 import Head from '@/components/common/Head'
 import Navbar from '@/components/navbar/Navbar'
@@ -32,8 +32,9 @@ export async function getServerSideProps({ req, res }) {
       return { redirect: { destination: '/login', permanent: false } }
     }
     
-    const result = await axios.get(`/api/users/${req.user.id}`, { headers: { cookie: req.headers.cookie }})
-    return { props: { user: result.data.data } }
+    const userData = JSON.parse(JSON.stringify(await getUserData(req.user.id)))
+
+    return { props: { user: userData } }
   } catch (error) {
     console.log(error.message)
   }
