@@ -21,7 +21,7 @@ handler.get(async (req, res) => {
 
 	let users = null
 	
-	const user = User
+	const user = await User
 		.findById(req.user.id)		
 		.select('role')
 		.lean()
