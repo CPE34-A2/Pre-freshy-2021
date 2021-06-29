@@ -34,6 +34,9 @@ const transactionSchema = new mongoose.Schema({
   confirmer: {
     type: Array
   },
+  rejector: {
+    type: Array
+  },
   item: {
     money: {
       type: Number
