@@ -19,6 +19,8 @@ handler
  * @endpoint /api/clans/:id/transfer/planet
  * @description Get owner on planet (need summit)
  * 
+ * @body targetPlanet
+ * 
  * @require User authentication
  */
 handler.post(async (req, res) => {
@@ -40,6 +42,7 @@ handler.post(async (req, res) => {
   if ((clan.leader != req.user.id) && (user.role != 'admin')) {
     return res.status(403).json({ message: 'You arent clan leader' })
   }
+
   const planet = await Planet
     .findOne({ _id: targetPlanet })
     .select('_id travel_cost owner')
@@ -84,6 +87,8 @@ handler.post(async (req, res) => {
  * @endpoint /api/clans/:id/transfer/planet
  * @description submmit to confirm
  * 
+ * @body transactionid
+ * 
  * @require User authentication
  */
 handler.patch(async (req, res) => {
@@ -104,7 +109,7 @@ handler.patch(async (req, res) => {
 
   if (!transaction.confirmer.includes(req.user.id)) {
     transaction.confirmer.push(req.user.id)
-    
+
     if (transaction.confirmer.length == transaction.confirm_require + 1) {
       clan.properties.fuel -= planet.travel_cost
       clan.owned_planet_ids = [...clan.owned_planet_ids, ...transaction.item.planets]
