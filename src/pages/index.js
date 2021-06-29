@@ -1,19 +1,40 @@
-import WebContainer from '@/components/common/WebContainer'
+import middleware from '@/middlewares/middleware'
+import axios from 'axios'
+
 import Head from '@/components/common/Head'
 import Navbar from '@/components/navbar/Navbar'
-import IndexContent from '@/components/contents/IndexContent'
+import DashboardContainer from '@/components/contents/dashboard/DashboardCotainer'
+import Dashboard from '@/components/contents/dashboard/Dashboard'
 import Footer from '@/components/footer/Footer'
 
-export default function Home() {
+export default function IndexPage({ user }) {
   return (
-    <WebContainer>
+    <DashboardContainer>
       <Head />
 
       <Navbar />
 
-      <IndexContent />
+      <Dashboard
+        displayName={user.display_name}
+        money={user.properties.money}
+      />
 
       <Footer />
-    </WebContainer>
+    </DashboardContainer>
   )
+}
+
+export async function getServerSideProps({ req, res }) {
+  try {
+    await middleware.run(req, res)
+
+    if (!req.isAuthenticated()) {
+      return { redirect: { destination: '/login', permanent: false } }
+    }
+    
+    const result = await axios.get(`/api/users/${req.user.id}`, { headers: { cookie: req.headers.cookie }})
+    return { props: { user: result.data.data } }
+  } catch (error) {
+    console.log(error.message)
+  }
 }
