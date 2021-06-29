@@ -1,11 +1,12 @@
 import { useState } from 'react'
+import Router from 'next/router'
 import axios from '@/utils/axios'
 
 import InputBox from '@/components/common/InputBox'
 import Button from '@/components/common/Button'
 import { EyeIcon, EyeOffIcon } from '@heroicons/react/outline'
 
-export default function LoginForm(props) {
+export default function LoginForm() {
   const [formData, setFormData] = useState({ username: '', password: '' })
   const [isPasswordShowed, showPassword] = useState(false)
 
@@ -37,6 +38,7 @@ export default function LoginForm(props) {
     
     if (result.status == 200) {
       setLoginError('')
+      Router.push('/')
     } else {
       setLoginError('Username or password is incorrect')
     }
