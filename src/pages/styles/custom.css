@@ -9,8 +9,12 @@
   background-color: #7030A0;
 }
 
+.login-form-button:hover {
+  background-color: #5b2485;
+}
+
 .login-background {
-  background-image: url("../../../public/login-background.png");
+  background-image: url("../../../public/login-page-bg.png");
   background-position: fit;
   background-repeat: no-repeat;
   background-size: cover;

@@ -5,7 +5,10 @@ export default function InputBox(props) {
     <>
       <input
         placeholder = {props.placeholder} 
-        type = {props.type} 
+        type = {props.type}
+        maxLength = {props.maxLength}
+        pattern = {props.pattern}
+        value = {props.value}
         onChange = {props.onChange} 
         className = {Util.concatClasses(
           'px-3 ring-1 focus:outline-none focus:ring-1',
