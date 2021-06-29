@@ -55,7 +55,7 @@ export default function LoginForm() {
           <p className="text-xs text-gray-800 font-semibold mb-1">Student ID</p>
           <InputBox
             type="text"
-            maxLength="13"
+            maxLength="11"
             pattern="\d*"
             style="w-full md:w-80 rounded-xl ring-1"
             value={username}
