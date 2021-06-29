@@ -2,7 +2,7 @@ import nextConnect from 'next-connect'
 import middleware from '@/middlewares/middleware'
 import permission from '@/middlewares/permission/user'
 
-import { getUserData } from '@/services/user'
+import User from '@/models/user'
 
 const handler = nextConnect()
 
@@ -22,7 +22,11 @@ handler.get(async (req, res) => {
 	let user = null
 
 	if (userId.length == 11 && !isNaN(userId)) {
-		user = await getUserData(userId)
+		user = await User
+			.findById(userId)
+			.select('-password')
+			.lean()
+			.exec()
 	}
 	
 	res.status(200)
