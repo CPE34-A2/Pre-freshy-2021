@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import axios from '@/utils/axios'
+
 import InputBox from '@/components/common/InputBox'
 import Button from '@/components/common/Button'
 import { EyeIcon, EyeOffIcon } from '@heroicons/react/outline'
@@ -31,13 +33,9 @@ export default function LoginForm(props) {
       if (!formData[key]) return setLoginError('Username or password is empty')
     }
 
-    let response = await fetch('/api/auth', {
-      method: 'POST',
-      body: JSON.stringify(formData),
-      headers: { 'Content-Type': 'application/json' }
-    })
-
-    if (response.status == 200) {
+    const result = await axios.post('/api/auth', formData)
+    
+    if (result.status == 200) {
       setLoginError('')
     } else {
       setLoginError('Username or password is incorrect')
