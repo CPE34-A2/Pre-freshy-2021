@@ -4,7 +4,7 @@ const stockHistorySchema = new mongoose.Schema({
   symbol: {
     type: String
   },
-  timestamp: {
+  date: {
     type: Date,
   },
   rate: {
