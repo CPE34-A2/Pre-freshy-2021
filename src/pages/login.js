@@ -5,7 +5,7 @@ import LoginForm from '@/components/forms/LoginForm'
 
 export default function LoginPage() {
   return (
-    <WebContainer>
+    <WebContainer style="login-background">
       <Head />
 
       {/* Fake element for centering LoginForm */}

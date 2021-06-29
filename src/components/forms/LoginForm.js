@@ -45,30 +45,33 @@ export default function LoginForm() {
   }
 
   return (
-    <form className="mx-auto p-10 ring-1 ring-gray-100 shadow-lg rounded-xl bg-gray-100">
-      <div className="flex flex-col px-5 py-4">
+    <form className="mx-auto ring-0 shadow-lg rounded-xl bg-white">
+      <div className="flex flex-col px-12 py-8">
         <div className="mb-5 pb-4">
-          <h3 className="text-left font-extrabold text-4xl bg-gradient-to-b from-blue-700 to-blue-300 bg-clip-text text-transparent leading-none tracking-tight">
-            Welcome<br />Freshy CPE<br />
+          <h3 className="login-form-title text-left drop-shadow-sm font-extrabold text-3xl leading-none tracking-tight">
+            WELCOME
+          </h3>
+          <h3 className="login-form-title mt-2 text-left drop-shadow-sm font-extrabold text-lg leading-none tracking-tight">
+            FRESHY CPE 2021
           </h3>
           <div className="mt-2 text-md text-gray-400 font-semibold">Login to continue</div>
         </div>
 
         <div className="mb-5">
-          <p className="text-xs text-gray-600 font-semibold mb-1">Student ID</p>
+          <p className="text-xs text-gray-700 font-semibold mb-1">Student ID</p>
           <InputBox
             type="text"
-            style="w-72 rounded-md"
+            style="w-full md:w-80 rounded-xl ring-1"
             onChange={e => handleChange(e, 'username', validUsername)}
             error={usernameError || loginError}
           />
         </div>
 
-        <p className="text-xs text-gray-600 font-semibold mb-1">Password</p>
+        <p className="text-xs text-gray-700 font-semibold mb-1">Password</p>
         <div className="flex mb-5 relative">
           <InputBox
             type={isPasswordShowed ? 'text' : 'password'}
-            style="w-full rounded-md pr-7"
+            style="w-full md:w-80 rounded-xl pr-7"
             onChange={e => handleChange(e, 'password')}
             error={loginError}
           />
@@ -85,8 +88,8 @@ export default function LoginForm() {
 
         <Button
           type="button"
-          name="Log in"
-          style="mt-4 py-2 ring-1 ring-gray-300 rounded-3xl bg-blue-700 text-white font-semibold focus:outline-none focus:ring-blue-100 hover:bg-blue-900"
+          name="LOG IN"
+          style="login-form-button mt-4 py-1 ring-0 rounded-3xl text-white text-sm font-semibold focus:outline-none "
           onClick={login} />
       </div>
     </form>

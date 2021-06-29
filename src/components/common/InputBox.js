@@ -8,9 +8,9 @@ export default function InputBox(props) {
         type = {props.type} 
         onChange = {props.onChange} 
         className = {Util.concatClasses(
-          'px-3 ring-1 shadow-md focus:outline-none focus:ring-1',
+          'px-3 ring-1 focus:outline-none focus:ring-1',
           props.style,
-          props.error ? 'ring-red-500 focus:ring-red-500' : 'ring-gray-200 focus:ring-blue-500'
+          props.error ? 'ring-red-500 focus:ring-red-500' : 'ring-gray-200 focus:ring-purple-600'
         )}
       />
     </>
