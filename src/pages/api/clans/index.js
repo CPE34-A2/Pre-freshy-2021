@@ -2,6 +2,7 @@ import nextConnect from 'next-connect'
 import middleware from '@/middlewares/middleware'
 
 import Clan from '@/models/clan'
+import User from '@/models/user'
 
 const handler = nextConnect()
 
@@ -22,7 +23,7 @@ handler.get(async (req, res) => {
 
 	let clans = null
 
-	const user = User
+	const user = await User
 		.findById(req.user.id)		
 		.select('role')
 		.lean()
