@@ -10,7 +10,7 @@ const handleAuthentication = async (req, username, password, done) => {
     if ((username.length != 11) || (isNaN(username))) {
       return done(null, false, { message: 'Username must meet our requirements'})
     }
-
+    
     let user = await User.findById(username).lean().exec()
 
     // Create new user into users collection if user doesn't exists

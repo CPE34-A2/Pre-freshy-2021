@@ -1,0 +1,30 @@
+stages:
+  - build
+  - deploy
+
+build:
+  stage: build
+  image: docker:latest
+  only:
+    - main
+  services: 
+    - name: docker:19.03.8-dind
+  before_script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+  script:
+    - echo "$ENV_LOCAL" > .env.local
+    - docker build --pull -t "$CI_REGISTRY_IMAGE" .
+    - docker push "$CI_REGISTRY_IMAGE"
+
+deploy:
+  stage: deploy
+  image: kroniak/ssh-client
+  only:
+    - main
+  before_script:
+    - echo "Deploying app"
+  script:
+    - chmod 400 $SSH_PRIVATE_KEY
+    - ssh -o StrictHostKeyChecking=no -i $SSH_PRIVATE_KEY root@$PROD_SERVER_IP "docker pull $CI_REGISTRY_IMAGE"
+    - ssh -o StrictHostKeyChecking=no -i $SSH_PRIVATE_KEY root@$PROD_SERVER_IP "docker stop PreFreshy2021 || true && docker rm PreFreshy2021 || true"
+    - ssh -o StrictHostKeyChecking=no -i $SSH_PRIVATE_KEY root@$PROD_SERVER_IP "docker run -p 8000:3000 -d --name PreFreshy2021 $CI_REGISTRY_IMAGE"
