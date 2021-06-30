@@ -4,6 +4,7 @@ import permission from '@/middlewares/permission/admin'
 
 import * as Response from '@/utils/response'
 import Stock from '@/models/stock'
+import Clan from '@/models/clan'
 import StockHistory from '@/models/stock-history'
 
 const handler = nextConnect()
@@ -71,6 +72,50 @@ handler.post(async (req, res) => {
   Response.success(res, {
     type: stockHistory ? 'update' : 'create',
     data: stockHistory ? stockHistory : newStockHistory})
+})
+
+
+/**
+ * @method PATCH
+ * @endpoint /api/admin/market-manipulator
+ * @description add or remove the clan's stocks
+ * @description positive amount to add/ negative amount to remove
+ * @require Admin authentication
+ * 
+ * @body clan_id
+ * @body symbol
+ * @body amount
+ */
+handler.patch(async (req, res) => {
+  const clanId = parseInt(req.body.clan_id)
+  const symbol = req.body.symbol
+  const amount = parseInt(req.body.amount)
+
+  if (!symbol || !SYMBOL.includes(symbol.toUpperCase()))
+    return Response.denined(res, 'symbol not found!!!')
+
+  const clan = await Clan
+    .findById(clanId)
+    .select('properties')
+    .exec()
+
+  if (!clan)
+    return Response.denined(res, 'clan not found!!!')
+
+  if (isNaN(amount))
+    return Response.denined(res, 'number only!!!')
+
+  if (clan.properties.stocks[symbol] + amount < 0)
+    return Response.denined(res, 'Bro... We are not having SHORT or LONG things')
+
+  clan.properties.stocks[symbol] += amount
+  await clan.save()
+  
+  Response.success(res, {
+    clan_id: clanId,
+    symbol: symbol,
+    change: amount > 0 ? 'add amount: ' + amount : 'remove amount: ' + (-amount)
+  })
 })
 
 export default handler
