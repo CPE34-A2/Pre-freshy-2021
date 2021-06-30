@@ -7,7 +7,7 @@ import DashboardContainer from '@/components/contents/dashboard/DashboardCotaine
 import Dashboard from '@/components/contents/dashboard/Dashboard'
 import Footer from '@/components/footer/Footer'
 
-export default function IndexPage({ user }) {
+export default function IndexPage({ user, clan }) {
   return (
     <DashboardContainer>
       <Head />
@@ -18,6 +18,7 @@ export default function IndexPage({ user }) {
 
       <Dashboard
         user={user}
+        clan={clan}
       />
 
       <Footer />
@@ -32,9 +33,14 @@ export async function getServerSideProps({ req, res }) {
     if (!req.isAuthenticated()) {
       return { redirect: { destination: '/login', permanent: false } }
     }
-    
-    const result = await axios.get(`/api/users/${req.user.id}`, { headers: { cookie: req.headers.cookie }})
-    return { props: { user: result.data.data } }
+
+    const opts = { headers: { cookie: req.headers.cookie } }
+    const user = await axios.get(`/api/users/${req.user.id}`, opts)
+    const clan = await axios.get(`/api/clans/${req.user.clan_id}/properties`, opts)
+
+    console.log(clan.data.data)
+
+    return { props: { user: user.data.data, clan: clan.data.data } }
   } catch (error) {
     console.log(error.message)
   }

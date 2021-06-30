@@ -1,6 +1,7 @@
+import * as Util from '@/utils/common'
 import { CurrencyDollarIcon, BeakerIcon, StarIcon } from '@heroicons/react/outline'
 
-export default function Dashboard({ user }) {
+export default function Dashboard({ user, clan }) {
   return (
     <div className="flex flex-col w-full p-12">
 
@@ -17,7 +18,7 @@ export default function Dashboard({ user }) {
             <CurrencyDollarIcon className="w-8 h-8" />
           </div>
           <div className="flex flex-col ml-4 leading-none">
-            <div className="font-extrabold text-indigo-900">1,500</div>
+            <div className="font-extrabold text-indigo-900">{Util.numberWithCommas(user.properties.money)}</div>
             <div className="font-light text-sm text-indigo-900">coin</div>
           </div>
         </div>
@@ -30,7 +31,7 @@ export default function Dashboard({ user }) {
               <BeakerIcon className="w-8 h-8" />
             </div>
             <div className="flex flex-col ml-4 leading-none">
-              <div className="font-extrabold text-indigo-900">320</div>
+              <div className="font-extrabold text-indigo-900">{Util.numberWithCommas(clan.fuel)}</div>
               <div className="font-light text-sm text-indigo-900">gallon</div>
             </div>
           </div>
@@ -39,7 +40,7 @@ export default function Dashboard({ user }) {
               <StarIcon className="w-8 h-8" />
             </div>
             <div className="flex flex-col ml-4 leading-none">
-              <div className="font-extrabold text-indigo-900">4</div>
+              <div className="font-extrabold text-indigo-900">{clan.owned_planet_ids.length}</div>
               <div className="font-light text-sm text-indigo-900">stars</div>
             </div>
           </div>
