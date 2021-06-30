@@ -1,9 +1,9 @@
 import * as Util from '@/utils/common'
-import { BeakerIcon, StarIcon } from '@heroicons/react/outline'
 
 import Image from 'next/image'
 import MoneyImage from '@/publics/money.png'
 import GallonImage from '@/publics/gallon.png'
+import StarImage from '@/publics/star.png'
 
 export default function Dashboard({ user, clan }) {
   return (
@@ -18,7 +18,7 @@ export default function Dashboard({ user, clan }) {
         <div className="font-medium text-gray-500 mb-2">Your items</div>
 
         <div className="flex flex-row items-center">
-          <div className="flex items-center justify-center">
+          <div className="flex items-center justify-center drop-shadow-sm">
             <div className="w-10 h-10">
               <Image src={MoneyImage} />
             </div>
@@ -33,7 +33,7 @@ export default function Dashboard({ user, clan }) {
 
         <div className="space-y-4">
           <div className="flex flex-row items-center">
-            <div className="flex items-center justify-center">
+            <div className="flex items-center justify-center drop-shadow-sm">
               <div className="w-10 h-10">
                 <Image src={GallonImage} />
               </div>
@@ -44,8 +44,10 @@ export default function Dashboard({ user, clan }) {
             </div>
           </div>
           <div className="flex flex-row items-center">
-            <div className="flex items-center justify-center w-12 h-12 bg-white rounded-xl shadow">
-              <StarIcon className="w-8 h-8" />
+            <div className="flex items-center justify-center drop-shadow-sm">
+              <div className="w-10 h-10">
+                <Image src={StarImage} />
+              </div>
             </div>
             <div className="flex flex-col ml-4 leading-none">
               <div className="font-extrabold text-indigo-900">{clan.owned_planet_ids.length}</div>
