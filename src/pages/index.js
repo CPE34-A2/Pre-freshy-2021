@@ -1,5 +1,5 @@
 import middleware from '@/middlewares/middleware'
-import axios from 'axios'
+import axios from '@/utils/axios'
 
 import Head from '@/components/common/Head'
 import Navbar from '@/components/navbar/Navbar'
