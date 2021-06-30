@@ -1,9 +1,11 @@
 import { useState } from 'react'
 import Router from 'next/router'
 import axios from '@/utils/axios'
+import * as Util from '@/utils/common'
 
 import InputBox from '@/components/common/InputBox'
 import Button from '@/components/common/Button'
+import Spinner from '@/components/common/Spinner'
 import { EyeIcon, EyeOffIcon, ExclamationCircleIcon } from '@heroicons/react/outline'
 
 export default function LoginForm() {
@@ -12,6 +14,7 @@ export default function LoginForm() {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [isPasswordShowed, showPassword] = useState(false)
+  const [isLoggingIn, setLoggingIn] = useState(false)
   const [loginError, setLoginError] = useState('')
 
   const handleUsernameChange = (e) => {
@@ -30,6 +33,8 @@ export default function LoginForm() {
       return setLoginError('Username or password is empty')
     }
 
+    setLoggingIn(true)
+
     axios
       .post('/api/auth', {
         username: username,
@@ -41,6 +46,9 @@ export default function LoginForm() {
       })
       .catch((error) => {
         setLoginError('Username or password is incorrect')
+      })
+      .finally(() => {
+        setLoggingIn(false)
       })
   }
 
@@ -96,7 +104,10 @@ export default function LoginForm() {
         <Button
           type="submit"
           name="LOG IN"
-          style="login-form-button mt-4 py-1 ring-0 rounded-3xl text-white text-sm font-semibold focus:outline-none "
+          icon={isLoggingIn && <Spinner style="mr-2 h-4 w-4 text-white"/>}
+          style={Util.concatClasses(
+            "login-form-button inline-flex items-center justify-center mt-4 py-1 ring-0 rounded-3xl text-white text-sm font-semibold focus:outline-none",
+          )}
         />
       </div>
     </form>
