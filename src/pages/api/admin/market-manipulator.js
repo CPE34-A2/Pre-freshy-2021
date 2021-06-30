@@ -15,7 +15,7 @@ handler
 const SYMBOL = ['MINT', 'ECML', 'HCA', 'LING', 'MALP']
 
 /**
- * @method PATCH
+ * @method POST
  * @endpoint /api/admin/market-manipulator
  * @description Deus ex machina of the market; That true god who manipulate them all.
  * 
@@ -25,7 +25,7 @@ const SYMBOL = ['MINT', 'ECML', 'HCA', 'LING', 'MALP']
  * @body rate
  * @body date
  */
-handler.patch(async (req, res) => {
+handler.post(async (req, res) => {
   const symbol = req.body.symbol
   const rate = parseInt(req.body.rate)
   const date = req.body.date
