@@ -54,7 +54,7 @@ handler.post(async (req, res) => {
     })
 
   if (dupeTransaction) {
-    return Response.denined(res, 'Stop spamming. Go confirm the other one')
+    return Response.denined(res, 'Stop spamming. Go confirm/reject the other one')
   }
 
   if ((clan.leader != req.user.id) && (user.role != 'admin')) {
@@ -78,8 +78,9 @@ handler.post(async (req, res) => {
       money: price,
       fuel: amount
     },
-    confirm_require: FUEL_CONFIRM_REQUIRE + 1,
-    confirmer: [req.user.id]
+    confirm_require: FUEL_CONFIRM_REQUIRE,
+    confirmer: [req.user.id],
+    rejector: []
   })
   
   Response.success(res, { 
@@ -121,7 +122,15 @@ handler.patch(async (req, res) => {
   }
 
   if (transaction.status === 'SUCCESS') {
-    return Response.success(res, 'Transaction already completed')
+    return Response.denined(res, 'Transaction already successed')
+  }
+
+  if (transaction.status === 'REJECT') {
+    return Response.denined(res, 'Transaction already rejected')
+  }
+
+  if (transaction.rejector.includes(req.user.id)) {
+    return Response.denined(res, 'Cannot confirm. You already rejected')
   }
 
   if (transaction.confirmer.includes(req.user.id)) {
@@ -129,23 +138,86 @@ handler.patch(async (req, res) => {
   }
   
   transaction.confirmer.push(req.user.id)
-  await transaction.save()
-
-  if (transaction.confirm_require <= transaction.confirmer.length) {
+  
+  if (transaction.confirm_require + 1 <= transaction.confirmer.length) {
     clan.properties.money -= transaction.item.money
     clan.properties.fuel += transaction.item.fuel
     await clan.save()
-
+    
     transaction.status = 'SUCCESS'
-    await transaction.save()
   } 
+  
+  await transaction.save()
 
   Response.success(res, { 
     transaction_status: transaction.status,
     clan_money: clan.properties.money,
     clan_fuel: clan.properties.fuel,
     confirm_require: transaction.confirm_require,
-    confirmer: transaction.confirmer
+    confirmer: transaction.confirmer,
+    rejector: transaction.rejector
+  })  
+})
+
+/**
+ * @method Delete
+ * @endpoint /api/clans/:id/transfer/fuel
+ * @description reject fuel transaction
+ * 
+ * @body transaction_id
+ * 
+ * @require User authentication / Clan membership
+ */
+ handler.delete(async (req, res) => {
+
+  const clan = await Clan
+    .findById(req.query.id)
+    .select('properties leader')
+    .exec()
+
+  if (!mongoose.Types.ObjectId.isValid(req.body.transaction_id)) {
+    return Response.denined(res, 'Invalid transaction id')
+  }
+
+  const transaction = await Transaction
+    .findById(req.body.transaction_id)
+    .exec()
+  
+  if (!transaction) {
+    return Response.denined(res, 'Transaction not found')
+  }
+
+  if (transaction.status === 'SUCCESS') {
+    return Response.denined(res, 'Transaction already successed')
+  }
+
+  if (transaction.status === 'REJECT') {
+    return Response.denined(res, 'Transaction already rejected')
+  }
+
+  if (transaction.confirmer.includes(req.user.id) && (req.user.id != clan.leader)) {
+    return Response.denined(res, 'Cannot reject. You already confirmed')
+  }
+  
+  if (transaction.rejector.includes(req.user.id)) {
+    return Response.denined(res, 'Duplicate rejection')
+  }
+
+  transaction.rejector.push(req.user.id)
+  
+  if ((transaction.confirm_require <= transaction.rejector.length) || (req.user.id == clan.leader)) {
+    transaction.status = 'REJECT'
+  } 
+  
+  await transaction.save()
+
+  Response.success(res, { 
+    transaction_status: transaction.status,
+    clan_money: clan.properties.money,
+    clan_fuel: clan.properties.fuel,
+    confirm_require: transaction.confirm_require,
+    confirmer: transaction.confirmer,
+    rejector: transaction.rejector
   })  
 })
 
