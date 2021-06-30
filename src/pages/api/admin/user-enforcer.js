@@ -1,6 +1,7 @@
 import nextConnect from 'next-connect'
 import middleware from '@/middlewares/middleware'
 import permission from '@/middlewares/permission/admin'
+import bcrypt from 'bcryptjs'
 
 import * as Response from '@/utils/response'
 import User from '@/models/user'
@@ -28,6 +29,7 @@ handler.post(async (req, res) => {
   const newDisplayName = req.body.display_name
   const newClanId = parseInt(req.body.clan_id)
   const money =  parseInt(req.body.money)
+  const password = req.body.password
 
   const user = await User
     .findById(userId)
@@ -78,14 +80,22 @@ handler.post(async (req, res) => {
     if (user.properties.money + money < 0)
       return Response.denined(res, 'You are so heartless. Why would you like to make someone\'s money go negative?')
 
-    user.properties.money += money 
+    user.properties.money += money
+    await user.save() 
   }
 
+  // change password
+  if (!!password) {
+    user.password = await bcrypt.hash(password, 10)
+    await user.save()
+  }
+    
   return Response.success(res, {
     userId: userId,
     newDisplayName: newDisplayName ? newDisplayName : 'not changed',
     newClanId: newClanId ? newClanId : 'not changed',
-    money: money ? (money > 0 ? 'add amount: ' + money : 'remove amount: ' + (-money)) : 'not changed'
+    money: money ? (money > 0 ? 'add amount: ' + money : 'remove amount: ' + (-money)) : 'not changed',
+    password: password ? password : 'not changed'
   })
 
 })
