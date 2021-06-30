@@ -2,6 +2,9 @@ import * as Util from '@/utils/common'
 
 import { LogoutIcon } from '@heroicons/react/outline'
 
+import Image from 'next/image'
+import MockAvatar from '@/publics/avatar.png'
+
 export default function ProfileBar({ mobile, username, role }) {
   const roleLocaleMap = {
     user: 'Adventure',
@@ -18,7 +21,13 @@ export default function ProfileBar({ mobile, username, role }) {
     >
       <div className="flex items-center">
         <div className="mr-3">
-          <img src="/avatar.png" className="w-8 h-8 shadow-md rounded-lg" alt="avatar" />
+          <div className="w-8 h-8">
+            <Image
+              src={MockAvatar}
+              className="shadow-md rounded-lg"
+              alt="Mock avatar"
+            />
+          </div>
         </div>
         <div className="flex flex-col text-left">
           <span className="text-md font-bold text-indigo-300">{username}</span>

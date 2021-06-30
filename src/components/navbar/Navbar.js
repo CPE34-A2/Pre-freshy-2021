@@ -1,6 +1,9 @@
 import { Disclosure, Transition } from "@headlessui/react"
 import { MenuIcon, TemplateIcon, MapIcon, ChartSquareBarIcon } from "@heroicons/react/outline"
 
+import Image from 'next/image'
+import Logo from '@/publics/logo.png'
+
 import NavMenu from './NavMenu'
 import ProfileBar from './ProfileBar'
 
@@ -41,7 +44,12 @@ export default function Navbar({ user }) {
             {/* Header includes title & logo */}
             <div className="flex flex-row items-center justify-between md:justify-center px-8 md:px-0 py-3 md:py-4">
               <a href="#" className="flex flex-row items-center justify-between focus:outline-none">
-                <img src="logo.png" className="w-8 h-8 md:w-10 md:h-10" alt="logo" />
+                <div className="w-8 h-8 md:w-10 md:h-10">
+                  <Image
+                    src={Logo}
+                    alt="Pre-freshy 2021 Logo"
+                  />
+                </div>
                 <span className="text-white font-bold ml-2">PREFRESHY 2021</span>
               </a>
               <Disclosure.Button type="button" className="rounded-lg md:hidden focus:outline-none">

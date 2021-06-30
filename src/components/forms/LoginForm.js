@@ -1,7 +1,11 @@
 import { useState } from 'react'
 import Router from 'next/router'
+
 import axios from '@/utils/axios'
 import * as Util from '@/utils/common'
+
+import Image from 'next/image'
+import LogoWithText from '@/publics/logo-with-text-alt.png'
 
 import InputBox from '@/components/common/InputBox'
 import Button from '@/components/common/Button'
@@ -56,7 +60,12 @@ export default function LoginForm() {
     <form className="mx-12 md:mx-auto ring-0 shadow-lg rounded-xl bg-white" onSubmit={login}>
       <div className="flex flex-col px-10 md:px-12 py-8">
         <div className="mb-5 pb-4 mx-auto">
-          <img src="/logo-with-text-alt.png" className="w-32 h-32" alt="" />
+          <div className="w-32 h-32">
+            <Image
+              src={LogoWithText}
+              alt="Pre-freshy 2021 Logo with text"
+            />
+          </div>
         </div>
 
         <div className="mb-5">
@@ -104,7 +113,7 @@ export default function LoginForm() {
         <Button
           type="submit"
           name="LOG IN"
-          icon={isLoggingIn && <Spinner style="mr-2 h-4 w-4 text-white"/>}
+          icon={isLoggingIn && <Spinner style="mr-2 h-4 w-4 text-white" />}
           style={Util.concatClasses(
             "login-form-button inline-flex items-center justify-center mt-4 py-1 ring-0 rounded-3xl text-white text-sm font-semibold focus:outline-none",
           )}
