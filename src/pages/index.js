@@ -38,8 +38,6 @@ export async function getServerSideProps({ req, res }) {
     const user = await axios.get(`/api/users/${req.user.id}`, opts)
     const clan = await axios.get(`/api/clans/${req.user.clan_id}/properties`, opts)
 
-    console.log(clan.data.data)
-
     return { props: { user: user.data.data, clan: clan.data.data } }
   } catch (error) {
     console.log(error.message)
