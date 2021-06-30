@@ -24,9 +24,11 @@ handler.get(async (req, res) => {
   if (!isNaN(clanId)) {
     clan = await Clan
       .findById(clanId)
-      .select('properties')
+      .select('properties owned_planet_ids')
       .lean()
       .exec()
+
+    clan.properties.owned_planet_ids = clan.owned_planet_ids
   }
 
   res.status(200).json({
