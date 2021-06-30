@@ -3,6 +3,12 @@ import * as Util from '@/utils/common'
 import { LogoutIcon } from '@heroicons/react/outline'
 
 export default function ProfileBar({ mobile, username, role }) {
+  const roleLocaleMap = {
+    user: 'Adventure',
+    admin: 'Admin'
+  }
+  role = roleLocaleMap[role]
+
   return (
     <div
       className={Util.concatClasses(
@@ -21,7 +27,9 @@ export default function ProfileBar({ mobile, username, role }) {
       </div>
 
       <div className="flex">
-        <LogoutIcon className="text-white w-5 h-5" />
+        <a href="/logout" className="hover:bg-indigo-600 hover:shadow-md p-1 rounded-lg">
+          <LogoutIcon className="text-white w-5 h-5" />
+        </a>
       </div>
     </div>
   )
