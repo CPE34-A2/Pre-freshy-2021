@@ -39,7 +39,7 @@ export default function ProfileBar({ mobile, username, role }) {
       <div className="flex">
         <Link href="/logout" passHref>
           <a className="hover:bg-indigo-600 hover:shadow-md p-1 rounded-lg">
-            <LogoutIcon className="text-white w-5 h-5" />
+            <LogoutIcon className="text-gray-300 hover:text-gray-200 w-5 h-5" />
           </a>
         </Link>
       </div>

@@ -41,7 +41,7 @@ export default function Navbar({ user }) {
     <Disclosure>
       {({ open }) => (
         <>
-          <div className="flex flex-col w-full md:w-60 bg-indigo-900">
+          <div className="flex flex-col flex-shrink-0 w-full md:w-60 bg-indigo-900">
             {/* Header includes title & logo */}
             <div className="flex flex-row items-center justify-between md:justify-center px-8 md:px-0 py-3 md:py-4">
               <a href="#" className="flex flex-row items-center justify-between focus:outline-none">
