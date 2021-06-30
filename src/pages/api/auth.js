@@ -19,7 +19,7 @@ handler.get(async (req, res) => {
     .json({
       success: true,
       message: isAuthenticated ? 'Credentials found' : 'No credentials found',
-      data: {
+      data: req.user && {
         user: await User.findById(req.user.id),
         timestamp: req.user && new Date()
       }
