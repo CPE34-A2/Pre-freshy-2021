@@ -37,9 +37,9 @@ export default function Navbar({ user }) {
     <Disclosure>
       {({ open }) => (
         <>
-          <div className="flex flex-col w-full md:border-r-2 md:w-60 bg-indigo-900">
+          <div className="flex flex-col w-full md:w-60 bg-indigo-900">
             {/* Header includes title & logo */}
-            <div className="flex flex-row items-center justify-between md:justify-center px-8 md:px-0 py-3 md:py-4 border-b border-gray-700">
+            <div className="flex flex-row items-center justify-between md:justify-center px-8 md:px-0 py-3 md:py-4">
               <a href="#" className="flex flex-row items-center justify-between focus:outline-none">
                 <img src="logo.png" className="w-8 h-8 md:w-10 md:h-10" alt="logo" />
                 <span className="text-white font-bold ml-2">PREFRESHY 2021</span>
@@ -51,9 +51,11 @@ export default function Navbar({ user }) {
 
             {/* Bigger than mobile nav panel */}
             <>
-              <nav className="hidden md:block md:h-full px-4 mt-4">
-                {getAllMenus()}
-              </nav>
+              <div className="hidden md:block md:h-full px-4">
+                <nav className="border-t border-indigo-700 py-4">
+                  {getAllMenus()}
+                </nav>
+              </div>
 
               {getProfileBar(user, false)}
             </>
@@ -68,8 +70,10 @@ export default function Navbar({ user }) {
               leaveFrom="opacity-100"
               leaveTo="transform -translate-y-4 opacity-0"
             >
-              <Disclosure.Panel as="nav" className="md:hidden px-4 pt-4">
-                {getAllMenus()}
+              <Disclosure.Panel className="md:hidden px-4">
+                <nav className="border-t border-indigo-700 pt-4 pb-1">
+                  {getAllMenus()}
+                </nav>
               </Disclosure.Panel>
 
               {getProfileBar(user, true)}
