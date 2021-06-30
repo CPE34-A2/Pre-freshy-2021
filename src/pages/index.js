@@ -12,11 +12,12 @@ export default function IndexPage({ user }) {
     <DashboardContainer>
       <Head />
 
-      <Navbar />
+      <Navbar
+        user={user}
+      />
 
       <Dashboard
-        displayName={user.display_name}
-        money={user.properties.money}
+        user={user}
       />
 
       <Footer />

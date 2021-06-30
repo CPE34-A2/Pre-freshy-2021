@@ -1,10 +1,10 @@
 import Balance from './Balance'
 
-export default function Dashboard({ displayName, money }) {
+export default function Dashboard({ user }) {
   return (
     <div className="">
-      <span>{displayName}</span>
-      <Balance amount={money} />
+      {/* <span>{user.display_name}</span>
+      <Balance amount={user.properties.money} /> */}
     </div>
   )
 }
