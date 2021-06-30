@@ -39,7 +39,7 @@ export default function Navbar({ user }) {
         <>
           <div className="flex flex-col w-full md:border-r-2 md:w-60 bg-indigo-900">
             {/* Header includes title & logo */}
-            <div className="flex flex-row items-center justify-between md:justify-center px-8 md:px-0 py-3 md:py-4 border-b border-gray-7s00">
+            <div className="flex flex-row items-center justify-between md:justify-center px-8 md:px-0 py-3 md:py-4 border-b border-gray-700">
               <a href="#" className="flex flex-row items-center justify-between focus:outline-none">
                 <img src="logo.png" className="w-8 h-8 md:w-10 md:h-10" alt="logo" />
                 <span className="text-white font-bold ml-2">PREFRESHY 2021</span>
