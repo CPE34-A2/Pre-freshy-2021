@@ -34,17 +34,25 @@ handler.get(async (req, res) => {
  * @param username
  * @param password
  */
-handler.post(
-  passport.authenticate('local'),
-  (req, res) => {
-    res
-      .status(200)
-      .json({
-        sucess: true,
-        ...req.authInfo
-      })
-  }
-)
+handler.post((req, res, next) => {
+  passport.authenticate('local', (error, user, info) => {
+    if (error) {
+      return res.status(500).json({ success: false, message: info.message })
+    }
+
+    if (!user) {
+      return res.status(401).json({ success: false, message: info.message })
+    }
+
+    req.login(user, (loginError) => {
+      if (loginError) {
+        return res.status(401).json({ success: false, message: loginError })
+      }
+
+      return res.status(200).json({ success: true, message: info.message })
+    })
+  })(req, res, next)
+})
 
 /**
  * @method DELETE

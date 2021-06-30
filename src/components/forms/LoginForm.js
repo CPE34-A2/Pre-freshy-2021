@@ -45,7 +45,7 @@ export default function LoginForm() {
         Router.push('/')
       })
       .catch((error) => {
-        setLoginError('Username or password is incorrect')
+        setLoginError(error.response.data.message)
       })
       .finally(() => {
         setLoggingIn(false)
