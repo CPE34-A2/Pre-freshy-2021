@@ -93,11 +93,11 @@ export default function LoginForm() {
         </div>
 
         {loginError && (
-          <div class="relative px-4 py-2 text-sm leading-normal text-red-700 bg-red-100 rounded-lg" role="alert">
-            <span class="absolute inset-y-0 left-0 flex items-center ml-4">
+          <div className="relative px-4 py-2 text-sm leading-normal text-red-700 bg-red-100 rounded-lg" role="alert">
+            <span className="absolute inset-y-0 left-0 flex items-center ml-4">
               <ExclamationCircleIcon className="w-4 h-4 text-red-600" />
             </span>
-            <p class="ml-6">{loginError}</p>
+            <p className="ml-6">{loginError}</p>
           </div>
         )}
 
