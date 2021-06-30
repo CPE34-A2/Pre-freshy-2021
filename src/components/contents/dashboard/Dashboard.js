@@ -1,5 +1,8 @@
 import * as Util from '@/utils/common'
-import { CurrencyDollarIcon, BeakerIcon, StarIcon } from '@heroicons/react/outline'
+import { BeakerIcon, StarIcon } from '@heroicons/react/outline'
+
+import Image from 'next/image'
+import MoneyImage from '@/publics/money.png'
 
 export default function Dashboard({ user, clan }) {
   return (
@@ -14,10 +17,12 @@ export default function Dashboard({ user, clan }) {
         <div className="font-medium text-gray-500 mb-2">Your items</div>
 
         <div className="flex flex-row items-center">
-          <div className="flex items-center justify-center w-12 h-12 bg-white rounded-xl shadow">
-            <CurrencyDollarIcon className="w-8 h-8" />
+          <div className="flex items-center justify-center w-12 h-12">
+            <div className="w-10 h-10">
+              <Image src={MoneyImage} />
+            </div>
           </div>
-          <div className="flex flex-col ml-4 leading-none">
+          <div className="flex flex-col ml-2 leading-none">
             <div className="font-extrabold text-indigo-900">{Util.numberWithCommas(user.properties.money)}</div>
             <div className="font-light text-sm text-indigo-900">coin</div>
           </div>
