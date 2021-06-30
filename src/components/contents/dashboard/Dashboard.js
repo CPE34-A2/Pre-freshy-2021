@@ -3,6 +3,7 @@ import { BeakerIcon, StarIcon } from '@heroicons/react/outline'
 
 import Image from 'next/image'
 import MoneyImage from '@/publics/money.png'
+import GallonImage from '@/publics/gallon.png'
 
 export default function Dashboard({ user, clan }) {
   return (
@@ -13,16 +14,16 @@ export default function Dashboard({ user, clan }) {
         <div className="font-light text-gray-600">List</div>
       </div>
 
-      <div className="flex flex-col w-52 mt-4 bg-purple-50 p-4 rounded-2xl shadow-lg">
+      <div className="flex flex-col w-52 mt-4 bg-purple-50 p-5 rounded-2xl shadow-lg">
         <div className="font-medium text-gray-500 mb-2">Your items</div>
 
         <div className="flex flex-row items-center">
-          <div className="flex items-center justify-center w-12 h-12">
+          <div className="flex items-center justify-center">
             <div className="w-10 h-10">
               <Image src={MoneyImage} />
             </div>
           </div>
-          <div className="flex flex-col ml-2 leading-none">
+          <div className="flex flex-col ml-3 leading-none">
             <div className="font-extrabold text-indigo-900">{Util.numberWithCommas(user.properties.money)}</div>
             <div className="font-light text-sm text-indigo-900">coin</div>
           </div>
@@ -32,10 +33,12 @@ export default function Dashboard({ user, clan }) {
 
         <div className="space-y-4">
           <div className="flex flex-row items-center">
-            <div className="flex items-center justify-center w-12 h-12 bg-white rounded-xl shadow">
-              <BeakerIcon className="w-8 h-8" />
+            <div className="flex items-center justify-center">
+              <div className="w-10 h-10">
+                <Image src={GallonImage} />
+              </div>
             </div>
-            <div className="flex flex-col ml-4 leading-none">
+            <div className="flex flex-col ml-3 leading-none">
               <div className="font-extrabold text-indigo-900">{Util.numberWithCommas(clan.fuel)}</div>
               <div className="font-light text-sm text-indigo-900">gallon</div>
             </div>
