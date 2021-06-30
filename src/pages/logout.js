@@ -13,7 +13,7 @@ export async function getServerSideProps({req, res}) {
     await middleware.run(req, res)
     await axios.delete(`/api/auth`, { headers: { cookie: req.headers.cookie }})
 
-    return { redirect: { destination: '/', permanent: false } }
+    return { redirect: { destination: '/', permanent: true } }
   } catch (error) {
     console.log(error.message)
   }

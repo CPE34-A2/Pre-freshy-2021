@@ -1,6 +1,7 @@
 import { Disclosure, Transition } from "@headlessui/react"
 import { MenuIcon, TemplateIcon, MapIcon, ChartSquareBarIcon } from "@heroicons/react/outline"
 
+import Link from 'next/link'
 import Image from 'next/image'
 import Logo from '@/publics/logo.png'
 

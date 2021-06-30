@@ -2,6 +2,7 @@ import * as Util from '@/utils/common'
 
 import { LogoutIcon } from '@heroicons/react/outline'
 
+import Link from 'next/link'
 import Image from 'next/image'
 import MockAvatar from '@/publics/avatar.png'
 
@@ -36,9 +37,11 @@ export default function ProfileBar({ mobile, username, role }) {
       </div>
 
       <div className="flex">
-        <a href="/logout" className="hover:bg-indigo-600 hover:shadow-md p-1 rounded-lg">
-          <LogoutIcon className="text-white w-5 h-5" />
-        </a>
+        <Link href="/logout" passHref>
+          <a className="hover:bg-indigo-600 hover:shadow-md p-1 rounded-lg">
+            <LogoutIcon className="text-white w-5 h-5" />
+          </a>
+        </Link>
       </div>
     </div>
   )
