@@ -155,11 +155,11 @@ handler.patch(async (req, res) => {
 
   const planet = await Planet
     .findOne({ _id: transaction.item.planets })
-    .select('_id travel_cost owner')
+    .select('_id travel_cost quest')
+    .lean()
     .exec()
 
-  
-    transaction.confirmer.push(req.user.id)
+  transaction.confirmer.push(req.user.id)
 
   if (transaction.confirmer.length >= transaction.confirm_require + 1) {
     if (clan.properties.fuel < planet.travel_cost) {
@@ -167,11 +167,10 @@ handler.patch(async (req, res) => {
       await transaction.save()
       return Response.denined(res, 'fuel is not enough. Transaction closed')
     }
+
     clan.properties.fuel -= planet.travel_cost
-    clan.owned_planet_ids = [...clan.owned_planet_ids, ...transaction.item.planets]
+    clan.position = planet._id
     await clan.save()
-    planet.owner = clan.id
-    await planet.save()
 
     transaction.status = 'SUCCESS'
   }
@@ -179,6 +178,7 @@ handler.patch(async (req, res) => {
   await transaction.save()
 
   Response.success(res, {
+    planet_quest: transaction.status == 'SUCCESS' ? planet.quest : '',
     clan_id: clan.id,
     transaction_status: transaction.status,
     remain_fuel: clan.properties.fuel,

@@ -26,6 +26,10 @@ handler
 handler.post(async (req, res) => {
   const code = req.body.code
 
+  if (code == null) {
+    return Response.denined(res, 'Please enter a code')
+  }
+
   const clan = await Clan
     .findById(req.query.id)
     .exec()
@@ -47,22 +51,25 @@ handler.post(async (req, res) => {
     .findOne({ redeem: code })
     .exec()
 
+  if (!planet) {
+    return Response.denined(res, 'Planet not found')
+  }
+
+  if (planet._id != clan.position) {
+    return Response.denined(res, 'Planet not found')
+  }
+
   if (planet.redeem != code) {
     return Response.denined(res, 'code is not working for this planet')
   }
 
-  if (code == null) {
-    return Response.denined(res, 'Please enter a code')
+  if (planet.owner == clan._id) {
+    return Response.denined(res, 'You already own this planet')
   }
 
   if (planet.owner != 0) {
     return Response.denined(res, 'This planet has owner')
   }
-
-  if (planet._id != clan.position) {
-    return Response.denined(res, 'This planet is not in your position ')
-  }
-
 
   const transaction = await Transaction.create({
     owner: {
@@ -79,10 +86,12 @@ handler.post(async (req, res) => {
     status: 'SUCCESS'
   })
 
-  clan.owner_planet_id.push(planet._id)
+  clan.owned_planet_ids.push(planet._id)
+  clan.position = 0
   await clan.save()
   planet.owner = clan._id
   await planet.save()
+
   return Response.success(res, {
     clan_id: clan._id,
     planet_id: transaction.item.planets,
