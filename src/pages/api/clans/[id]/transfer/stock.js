@@ -53,10 +53,12 @@ handler.post(async (req, res) => {
   if (amount <= 0)
     return Response.denined(res, 'amount must be greater than 0')
 
-  const duplicateBuyTransaction = await Transaction.findOne({'owner.id': req.user.clan_id, 'status': 'PENDING'}).select().lean().exec()
-  const duplicateSellTransaction = await Transaction.findOne({'receiver.id': req.user.clan_id, 'status': 'PENDING'}).select().lean().exec()
+  const duplicateTransaction = await Transaction.findOne({ $or: [{ 'owner.id': req.query.id, 'receiver.type': 'market' }, { 'receiver.id': req.query.id, 'owner.type': 'market' }] }, { 'status': 'PENDING' })
+    .select('_id')
+    .lean()
+    .exec()
 
-  if (duplicateBuyTransaction || duplicateSellTransaction)
+  if (duplicateTransaction)
     return Response.denined(res, 'There are still pending transaction')
 
   const stock = await Stock
