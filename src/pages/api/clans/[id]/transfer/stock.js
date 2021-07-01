@@ -127,6 +127,9 @@ handler.patch(async (req, res) => {
     .select()
     .exec()
 
+  if (transaction.owner.id != req.user.clan_id && transaction.receiver.id != req.user.clan_id)
+    return Response.denined(res, 'This transaction is belong to other clan. What do you want???')
+
   if (!transaction)
     return Response.denined(res, 'transaction not found')
 
@@ -151,18 +154,7 @@ handler.patch(async (req, res) => {
   .exec()
 
   if (transaction.confirmer.length < transaction.confirm_require + 1)
-    return Response.success(res, {
-    transaction_status: transaction.status,
-    symbol: transaction.item.stock.symbol,
-    rate: transaction.item.stock.rate,
-    amount: transaction.item.stock.amount,
-    current_money: clan.properties.money,
-    confirm_require: transaction.confirm_require,
-    confirmer: transaction.confirmer,
-    rejector: transaction.rejector
-    })
-
-  
+    return Response.success(res, transaction)
 
   const total = transaction.item.stock.rate * transaction.item.stock.amount
 
@@ -188,17 +180,7 @@ handler.patch(async (req, res) => {
   transaction.status = 'SUCCESS'
   await transaction.save()
 
-  Response.success(res, {
-    transaction_id: transaction._id,
-    transaction_status: transaction.status,
-    symbol: transaction.item.stock.symbol,
-    rate: transaction.item.stock.rate,
-    amount: transaction.item.stock.amount,
-    current_money: clan.properties.money,
-    confirm_require: transaction.confirm_require,
-    confirmer: transaction.confirmer,
-    rejector: transaction.rejector
-  })
+  Response.success(res, transaction)
 })
 
 /**
@@ -220,6 +202,9 @@ handler.patch(async (req, res) => {
     .findById(transactionId)
     .select()
     .exec()
+
+  if (transaction.owner.id != req.user.clan_id && transaction.receiver.id != req.user.clan_id)
+    return Response.denined(res, 'This transaction is belong to other clan. What do you want???')
 
   if (!transaction)
     return Response.denined(res, 'transaction not found')
@@ -249,17 +234,7 @@ handler.patch(async (req, res) => {
 
   await transaction.save()
 
-  Response.success(res, {
-    transaction_id: transaction._id,
-    transaction_status: transaction.status,
-    symbol: transaction.item.stock.symbol,
-    rate: transaction.item.stock.rate,
-    amount: transaction.item.stock.amount,
-    current_money: clan.properties.money,
-    confirm_require: transaction.confirm_require,
-    confirmer: transaction.confirmer,
-    rejector: transaction.rejector
-  })
+  Response.success(res, transaction)
 })
 
 export default handler
