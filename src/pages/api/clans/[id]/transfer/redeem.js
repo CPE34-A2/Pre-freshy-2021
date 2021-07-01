@@ -30,6 +30,10 @@ handler.post(async (req, res) => {
     .findById(req.query.id)
     .exec()
 
+  if (clan == null) {
+    return Response.denined(res, 'mai mee clan nai database')
+  }
+
   const user = await User
     .findById(req.user.id)
     .lean()
@@ -43,6 +47,10 @@ handler.post(async (req, res) => {
     .findOne({ redeem: code })
     .exec()
 
+  if (planet.redeem != code) {
+    return Response.denined(res, 'code is not working for this planet')
+  }
+
   if (code == null) {
     return Response.denined(res, 'Please enter a code')
   }
@@ -55,9 +63,6 @@ handler.post(async (req, res) => {
     return Response.denined(res, 'This planet is not in your position ')
   }
 
-  if (planet.redeem != code) {
-    return Response.denined(res, 'code is not working for this planet')
-  }
 
   const transaction = await Transaction.create({
     owner: {
@@ -70,13 +75,14 @@ handler.post(async (req, res) => {
     },
     item: {
       planets: [planet.id]
-    }
+    },
+    status: 'SUCCESS'
   })
 
   clan.owner_planet_id.push(planet._id)
   await clan.save()
   planet.owner = clan._id
-  await clan.save()
+  await planet.save()
   return Response.success(res, {
     clan_id: clan._id,
     planet_id: transaction.item.planets,
