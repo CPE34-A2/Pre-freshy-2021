@@ -22,20 +22,24 @@ handler.get(async (req, res) => {
   let clan = null
 
   if (!isNaN(clanId)) {
-    clan = await Clan
-      .findById(clanId)
-      .select('properties owned_planet_ids')
-      .lean()
-      .exec()
-
-    clan.properties.owned_planet_ids = clan.owned_planet_ids
+    clan = await getClanProperties(clanId)
   }
 
   res.status(200).json({
     sucesss: !!clan,
-    data: clan ? clan.properties : clan,
+    data: clan,
     timestamp: new Date()
   })
 })
+
+export async function getClanProperties(id) {
+	const clan = await Clan
+    .findById(id)
+    .select('properties owned_planet_ids')
+    .lean()
+    .exec()
+  clan.properties.owned_planet_ids = clan.owned_planet_ids
+  return clan.properties
+}
 
 export default handler

@@ -1,5 +1,7 @@
 import middleware from '@/middlewares/middleware'
-import axios from '@/utils/axios'
+
+import { getUser } from '@/pages/api/users/[id]/index'
+import { getClanProperties } from '@/pages/api/clans/[id]/properties'
 
 import Head from '@/components/common/Head'
 import Navbar from '@/components/navbar/Navbar'
@@ -34,11 +36,10 @@ export async function getServerSideProps({ req, res }) {
       return { redirect: { destination: '/login', permanent: false } }
     }
 
-    const opts = { headers: { cookie: req.headers.cookie } }
-    const user = await axios.get(`/api/users/${req.user.id}`, opts)
-    const clan = await axios.get(`/api/clans/${req.user.clan_id}/properties`, opts)
+    const user = await getUser(req.user.id)
+    const clan = await getClanProperties(req.user.clan_id)
 
-    return { props: { user: user.data.data, clan: clan.data.data } }
+    return { props: { user: user, clan: clan } }
   } catch (error) {
     console.log(error.message)
   }
