@@ -122,6 +122,10 @@ handler.patch(async (req, res) => {
     .findById(transactionid)
     .exec()
 
+  if (transaction.receiver.id != req.user.clan_id){
+    return Response.denined(res, 'You are not the owner of this transaction')
+  }
+
   if (!transaction) {
     return Response.denined(res, 'Transaction not found')
   }
@@ -205,6 +209,10 @@ handler.delete(async (req, res) => {
 
   if (!transaction) {
     return Response.denined(res, 'Transaction not found')
+  }
+
+  if (transaction.receiver.id != req.user.clan_id){
+    return Response.denined(res, 'You are not the owner of this transaction')
   }
 
   if (transaction.status === 'SUCCESS') {
