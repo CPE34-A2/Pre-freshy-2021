@@ -17,6 +17,8 @@ handler
 const EXPECTED_REQUIRER = 3
 const SYMBOL = ['MINT', 'ECML', 'HCA', 'LING', 'MALP']
 const METHOD = ['BUY', 'SELL']
+const OPEN_MARKET_TIME = 9
+const CLOSE_MARKET_TIME = 22
 
 /**
  * @method POST
@@ -33,6 +35,11 @@ handler.post(async (req, res) => {
   let method = req.body.method
   let symbol = req.body.symbol
   const amount = parseInt(req.body.amount)
+  const requestHour = (new Date()).getHours()
+
+  if (requestHour < OPEN_MARKET_TIME || requestHour > CLOSE_MARKET_TIME) {
+    return Response.denined(res, 'market closed!!!')
+  }
 
   if ((!method) || (!symbol)) {
     return Response.denined(res, 'method or symbol not defined')
