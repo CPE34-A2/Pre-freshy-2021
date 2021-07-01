@@ -72,6 +72,9 @@ handler.post(async (req, res) => {
     .select()
     .exec()
 
+  if (!clan)
+    return Response.denined(res, 'clan not found')
+
   if (clan.leader != req.user.id)
     return Response.denined(res, 'you are not leader. lol')
 

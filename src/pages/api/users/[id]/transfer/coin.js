@@ -36,6 +36,9 @@ handler.post(async (req, res) => {
     .select('properties.money')
     .exec()
 
+  if (!clan)
+    return Response.denined(res, 'clan not found')
+
   user.properties.money -= amount
   await user.save()
 

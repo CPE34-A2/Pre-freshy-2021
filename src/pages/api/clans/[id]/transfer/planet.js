@@ -42,6 +42,9 @@ handler.post(async (req, res) => {
     .lean()
     .exec()
 
+  if (!clan)
+    return Response.denined(res, 'clan not found')
+
   if ((clan.leader != req.user.id) && (user.role != 'admin')) {
     return res.status(403).json({ message: 'You arent clan leader' })
   }
