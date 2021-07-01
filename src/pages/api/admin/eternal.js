@@ -16,10 +16,11 @@ handler
 * @method POST
 * @endpoint /api/admin/eternal
 * @description control planets' quests and points with the eternal power
-* @description specify quest and planet id to change the planet quest 
+* @description specify quest and planet id to change the planet quest and point
 * @description specify mode "D", "C", "LV" to alter the reality and change the planet points
-* 
-* @body 1. mode / 2. quest,planet_id *choose only one option
+* @description positive point to add/ negative point to subtract
+
+* @body 1. mode / 2. point,quest,planet_id *choose only one option
 * 
 * @require Admin authentication
 */
@@ -27,12 +28,13 @@ handler.post(async (req, res) => {
   const quest = req.body.quest
   let mode = req.body.mode
   const planetId = parseInt(req.body.planet_id)
+  const point = parseInt(req.body.point) || 0
 
   if (mode) {
     mode = mode.toUpperCase()
   }
 
-  if ((!mode) && (!quest)) {
+  if ((!mode) && (!quest) && (point == 0)) {
     return Response.denined(res, 'no input found')
   }
 
@@ -40,15 +42,15 @@ handler.post(async (req, res) => {
     return Response.denined(res, 'invalid planet id ')
   }
 
-  if ((!!mode) && ((!!quest) || (!!planetId))) {
-    return Response.denined(res, 'cant input quest and mode simultaneously')
+  if ((mode) && ((quest) || (planetId) || (point))) {
+    return Response.denined(res, 'cant input quest/point and mode simultaneously')
   }
 
   let planet
 
   let affectedPlanets = []
 
-  if ((!mode) && (!!quest)) {
+  if ((!mode) && (quest || point)) {
     planet = await Planet
       .findById(planetId)
       .exec()
@@ -56,12 +58,21 @@ handler.post(async (req, res) => {
     if (!planet)
       return Response.denined(res, 'planet not found')
 
-    planet.quest = quest
+    if (quest) {
+      planet.quest = quest
+    }
+
+    if (planet.point + point < 0) {
+      return Response.denined(res, 'Planet point cannot be below 0')
+    }
+
+    planet.point += point
+
     affectedPlanets.push(planet)
     await planet.save()
   }
 
-  if ((!!mode) && (!quest)) {
+  if ((mode) && (!quest)) {
     if (mode !== 'D' && mode !== 'C' && mode !== 'LV') {
       return Response.denined(res, 'invalid mode')
     }
