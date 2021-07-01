@@ -6,6 +6,7 @@ import * as Response from '@/utils/response'
 import Clan from '@/models/clan'
 import Planet from '@/models/planet'
 import Transaction from '@/models/transaction'
+import User from '@/models/user'
 
 const handler = nextConnect()
 
@@ -27,6 +28,11 @@ handler.post(async (req, res) => {
 
   const clan = await Clan
     .findById(req.query.id)
+    .exec()
+
+  const user = await User
+    .findById(req.user.id)
+    .lean()
     .exec()
 
   if ((clan.leader != req.user.id) && (user.role != 'admin')) {
