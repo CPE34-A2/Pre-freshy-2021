@@ -13,6 +13,9 @@ const clanSchema = new mongoose.Schema({
 	members: [{
 		type: String
 	}],
+	position: {
+		type: Number
+	},
 	properties: {
 		money: {
 			type: Number,
