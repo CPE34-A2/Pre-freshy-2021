@@ -31,7 +31,7 @@ handler.post(async (req, res) => {
   const rate = parseInt(req.body.rate)
   const date = req.body.date
 
-  if (symbol) 
+  if (symbol)
     symbol = symbol.toUpperCase()
 
   if (!symbol || !SYMBOL.includes(symbol))
@@ -64,7 +64,7 @@ handler.post(async (req, res) => {
 
   if (date === (new Date()).toLocaleDateString()) {
     const stock = await Stock
-      .findOne({'symbol': symbol})
+      .findOne({ 'symbol': symbol })
       .select()
       .exec()
 
@@ -74,7 +74,8 @@ handler.post(async (req, res) => {
 
   Response.success(res, {
     type: stockHistory ? 'update' : 'create',
-    data: stockHistory ? stockHistory : newStockHistory})
+    data: stockHistory ? stockHistory : newStockHistory
+  })
 })
 
 /**
@@ -93,7 +94,7 @@ handler.patch(async (req, res) => {
   let symbol = req.body.symbol
   const amount = parseInt(req.body.amount)
 
-  if (symbol) 
+  if (symbol)
     symbol = symbol.toUpperCase()
 
   if (!symbol || !SYMBOL.includes(symbol.toUpperCase()))
@@ -115,7 +116,7 @@ handler.patch(async (req, res) => {
 
   clan.properties.stocks[symbol] += amount
   await clan.save()
-  
+
   Response.success(res, {
     clan_id: clanId,
     symbol: symbol,

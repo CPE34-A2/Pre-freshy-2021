@@ -58,7 +58,7 @@ handler.post(async (req, res) => {
     .findOne({
       "owner.id": planet._id,
       "receiver.id": clan.id,
-      status: 'PENDING' 
+      status: 'PENDING'
     })
 
   if (dupeTransaction) {
@@ -125,7 +125,7 @@ handler.patch(async (req, res) => {
     .findById(transactionid)
     .exec()
 
-  if (transaction.receiver.id != req.user.clan_id){
+  if (transaction.receiver.id != req.user.clan_id) {
     return Response.denined(res, 'You are not the owner of this transaction')
   }
 
@@ -174,7 +174,7 @@ handler.patch(async (req, res) => {
 
     transaction.status = 'SUCCESS'
   }
-  
+
   await transaction.save()
 
   Response.success(res, {
@@ -211,15 +211,15 @@ handler.delete(async (req, res) => {
     .exec()
 
   let clan = await Clan
-  .findById(req.query.id)
-  .select('properties leader owned_planet_ids')
-  .exec()
+    .findById(req.query.id)
+    .select('properties leader owned_planet_ids')
+    .exec()
 
   if (!transaction) {
     return Response.denined(res, 'Transaction not found')
   }
 
-  if (transaction.receiver.id != req.user.clan_id){
+  if (transaction.receiver.id != req.user.clan_id) {
     return Response.denined(res, 'You are not the owner of this transaction')
   }
 
@@ -238,13 +238,13 @@ handler.delete(async (req, res) => {
   if (transaction.confirmer.includes(req.user.id) && (req.user.id != clan.leader)) {
     return Response.denined(res, 'Cannot reject. You already confirmed')
   }
-  
+
   transaction.rejector.push(req.user.id)
 
   if ((transaction.rejector.length == transaction.confirm_require) || (req.user.id == clan.leader)) {
     transaction.status = 'REJECT'
   }
-  
+
   await transaction.save()
 
   Response.success(res, {

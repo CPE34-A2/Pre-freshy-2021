@@ -28,7 +28,7 @@ handler.post(async (req, res) => {
   const userId = req.body.user_id
   const newDisplayName = req.body.display_name
   const newClanId = parseInt(req.body.clan_id)
-  const money =  parseInt(req.body.money)
+  const money = parseInt(req.body.money)
   const password = req.body.password
 
   const user = await User
@@ -46,20 +46,20 @@ handler.post(async (req, res) => {
   if (newDisplayName !== '') {
     user.display_name = newDisplayName
   }
-  
+
   // add or remove money
   if (!isNaN(money)) {
     if (user.properties.money + money < 0)
-    return Response.denined(res, 'You are so heartless. Why would you like to make someone\'s money go negative?')
-    
+      return Response.denined(res, 'You are so heartless. Why would you like to make someone\'s money go negative?')
+
     user.properties.money += money
   }
-  
+
   // change password
   if (!!password) {
     user.password = await bcrypt.hash(password, 10)
   }
-  
+
   // change clanId
   if (!isNaN(newClanId)) {
     const newClan = await Clan
@@ -69,17 +69,17 @@ handler.post(async (req, res) => {
 
     if (!newClan)
       return Response.denined(res, 'clan not found!!!')
-    
+
     if (newClan.members.includes(userId))
       return Response.denined(res, 'that user already in that clan!!!')
-      
+
     newClan.members.push(userId)
-    
+
     const oldClan = await Clan
       .findById(user.clan_id)
       .select()
       .exec()
-      
+
     if (oldClan) {
       if (oldClan.leader == userId) {
         return Response.denined(res, `This user is currently the leader of clan ${oldClan._id}. Change leader before change clan`)
@@ -88,13 +88,13 @@ handler.post(async (req, res) => {
       oldClan.members.pull(userId)
       await oldClan.save()
     }
-    
+
     user.clan_id = newClanId
     await newClan.save()
   }
-  
+
   await user.save()
-  
+
   return Response.success(res, {
     userId: userId,
     newDisplayName: newDisplayName ? newDisplayName : 'not changed',

@@ -14,7 +14,7 @@ const handler = nextConnect()
 handler
   .use(middleware)
   .use(permission)
-  
+
 /**
  * @method POST
  * @endpoint /api/admin/godmod
@@ -36,8 +36,8 @@ handler.post(async (req, res) => {
   const fuelRate = parseInt(req.body.fuel_rate) || 3
 
   if (isNaN(clanId))
-  return Response.denined(res, 'clan id is invalid')
-  
+    return Response.denined(res, 'clan id is invalid')
+
   if ((money == 0) && (fuel == 0) && (planetId == 0) && (leaderId == 0))
     return Response.denined(res, 'invalid input')
 
@@ -55,10 +55,10 @@ handler.post(async (req, res) => {
 
   if (leaderId != 0) {
     const user = await User
-    .findById(leaderId)
-    .select('clan_id')
-    .lean()
-    .exec()
+      .findById(leaderId)
+      .select('clan_id')
+      .lean()
+      .exec()
 
     if (!user) {
       return Response.denined(res, 'user not found')
@@ -67,16 +67,16 @@ handler.post(async (req, res) => {
     if (user.clan_id != clanId) {
       return Response.denined(res, 'this user is not from this clan')
     }
-    
+
     clan.leader = user._id
   }
-    
-  if ((clan.properties.money + money < 0) || (clan.properties.fuel + fuel < 0)) 
+
+  if ((clan.properties.money + money < 0) || (clan.properties.fuel + fuel < 0))
     return Response.denined(res, `Resources can't go below 0`)
-    
-    clan.properties.money += money
-    clan.properties.fuel += fuel
-    clan.fuel_rate = fuelRate
+
+  clan.properties.money += money
+  clan.properties.fuel += fuel
+  clan.fuel_rate = fuelRate
 
   if (planetId != 0) {
     const planet = await Planet
@@ -126,7 +126,7 @@ handler.post(async (req, res) => {
     }
   })
 
-  Response.success(res, { 
+  Response.success(res, {
     clan_data: clan,
     transaction_data: transaction
   })

@@ -12,17 +12,17 @@ handler
   .use(middleware)
   .use(permission)
 
-  /**
- * @method POST
- * @endpoint /api/admin/eternal
- * @description control planets' quests and points with the eternal power
- * @description specify quest and planet id to change the planet quest 
- * @description specify mode "D", "C", "LV" to alter the reality and change the planet points
- * 
- * @body 1. mode / 2. quest,planet_id *choose only one option
- * 
- * @require Admin authentication
- */
+/**
+* @method POST
+* @endpoint /api/admin/eternal
+* @description control planets' quests and points with the eternal power
+* @description specify quest and planet id to change the planet quest 
+* @description specify mode "D", "C", "LV" to alter the reality and change the planet points
+* 
+* @body 1. mode / 2. quest,planet_id *choose only one option
+* 
+* @require Admin authentication
+*/
 handler.post(async (req, res) => {
   const quest = req.body.quest
   let mode = req.body.mode
@@ -31,15 +31,15 @@ handler.post(async (req, res) => {
   if (mode) {
     mode = mode.toUpperCase()
   }
-  
-    if ((!mode) && (!quest)) {
-      return Response.denined(res, 'no input found')
-    }
-  
+
+  if ((!mode) && (!quest)) {
+    return Response.denined(res, 'no input found')
+  }
+
   if (isNaN(planetId) && (!mode)) {
     return Response.denined(res, 'invalid planet id ')
   }
-  
+
   if ((!!mode) && ((!!quest) || (!!planetId))) {
     return Response.denined(res, 'cant input quest and mode simultaneously')
   }
@@ -52,7 +52,7 @@ handler.post(async (req, res) => {
     planet = await Planet
       .findById(planetId)
       .exec()
-  
+
     if (!planet)
       return Response.denined(res, 'planet not found')
 
@@ -70,7 +70,7 @@ handler.post(async (req, res) => {
 
     if (mode === 'D') {
       planetArray = await Planet
-        .find({tier: 'D'})
+        .find({ tier: 'D' })
         .select('point owner _id')
 
       planetArray.forEach((planet) => {
@@ -83,7 +83,7 @@ handler.post(async (req, res) => {
 
     if (mode === 'C') {
       planetArray = await Planet
-        .find({tier: 'C'})
+        .find({ tier: 'C' })
         .select('point owner _id')
 
       planetArray.forEach((planet) => {
@@ -96,9 +96,9 @@ handler.post(async (req, res) => {
 
     if (mode === 'LV') {
       planetArray = await Planet
-        .find({owner: {$ne: 0}})
+        .find({ owner: { $ne: 0 } })
         .select('point owner _id')
-        .sort({point : 1})
+        .sort({ point: 1 })
         .exec()
 
       for (let i = 1; i <= 7; i++) {

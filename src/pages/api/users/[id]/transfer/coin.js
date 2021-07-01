@@ -22,7 +22,7 @@ handler.post(async (req, res) => {
 
   if (amount <= 0)
     return Response.denined(res, 'amount must be greater than 0')
-  
+
   const user = await User
     .findById(req.query.id)
     .select('_id clan_id properties.money')
@@ -60,7 +60,7 @@ handler.post(async (req, res) => {
     }
   })
 
-  Response.success(res, { 
+  Response.success(res, {
     user_money: user.properties.money,
     clan_money: clan.properties.money
   })

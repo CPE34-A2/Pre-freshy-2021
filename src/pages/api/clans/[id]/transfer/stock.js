@@ -53,8 +53,8 @@ handler.post(async (req, res) => {
   if (amount <= 0)
     return Response.denined(res, 'amount must be greater than 0')
 
-  const duplicateBuyTransaction = await Transaction.findOne({'owner.id': req.user.clan_id, 'status': 'PENDING'}).select().lean().exec()
-  const duplicateSellTransaction = await Transaction.findOne({'receiver.id': req.user.clan_id, 'status': 'PENDING'}).select().lean().exec()
+  const duplicateBuyTransaction = await Transaction.findOne({ 'owner.id': req.user.clan_id, 'status': 'PENDING' }).select().lean().exec()
+  const duplicateSellTransaction = await Transaction.findOne({ 'receiver.id': req.user.clan_id, 'status': 'PENDING' }).select().lean().exec()
 
   if (duplicateBuyTransaction || duplicateSellTransaction)
     return Response.denined(res, 'There are still pending transaction')
@@ -87,7 +87,7 @@ handler.post(async (req, res) => {
   // money as perspective
   const newTransaction = await Transaction.create({
     owner: {
-      id: method === 'BUY' ?  req.user.clan_id : '0',
+      id: method === 'BUY' ? req.user.clan_id : '0',
       type: method === 'BUY' ? 'clan' : 'market'
     },
     receiver: {
@@ -152,9 +152,9 @@ handler.patch(async (req, res) => {
   await transaction.save()
 
   const clan = await Clan
-  .findById(req.user.clan_id)
-  .select()
-  .exec()
+    .findById(req.user.clan_id)
+    .select()
+    .exec()
 
   if (transaction.confirmer.length < transaction.confirm_require + 1)
     return Response.success(res, transaction)
@@ -195,7 +195,7 @@ handler.patch(async (req, res) => {
  * 
  * @body transaction_id
  */
- handler.delete(async (req, res) => {
+handler.delete(async (req, res) => {
   const transactionId = req.body.transaction_id
 
   if (!transactionId || !mongoose.Types.ObjectId.isValid(transactionId))
@@ -219,9 +219,9 @@ handler.patch(async (req, res) => {
     return Response.denined(res, 'you are too late!!! this confirmation is already REJECT')
 
   const clan = await Clan
-  .findById(req.user.clan_id)
-  .select('properties leader')
-  .exec()
+    .findById(req.user.clan_id)
+    .select('properties leader')
+    .exec()
 
   if (transaction.confirmer.includes(req.user.id) && (req.user.id != clan.leader))
     return Response.denined(res, `Don't be indecisive. You can't reject what you confirmed.`)
