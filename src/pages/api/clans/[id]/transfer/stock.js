@@ -17,6 +17,8 @@ handler
 const EXPECTED_REQUIRER = 3
 const SYMBOL = ['MINT', 'ECML', 'HCA', 'LING', 'MALP']
 const METHOD = ['BUY', 'SELL']
+const OPEN_MARKET_TIME = 9
+const CLOSE_MARKET_TIME = 22
 
 /**
  * @method POST
@@ -33,6 +35,11 @@ handler.post(async (req, res) => {
   let method = req.body.method
   let symbol = req.body.symbol
   const amount = parseInt(req.body.amount)
+  const requestHour = (new Date()).getHours()
+
+  if (requestHour < OPEN_MARKET_TIME || requestHour > CLOSE_MARKET_TIME) {
+    return Response.denined(res, 'market closed!!!')
+  }
 
   if ((!method) || (!symbol)) {
     return Response.denined(res, 'method or symbol not defined')
@@ -53,12 +60,12 @@ handler.post(async (req, res) => {
   if (amount <= 0)
     return Response.denined(res, 'amount must be greater than 0')
 
-  const duplicateTransaction = await Transaction.findOne({ $or: [{ 'owner.id': req.query.id, 'receiver.type': 'market' }, { 'receiver.id': req.query.id, 'owner.type': 'market' }] }, { 'status': 'PENDING' })
+  const pendingTransaction = await Transaction.findOne({ $or: [{ 'owner.id': req.query.id, 'receiver.type': 'market' }, { 'receiver.id': req.query.id, 'owner.type': 'market' }] }, { 'status': 'PENDING' })
     .select('_id')
     .lean()
     .exec()
 
-  if (duplicateTransaction)
+  if (pendingTransaction)
     return Response.denined(res, 'There are still pending transaction')
 
   const stock = await Stock
@@ -150,6 +157,18 @@ handler.patch(async (req, res) => {
   if (transaction.rejector.includes(req.user.id))
     return Response.denined(res, `Don't be indecisive. You can't confirm what you rejected.`)
 
+  const stock = await Stock
+    .findOne({'symbol': transaction.itme.stock.symbol})
+    .select('rate')
+    .lean()
+    .exec()
+
+  if (stock.rate != transaction.item.stock.rate) {
+    transaction.status = 'REJECT'
+    await transaction.save()
+    return Response.denined(res, `The price has been changed`)
+  }
+    
   transaction.confirmer.push(req.user.id)
   await transaction.save()
 
@@ -158,6 +177,7 @@ handler.patch(async (req, res) => {
     .select()
     .exec()
 
+  // If the number of confirmer equal expected required, then excute the transaction
   if (transaction.confirmer.length < transaction.confirm_require + 1)
     return Response.success(res, transaction)
 
@@ -166,6 +186,7 @@ handler.patch(async (req, res) => {
   if (transaction.owner.type === 'clan') {
     if (clan.properties.money < total) {
       transaction.status = 'REJECT'
+      await transaction.save()
       return Response.denined(res, 'no money, lol')
     }
     clan.properties.money -= total
@@ -175,6 +196,7 @@ handler.patch(async (req, res) => {
   } else if (transaction.owner.type === 'market') {
     if (clan.properties.stocks[transaction.item.stock.symbol] < transaction.item.stock.amount) {
       transaction.status = 'REJECT'
+      await transaction.save()
       return Response.denined(res, 'not enough stock, lol')
     }
     clan.properties.money += total
