@@ -18,6 +18,9 @@ const planetSchema = new mongoose.Schema({
 	},
 	owner: {
 		type: Number
+	},
+	quest: {
+		type: String
 	}
 })
 
