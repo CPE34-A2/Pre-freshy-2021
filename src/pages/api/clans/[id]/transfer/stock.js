@@ -30,9 +30,16 @@ const METHOD = ['BUY', 'SELL']
  * @body amount
  */
 handler.post(async (req, res) => {
-  const method = req.body.method.toUpperCase()
-  const symbol = req.body.symbol.toUpperCase()
+  let method = req.body.method
+  let symbol = req.body.symbol
   const amount = parseInt(req.body.amount)
+
+  if ((!method) || (!symbol)) {
+    return Response.denined(res, 'method or symbol not defined')
+  }
+
+  symbol = symbol.toUpperCase()
+  method = method.toUpperCase()
 
   if (!method || !METHOD.includes(method))
     return Response.denined(res, 'BUY or SELL only!!!')
