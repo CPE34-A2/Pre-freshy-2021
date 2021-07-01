@@ -22,7 +22,7 @@ handler
  * @require Admin authentication
  * 
  * @body user_id *required
- * @body display_name, clan_id, money *optional
+ * @body display_name, clan_id, money, password *optional
  */
 handler.post(async (req, res) => {
   const userId = req.body.user_id
@@ -39,12 +39,27 @@ handler.post(async (req, res) => {
   if (!user)
     return Response.denined(res, 'user not found!!!')
 
+  if ((!newDisplayName) && (!newClanId) && (!money) && (!password))
+    return Response.denined(res, 'no input found')
+
   // change displayName
   if (newDisplayName !== '') {
     user.display_name = newDisplayName
-    await user.save()
   }
-
+  
+  // add or remove money
+  if (!isNaN(money)) {
+    if (user.properties.money + money < 0)
+    return Response.denined(res, 'You are so heartless. Why would you like to make someone\'s money go negative?')
+    
+    user.properties.money += money
+  }
+  
+  // change password
+  if (!!password) {
+    user.password = await bcrypt.hash(password, 10)
+  }
+  
   // change clanId
   if (!isNaN(newClanId)) {
     const newClan = await Clan
@@ -57,39 +72,29 @@ handler.post(async (req, res) => {
     
     if (newClan.members.includes(userId))
       return Response.denined(res, 'that user already in that clan!!!')
-
+      
     newClan.members.push(userId)
-    await newClan.save()
-
+    
     const oldClan = await Clan
       .findById(user.clan_id)
       .select()
       .exec()
-
+      
     if (oldClan) {
+      if (oldClan.leader == userId) {
+        return Response.denined(res, `This user is currently the leader of clan ${oldClan._id}. Change leader before change clan`)
+      }
+
       oldClan.members.pull(userId)
       await oldClan.save()
     }
-
-    user.clan_id = newClanId
-    await user.save()
-  }
-
-  // add or remove money
-  if (!isNaN(money)) {
-    if (user.properties.money + money < 0)
-      return Response.denined(res, 'You are so heartless. Why would you like to make someone\'s money go negative?')
-
-    user.properties.money += money
-    await user.save() 
-  }
-
-  // change password
-  if (!!password) {
-    user.password = await bcrypt.hash(password, 10)
-    await user.save()
-  }
     
+    user.clan_id = newClanId
+    await newClan.save()
+  }
+  
+  await user.save()
+  
   return Response.success(res, {
     userId: userId,
     newDisplayName: newDisplayName ? newDisplayName : 'not changed',
