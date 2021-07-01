@@ -144,12 +144,18 @@ handler.patch(async (req, res) => {
   transaction.confirmer.push(req.user.id)
   
   if (transaction.confirm_require + 1 <= transaction.confirmer.length) {
+    if (clan.properties.money < transaction.item.money) {
+      transaction.status = 'REJECT'
+      await transaction.save()
+      return Response.denined(res, 'money is not enough. Transaction closed')
+    }
+
     clan.properties.money -= transaction.item.money
     clan.properties.fuel += transaction.item.fuel
     await clan.save()
     
     transaction.status = 'SUCCESS'
-  } 
+  }
   
   await transaction.save()
 
