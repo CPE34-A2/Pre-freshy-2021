@@ -53,8 +53,8 @@ handler.post(async (req, res) => {
   if (amount <= 0)
     return Response.denined(res, 'amount must be greater than 0')
 
-  const duplicateBuyTransaction = await Transaction.findOne({'owner.id': req.user.clan_id, 'status': 'PENDING'})
-  const duplicateSellTransaction = await Transaction.findOne({'receiver.id': req.user.clan_id, 'status': 'PENDING'})
+  const duplicateBuyTransaction = await Transaction.findOne({'owner.id': req.user.clan_id, 'status': 'PENDING'}).select().lean().exec()
+  const duplicateSellTransaction = await Transaction.findOne({'receiver.id': req.user.clan_id, 'status': 'PENDING'}).select().lean().exec()
 
   if (duplicateBuyTransaction || duplicateSellTransaction)
     return Response.denined(res, 'There are still pending transaction')
@@ -104,14 +104,7 @@ handler.post(async (req, res) => {
     }
   })
 
-  Response.success(res, {
-    transaction_id: newTransaction._id,
-    transaction_status: newTransaction.status,
-    symbol: newTransaction.item.stock.symbol,
-    rate: newTransaction.item.stock.rate,
-    amount: newTransaction.item.stock.amount,
-    current_money: clan.properties.money
-  })
+  Response.success(res, newTransaction)
 })
 
 /**
@@ -169,13 +162,13 @@ handler.patch(async (req, res) => {
     rejector: transaction.rejector
     })
 
-  transaction.status = 'SUCCESS'
-  await transaction.save()
+  
 
   const total = transaction.item.stock.rate * transaction.item.stock.amount
 
   if (transaction.owner.type === 'clan') {
     if (clan.properties.money < total) {
+      transaction.status = 'REJECT'
       return Response.denined(res, 'no money, lol')
     }
     clan.properties.money -= total
@@ -184,12 +177,16 @@ handler.patch(async (req, res) => {
 
   } else if (transaction.owner.type === 'market') {
     if (clan.properties.stocks[transaction.item.stock.symbol] < transaction.item.stock.amount) {
+      transaction.status = 'REJECT'
       return Response.denined(res, 'not enough stock, lol')
     }
     clan.properties.money += total
     clan.properties.stocks[transaction.item.stock.symbol] -= transaction.item.stock.amount
     await clan.save()
   }
+
+  transaction.status = 'SUCCESS'
+  await transaction.save()
 
   Response.success(res, {
     transaction_id: transaction._id,
