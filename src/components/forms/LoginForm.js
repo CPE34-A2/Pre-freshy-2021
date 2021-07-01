@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import Router from 'next/router'
 
-import axios from '@/utils/axios'
 import * as Util from '@/utils/common'
+import fetchAPI from '@/utils/fetch'
 
 import Image from 'next/image'
 import LogoWithText from '@/publics/logo-with-text-alt.png'
@@ -39,21 +39,19 @@ export default function LoginForm() {
 
     setLoggingIn(true)
 
-    axios
-      .post('/api/auth', {
-        username: username,
-        password: password
-      })
-      .then((res) => {
+    fetchAPI('POST', '/api/auth', {
+      username: username,
+      password: password
+    })
+    .then(async response => {
+      if (response.status == 200) {
         setLoginError('')
         Router.push('/')
-      })
-      .catch((error) => {
-        setLoginError(error.response.data.message)
-      })
-      .finally(() => {
-        setLoggingIn(false)
-      })
+      } else {
+        setLoginError((await response.json()).message)
+      }
+    })
+    .finally(() => setLoggingIn(false))
   }
 
   return (
