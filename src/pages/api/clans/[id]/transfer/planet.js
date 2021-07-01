@@ -122,6 +122,10 @@ handler.patch(async (req, res) => {
     .findById(transactionid)
     .exec()
 
+  if (transaction.receiver.id != req.user.clan_id){
+    return Response.denined(res, 'You are not the owner of this transaction')
+  }
+
   if (!transaction) {
     return Response.denined(res, 'Transaction not found')
   }
@@ -154,7 +158,12 @@ handler.patch(async (req, res) => {
   
     transaction.confirmer.push(req.user.id)
 
-  if (transaction.confirmer.length == transaction.confirm_require + 1) {
+  if (transaction.confirmer.length >= transaction.confirm_require + 1) {
+    if (clan.properties.fuel < planet.travel_cost) {
+      transaction.status = 'REJECT'
+      await transaction.save()
+      return Response.denined(res, 'fuel is not enough. Transaction closed')
+    }
     clan.properties.fuel -= planet.travel_cost
     clan.owned_planet_ids = [...clan.owned_planet_ids, ...transaction.item.planets]
     await clan.save()
@@ -205,6 +214,10 @@ handler.delete(async (req, res) => {
 
   if (!transaction) {
     return Response.denined(res, 'Transaction not found')
+  }
+
+  if (transaction.receiver.id != req.user.clan_id){
+    return Response.denined(res, 'You are not the owner of this transaction')
   }
 
   if (transaction.status === 'SUCCESS') {

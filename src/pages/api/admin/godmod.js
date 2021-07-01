@@ -7,6 +7,7 @@ import * as Response from '@/utils/response'
 import Clan from '@/models/clan'
 import Transaction from '@/models/transaction'
 import Planet from '@/models/planet'
+import User from '@/models/user'
 
 const handler = nextConnect()
 
@@ -18,10 +19,11 @@ handler
  * @method POST
  * @endpoint /api/admin/godmod
  * @description add/del resoureces by admin-god-moderator power
+ * @description assign someone as a clan leader
  * @description positive resource to add/ negative resource to del
  * 
  * @body clan_id *required
- * @body money,fuel,planet_id *optional
+ * @body money,fuel,planet_id,leader_id *optional
  * 
  * @require Admin authentication
  */
@@ -30,20 +32,39 @@ handler.post(async (req, res) => {
   const fuel = parseInt(req.body.fuel) || 0
   const planetId = parseInt(req.body.planet_id) || 0
   const clanId = parseInt(req.body.clan_id)
-  
+  const leaderId = parseInt(req.body.leader_id) || 0
+
   if (isNaN(clanId))
   return Response.denined(res, 'clan id is invalid')
   
-  if ((money == 0) && (fuel == 0) && (planetId == 0))
+  if ((money == 0) && (fuel == 0) && (planetId == 0) && (leaderId == 0))
     return Response.denined(res, 'invalid input')
 
   const clan = await Clan
     .findById(clanId)
-    .select('properties owned_planet_ids')
+    .select('properties owned_planet_ids leader')
     .exec()
 
   if (!clan)
     return Response.denined(res, 'clan not found')
+
+  if (leaderId != 0) {
+    const user = await User
+    .findById(leaderId)
+    .select('clan_id')
+    .lean()
+    .exec()
+
+    if (!user) {
+      return Response.denined(res, 'user not found')
+    }
+
+    if (user.clan_id != clanId) {
+      return Response.denined(res, 'this user is not from this clan')
+    }
+    
+    clan.leader = user._id
+  }
     
   if ((clan.properties.money + money < 0) || (clan.properties.fuel + fuel < 0)) 
     return Response.denined(res, `Resources can't go below 0`)

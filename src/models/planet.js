@@ -20,6 +20,9 @@ const planetSchema = new mongoose.Schema({
 		type: Number
 	},
 	redeem: {
+    type: String
+  },
+	quest: {
 		type: String
 	}
 })

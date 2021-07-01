@@ -121,6 +121,10 @@ handler.patch(async (req, res) => {
     return Response.denined(res, 'Transaction not found')
   }
 
+  if (transaction.owner.id != req.user.clan_id){
+    return Response.denined(res, 'You are not own this transaction')
+  }
+    
   if (transaction.status === 'SUCCESS') {
     return Response.denined(res, 'Transaction already successed')
   }
@@ -140,12 +144,18 @@ handler.patch(async (req, res) => {
   transaction.confirmer.push(req.user.id)
   
   if (transaction.confirm_require + 1 <= transaction.confirmer.length) {
+    if (clan.properties.money < transaction.item.money) {
+      transaction.status = 'REJECT'
+      await transaction.save()
+      return Response.denined(res, 'money is not enough. Transaction closed')
+    }
+
     clan.properties.money -= transaction.item.money
     clan.properties.fuel += transaction.item.fuel
     await clan.save()
     
     transaction.status = 'SUCCESS'
-  } 
+  }
   
   await transaction.save()
 
@@ -185,6 +195,10 @@ handler.patch(async (req, res) => {
   
   if (!transaction) {
     return Response.denined(res, 'Transaction not found')
+  }
+
+  if (transaction.owner.id != req.user.clan_id){
+    return Response.denined(res, 'You are not own this transaction')
   }
 
   if (transaction.status === 'SUCCESS') {
