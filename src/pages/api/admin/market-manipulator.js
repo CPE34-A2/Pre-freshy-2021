@@ -27,11 +27,14 @@ const SYMBOL = ['MINT', 'ECML', 'HCA', 'LING', 'MALP']
  * @body date
  */
 handler.post(async (req, res) => {
-  const symbol = req.body.symbol
+  let symbol = req.body.symbol
   const rate = parseInt(req.body.rate)
   const date = req.body.date
 
-  if (!symbol || !SYMBOL.includes(symbol.toUpperCase()))
+  if (symbol) 
+    symbol = symbol.toUpperCase()
+
+  if (!symbol || !SYMBOL.includes(symbol))
     return Response.denined(res, 'the symbol does not exist')
 
   if (isNaN(rate))
@@ -74,7 +77,6 @@ handler.post(async (req, res) => {
     data: stockHistory ? stockHistory : newStockHistory})
 })
 
-
 /**
  * @method PATCH
  * @endpoint /api/admin/market-manipulator
@@ -87,9 +89,12 @@ handler.post(async (req, res) => {
  * @body amount
  */
 handler.patch(async (req, res) => {
-  const clanId = parseInt(req.body.clan_id)
-  const symbol = req.body.symbol
+  const clanId = parseInt(req.body.clan_id) || 0
+  let symbol = req.body.symbol
   const amount = parseInt(req.body.amount)
+
+  if (symbol) 
+    symbol = symbol.toUpperCase()
 
   if (!symbol || !SYMBOL.includes(symbol.toUpperCase()))
     return Response.denined(res, 'symbol not found!!!')
@@ -103,7 +108,7 @@ handler.patch(async (req, res) => {
     return Response.denined(res, 'clan not found!!!')
 
   if (isNaN(amount))
-    return Response.denined(res, 'number only!!!')
+    return Response.denined(res, 'amount is not number!!!')
 
   if (clan.properties.stocks[symbol] + amount < 0)
     return Response.denined(res, 'Bro... We are not having SHORT or LONG things')
