@@ -121,6 +121,10 @@ handler.patch(async (req, res) => {
     return Response.denined(res, 'Transaction not found')
   }
 
+  if (transaction.owner.id != req.user.clan_id){
+    return Response.denined(res, 'You are not own this transaction')
+  }
+    
   if (transaction.status === 'SUCCESS') {
     return Response.denined(res, 'Transaction already successed')
   }
@@ -185,6 +189,10 @@ handler.patch(async (req, res) => {
   
   if (!transaction) {
     return Response.denined(res, 'Transaction not found')
+  }
+
+  if (transaction.owner.id != req.user.clan_id){
+    return Response.denined(res, 'You are not own this transaction')
   }
 
   if (transaction.status === 'SUCCESS') {

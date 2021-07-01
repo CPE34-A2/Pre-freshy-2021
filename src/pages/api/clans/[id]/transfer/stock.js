@@ -53,8 +53,8 @@ handler.post(async (req, res) => {
   if (amount <= 0)
     return Response.denined(res, 'amount must be greater than 0')
 
-  const duplicateBuyTransaction = await Transaction.findOne({'owner.id': req.user.clan_id, 'status': 'PENDING'})
-  const duplicateSellTransaction = await Transaction.findOne({'receiver.id': req.user.clan_id, 'status': 'PENDING'})
+  const duplicateBuyTransaction = await Transaction.findOne({'owner.id': req.user.clan_id, 'status': 'PENDING'}).select().lean().exec()
+  const duplicateSellTransaction = await Transaction.findOne({'receiver.id': req.user.clan_id, 'status': 'PENDING'}).select().lean().exec()
 
   if (duplicateBuyTransaction || duplicateSellTransaction)
     return Response.denined(res, 'There are still pending transaction')
@@ -104,14 +104,7 @@ handler.post(async (req, res) => {
     }
   })
 
-  Response.success(res, {
-    transaction_id: newTransaction._id,
-    transaction_status: newTransaction.status,
-    symbol: newTransaction.item.stock.symbol,
-    rate: newTransaction.item.stock.rate,
-    amount: newTransaction.item.stock.amount,
-    current_money: clan.properties.money
-  })
+  Response.success(res, newTransaction)
 })
 
 /**
@@ -133,6 +126,9 @@ handler.patch(async (req, res) => {
     .findById(transactionId)
     .select()
     .exec()
+
+  if (transaction.owner.id != req.user.clan_id && transaction.receiver.id != req.user.clan_id)
+    return Response.denined(res, 'This transaction is belong to other clan. What do you want???')
 
   if (!transaction)
     return Response.denined(res, 'transaction not found')
@@ -158,24 +154,13 @@ handler.patch(async (req, res) => {
   .exec()
 
   if (transaction.confirmer.length < transaction.confirm_require + 1)
-    return Response.success(res, {
-    transaction_status: transaction.status,
-    symbol: transaction.item.stock.symbol,
-    rate: transaction.item.stock.rate,
-    amount: transaction.item.stock.amount,
-    current_money: clan.properties.money,
-    confirm_require: transaction.confirm_require,
-    confirmer: transaction.confirmer,
-    rejector: transaction.rejector
-    })
-
-  transaction.status = 'SUCCESS'
-  await transaction.save()
+    return Response.success(res, transaction)
 
   const total = transaction.item.stock.rate * transaction.item.stock.amount
 
   if (transaction.owner.type === 'clan') {
     if (clan.properties.money < total) {
+      transaction.status = 'REJECT'
       return Response.denined(res, 'no money, lol')
     }
     clan.properties.money -= total
@@ -184,6 +169,7 @@ handler.patch(async (req, res) => {
 
   } else if (transaction.owner.type === 'market') {
     if (clan.properties.stocks[transaction.item.stock.symbol] < transaction.item.stock.amount) {
+      transaction.status = 'REJECT'
       return Response.denined(res, 'not enough stock, lol')
     }
     clan.properties.money += total
@@ -191,17 +177,10 @@ handler.patch(async (req, res) => {
     await clan.save()
   }
 
-  Response.success(res, {
-    transaction_id: transaction._id,
-    transaction_status: transaction.status,
-    symbol: transaction.item.stock.symbol,
-    rate: transaction.item.stock.rate,
-    amount: transaction.item.stock.amount,
-    current_money: clan.properties.money,
-    confirm_require: transaction.confirm_require,
-    confirmer: transaction.confirmer,
-    rejector: transaction.rejector
-  })
+  transaction.status = 'SUCCESS'
+  await transaction.save()
+
+  Response.success(res, transaction)
 })
 
 /**
@@ -223,6 +202,9 @@ handler.patch(async (req, res) => {
     .findById(transactionId)
     .select()
     .exec()
+
+  if (transaction.owner.id != req.user.clan_id && transaction.receiver.id != req.user.clan_id)
+    return Response.denined(res, 'This transaction is belong to other clan. What do you want???')
 
   if (!transaction)
     return Response.denined(res, 'transaction not found')
@@ -252,17 +234,7 @@ handler.patch(async (req, res) => {
 
   await transaction.save()
 
-  Response.success(res, {
-    transaction_id: transaction._id,
-    transaction_status: transaction.status,
-    symbol: transaction.item.stock.symbol,
-    rate: transaction.item.stock.rate,
-    amount: transaction.item.stock.amount,
-    current_money: clan.properties.money,
-    confirm_require: transaction.confirm_require,
-    confirmer: transaction.confirmer,
-    rejector: transaction.rejector
-  })
+  Response.success(res, transaction)
 })
 
 export default handler
