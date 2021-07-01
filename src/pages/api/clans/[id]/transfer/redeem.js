@@ -47,7 +47,7 @@ handler.post(async (req, res) => {
     return Response.denined(res, 'Please enter a code')
   }
 
-  if (planet.owner != null) {
+  if (planet.owner != 0) {
     return Response.denined(res, 'This planet has owner')
   }
 
