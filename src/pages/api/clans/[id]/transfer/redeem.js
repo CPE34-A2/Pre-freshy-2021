@@ -37,6 +37,10 @@ handler.post(async (req, res) => {
     .findOne({ redeem: code })
     .exec()
 
+  if (code == null) {
+    return Response.denined(res, 'Please enter a code')
+  }
+
   if (planet.owner != null) {
     return Response.denined(res, 'This planet has owner')
   }
