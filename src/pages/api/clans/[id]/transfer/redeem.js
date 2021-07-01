@@ -83,3 +83,5 @@ handler.post(async (req, res) => {
     redeem_code: code
   })
 })
+
+export default handler
