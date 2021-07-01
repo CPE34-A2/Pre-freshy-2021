@@ -23,7 +23,7 @@ handler
  * @description positive resource to add/ negative resource to del
  * 
  * @body clan_id *required
- * @body money,fuel,planet_id,leader_id *optional
+ * @body money,fuel,planet_id,leader_id,fuel_rate *optional
  * 
  * @require Admin authentication
  */
@@ -33,6 +33,7 @@ handler.post(async (req, res) => {
   const planetId = parseInt(req.body.planet_id) || 0
   const clanId = parseInt(req.body.clan_id)
   const leaderId = parseInt(req.body.leader_id) || 0
+  const fuelRate = parseInt(req.body.fuel_rate) || 3
 
   if (isNaN(clanId))
   return Response.denined(res, 'clan id is invalid')
@@ -47,6 +48,10 @@ handler.post(async (req, res) => {
 
   if (!clan)
     return Response.denined(res, 'clan not found')
+
+  if (fuelRate <= 0) {
+    return Response.denined(res, 'fuel rate cannot be below 0')
+  }
 
   if (leaderId != 0) {
     const user = await User
@@ -71,6 +76,7 @@ handler.post(async (req, res) => {
     
     clan.properties.money += money
     clan.properties.fuel += fuel
+    clan.fuel_rate = fuelRate
 
   if (planetId != 0) {
     const planet = await Planet
