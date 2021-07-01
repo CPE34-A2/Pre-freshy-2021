@@ -22,11 +22,7 @@ handler.get(async (req, res) => {
 	let user = null
 
 	if (userId.length == 11 && !isNaN(userId)) {
-		user = await User
-			.findById(userId)
-			.select('-password')
-			.lean()
-			.exec()
+		user = await getUser(userId)
 	}
 	
 	res.status(200)
@@ -36,5 +32,13 @@ handler.get(async (req, res) => {
 			timestamp: new Date()
 		})
 })
+
+export async function getUser(id) {
+	return User
+		.findById(id)
+		.select('-password -createdAt -updatedAt')
+		.lean()
+		.exec()
+}
 
 export default handler

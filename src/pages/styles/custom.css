@@ -1,0 +1,21 @@
+.login-form-title {
+  background: rgb(0,32,96);
+  background: linear-gradient(180deg, rgba(0,32,96,1) 0%, rgba(112,48,160,1) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.login-form-button {
+  background-color: #7030A0;
+}
+
+.login-form-button:hover {
+  background-color: #5b2485;
+}
+
+.login-background {
+  background-image: url("../../../public/login-page-bg.png");
+  background-position: fit;
+  background-repeat: no-repeat;
+  background-size: cover;
+}

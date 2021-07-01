@@ -33,7 +33,7 @@ handler.post(async (req, res) => {
 
   if (amount <= 0)
     return Response.denined(res, 'amount must be greater than 0')
-
+  
   const clan = await Clan
     .findById(req.query.id)
     .select('properties leader id')

@@ -9,7 +9,7 @@ export default function Button(props) {
         props.style
       )}
     >
-      {props.name}
+      {props.icon}{props.name}
     </button>
   )
 }

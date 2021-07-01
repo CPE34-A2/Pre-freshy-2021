@@ -1,5 +1,7 @@
 import middleware from '@/middlewares/middleware'
-import axios from 'axios'
+
+import { getUser } from '@/pages/api/users/[id]/index'
+import { getClanProperties } from '@/pages/api/clans/[id]/properties'
 
 import Head from '@/components/common/Head'
 import Navbar from '@/components/navbar/Navbar'
@@ -7,16 +9,18 @@ import DashboardContainer from '@/components/contents/dashboard/DashboardCotaine
 import Dashboard from '@/components/contents/dashboard/Dashboard'
 import Footer from '@/components/footer/Footer'
 
-export default function IndexPage({ user }) {
+export default function IndexPage({ user, clan }) {
   return (
     <DashboardContainer>
       <Head />
 
-      <Navbar />
+      <Navbar
+        user={user}
+      />
 
       <Dashboard
-        displayName={user.display_name}
-        money={user.properties.money}
+        user={user}
+        clan={clan}
       />
 
       <Footer />
@@ -31,9 +35,11 @@ export async function getServerSideProps({ req, res }) {
     if (!req.isAuthenticated()) {
       return { redirect: { destination: '/login', permanent: false } }
     }
-    
-    const result = await axios.get(`/api/users/${req.user.id}`, { headers: { cookie: req.headers.cookie }})
-    return { props: { user: result.data.data } }
+
+    const user = await getUser(req.user.id)
+    const clan = await getClanProperties(req.user.clan_id)
+
+    return { props: { user: user, clan: clan } }
   } catch (error) {
     console.log(error.message)
   }
