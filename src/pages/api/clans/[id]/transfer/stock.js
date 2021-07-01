@@ -17,6 +17,8 @@ handler
 const EXPECTED_REQUIRER = 3
 const SYMBOL = ['MINT', 'ECML', 'HCA', 'LING', 'MALP']
 const METHOD = ['BUY', 'SELL']
+const OPEN_MARKET_TIME = 9
+const CLOSE_MARKET_TIME = 22
 
 /**
  * @method POST
@@ -30,14 +32,26 @@ const METHOD = ['BUY', 'SELL']
  * @body amount
  */
 handler.post(async (req, res) => {
-  const method = req.body.method
-  const symbol = req.body.symbol
+  let method = req.body.method
+  let symbol = req.body.symbol
   const amount = parseInt(req.body.amount)
+  const requestHour = (new Date()).getHours()
 
-  if (!method || !METHOD.includes(method.toUpperCase()))
+  if (requestHour < OPEN_MARKET_TIME || requestHour > CLOSE_MARKET_TIME) {
+    return Response.denined(res, 'market closed!!!')
+  }
+
+  if ((!method) || (!symbol)) {
+    return Response.denined(res, 'method or symbol not defined')
+  }
+
+  symbol = symbol.toUpperCase()
+  method = method.toUpperCase()
+
+  if (!method || !METHOD.includes(method))
     return Response.denined(res, 'BUY or SELL only!!!')
 
-  if (!symbol || !SYMBOL.includes(symbol.toUpperCase()))
+  if (!symbol || !SYMBOL.includes(symbol))
     return Response.denined(res, 'the symbol does not exist')
 
   if (isNaN(amount))
@@ -46,10 +60,12 @@ handler.post(async (req, res) => {
   if (amount <= 0)
     return Response.denined(res, 'amount must be greater than 0')
 
-  const duplicateBuyTransaction = await Transaction.findOne({'owner.id': req.user.clan_id, 'status': 'PENDING'})
-  const duplicateSellTransaction = await Transaction.findOne({'receiver.id': req.user.clan_id, 'status': 'PENDING'})
+  const pendingTransaction = await Transaction.findOne({ $or: [{ 'owner.id': req.query.id, 'receiver.type': 'market' }, { 'receiver.id': req.query.id, 'owner.type': 'market' }] }, { 'status': 'PENDING' })
+    .select('_id')
+    .lean()
+    .exec()
 
-  if (duplicateBuyTransaction || duplicateSellTransaction)
+  if (pendingTransaction)
     return Response.denined(res, 'There are still pending transaction')
 
   const stock = await Stock
@@ -65,6 +81,9 @@ handler.post(async (req, res) => {
     .select()
     .exec()
 
+  if (!clan)
+    return Response.denined(res, 'clan not found')
+
   if (clan.leader != req.user.id)
     return Response.denined(res, 'you are not leader. lol')
 
@@ -72,12 +91,12 @@ handler.post(async (req, res) => {
     return Response.denined(res, 'no money, lol')
 
   if (method === 'SELL' && clan.properties.stocks[symbol] < amount)
-    return Response.denined(res, 'get buy something, lol')
+    return Response.denined(res, 'not enough stock, lol')
 
   // money as perspective
   const newTransaction = await Transaction.create({
     owner: {
-      id: method === 'BUY' ?  req.user.clan_id : '0',
+      id: method === 'BUY' ? req.user.clan_id : '0',
       type: method === 'BUY' ? 'clan' : 'market'
     },
     receiver: {
@@ -87,6 +106,7 @@ handler.post(async (req, res) => {
     status: 'PENDING',
     confirm_require: EXPECTED_REQUIRER,
     confirmer: [req.user.id],
+    rejector: [],
     item: {
       stock: {
         symbol: symbol,
@@ -96,14 +116,7 @@ handler.post(async (req, res) => {
     }
   })
 
-  Response.success(res, {
-    transaction_id: newTransaction._id,
-    transaction_status: newTransaction.status,
-    symbol: newTransaction.item.stock.symbol,
-    rate: newTransaction.item.stock.rate,
-    amount: newTransaction.item.stock.amount,
-    current_money: clan.properties.money
-  })
+  Response.success(res, newTransaction)
 })
 
 /**
@@ -126,22 +139,37 @@ handler.patch(async (req, res) => {
     .select()
     .exec()
 
+  if (transaction.owner.id != req.user.clan_id && transaction.receiver.id != req.user.clan_id)
+    return Response.denined(res, 'This transaction is belong to other clan. What do you want???')
+
   if (!transaction)
     return Response.denined(res, 'transaction not found')
 
   if (transaction.status === 'SUCCESS')
-    return Response.success(res, 'you are too late!!! this confirmation is already SUCCESS')
+    return Response.denined(res, 'you are too late!!! this confirmation is already SUCCESS')
+
+  if (transaction.status === 'REJECT')
+    return Response.denined(res, 'you are too late!!! this confirmation is already REJECT')
 
   if (transaction.confirmer.includes(req.user.id))
     return Response.denined(res, 'you just already accepted it. Didn\'t you remember that?????')
 
+  if (transaction.rejector.includes(req.user.id))
+    return Response.denined(res, `Don't be indecisive. You can't confirm what you rejected.`)
+
+  const stock = await Stock
+    .findOne({'symbol': transaction.itme.stock.symbol})
+    .select('rate')
+    .lean()
+    .exec()
+
+  if (stock.rate != transaction.item.stock.rate) {
+    transaction.status = 'REJECT'
+    await transaction.save()
+    return Response.denined(res, `The price has been changed`)
+  }
+    
   transaction.confirmer.push(req.user.id)
-  await transaction.save()
-
-  if (transaction.confirmer.length < transaction.confirm_require + 1)
-    return Response.success(res, 'confirmed done!!!')
-
-  transaction.status = 'SUCCESS'
   await transaction.save()
 
   const clan = await Clan
@@ -149,10 +177,16 @@ handler.patch(async (req, res) => {
     .select()
     .exec()
 
+  // If the number of confirmer equal expected required, then excute the transaction
+  if (transaction.confirmer.length < transaction.confirm_require + 1)
+    return Response.success(res, transaction)
+
   const total = transaction.item.stock.rate * transaction.item.stock.amount
 
   if (transaction.owner.type === 'clan') {
     if (clan.properties.money < total) {
+      transaction.status = 'REJECT'
+      await transaction.save()
       return Response.denined(res, 'no money, lol')
     }
     clan.properties.money -= total
@@ -161,21 +195,73 @@ handler.patch(async (req, res) => {
 
   } else if (transaction.owner.type === 'market') {
     if (clan.properties.stocks[transaction.item.stock.symbol] < transaction.item.stock.amount) {
-      return Response.denined(res, 'get buy something, lol')
+      transaction.status = 'REJECT'
+      await transaction.save()
+      return Response.denined(res, 'not enough stock, lol')
     }
     clan.properties.money += total
     clan.properties.stocks[transaction.item.stock.symbol] -= transaction.item.stock.amount
     await clan.save()
   }
 
-  Response.success(res, {
-    transaction_id: transaction._id,
-    transaction_status: transaction.status,
-    symbol: transaction.item.stock.symbol,
-    rate: transaction.item.stock.rate,
-    amount: transaction.item.stock.amount,
-    current_money: clan.properties.money,
-  })
+  transaction.status = 'SUCCESS'
+  await transaction.save()
+
+  Response.success(res, transaction)
+})
+
+/**
+ * @method DELETE
+ * @endpoint /api/clans/:id/stock
+ * @description Reject the pending transaction of stock trading 
+ * 
+ * @require User authentication
+ * 
+ * @body transaction_id
+ */
+handler.delete(async (req, res) => {
+  const transactionId = req.body.transaction_id
+
+  if (!transactionId || !mongoose.Types.ObjectId.isValid(transactionId))
+    return Response.denined(res, 'bro... you just... sent wrong transaction')
+
+  const transaction = await Transaction
+    .findById(transactionId)
+    .select()
+    .exec()
+
+  if (transaction.owner.id != req.user.clan_id && transaction.receiver.id != req.user.clan_id)
+    return Response.denined(res, 'This transaction is belong to other clan. What do you want???')
+
+  if (!transaction)
+    return Response.denined(res, 'transaction not found')
+
+  if (transaction.status === 'SUCCESS')
+    return Response.denined(res, 'you are too late!!! this confirmation is already SUCCESS')
+
+  if (transaction.status === 'REJECT')
+    return Response.denined(res, 'you are too late!!! this confirmation is already REJECT')
+
+  const clan = await Clan
+    .findById(req.user.clan_id)
+    .select('properties leader')
+    .exec()
+
+  if (transaction.confirmer.includes(req.user.id) && (req.user.id != clan.leader))
+    return Response.denined(res, `Don't be indecisive. You can't reject what you confirmed.`)
+
+  if (transaction.rejector.includes(req.user.id))
+    return Response.denined(res, `you just already rejected it. Didn't you remember that?????`)
+
+  transaction.rejector.push(req.user.id)
+
+  if ((transaction.confirm_require <= transaction.rejector.length) || (req.user.id == clan.leader)) {
+    transaction.status = 'REJECT'
+  }
+
+  await transaction.save()
+
+  Response.success(res, transaction)
 })
 
 export default handler

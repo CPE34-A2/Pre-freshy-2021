@@ -13,6 +13,17 @@ const clanSchema = new mongoose.Schema({
 	members: [{
 		type: String
 	}],
+	position: {
+		type: Number,
+		default: 0
+	},
+	fuel_rate: {
+		type: Number,
+		default: 3
+	},
+	members: [{
+		type: String
+	}],
 	properties: {
 		money: {
 			type: Number,

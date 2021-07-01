@@ -10,7 +10,6 @@ import User from '@/models/user'
 
 const handler = nextConnect()
 
-const FUEL_PRICE_PER_UNIT = 3
 const FUEL_CONFIRM_REQUIRE = 3
 
 handler
@@ -28,7 +27,6 @@ handler
  */
 handler.post(async (req, res) => {
   const amount = parseInt(req.body.amount)
-  const price = amount * FUEL_PRICE_PER_UNIT
 
   if (isNaN(amount))
     return Response.denined(res, 'amount is not a number')
@@ -41,6 +39,11 @@ handler.post(async (req, res) => {
     .select('properties leader id')
     .exec()
 
+  if (!clan)
+    return Response.denined(res, 'clan not found')
+
+  const price = amount * clan.fuel_rate
+
   const user = await User
     .findById(req.user.id)
     .select('role')
@@ -50,11 +53,11 @@ handler.post(async (req, res) => {
     .findOne({
       "owner.id": clan.id,
       "receiver.id": clan.id,
-      status: 'PENDING'  
+      status: 'PENDING'
     })
 
   if (dupeTransaction) {
-    return Response.denined(res, 'Stop spamming. Go confirm the other one')
+    return Response.denined(res, 'Stop spamming. Go confirm/reject the other one')
   }
 
   if ((clan.leader != req.user.id) && (user.role != 'admin')) {
@@ -78,11 +81,12 @@ handler.post(async (req, res) => {
       money: price,
       fuel: amount
     },
-    confirm_require: FUEL_CONFIRM_REQUIRE + 1,
-    confirmer: [req.user.id]
+    confirm_require: FUEL_CONFIRM_REQUIRE,
+    confirmer: [req.user.id],
+    rejector: []
   })
-  
-  Response.success(res, { 
+
+  Response.success(res, {
     transaction_id: transaction._id,
     transaction_status: transaction.status,
     confirm_require: transaction.confirm_require,
@@ -115,38 +119,123 @@ handler.patch(async (req, res) => {
   const transaction = await Transaction
     .findById(req.body.transaction_id)
     .exec()
-  
+
   if (!transaction) {
     return Response.denined(res, 'Transaction not found')
   }
 
+  if (transaction.owner.id != req.user.clan_id) {
+    return Response.denined(res, 'You are not own this transaction')
+  }
+
   if (transaction.status === 'SUCCESS') {
-    return Response.success(res, 'Transaction already completed')
+    return Response.denined(res, 'Transaction already successed')
+  }
+
+  if (transaction.status === 'REJECT') {
+    return Response.denined(res, 'Transaction already rejected')
+  }
+
+  if (transaction.rejector.includes(req.user.id)) {
+    return Response.denined(res, 'Cannot confirm. You already rejected')
   }
 
   if (transaction.confirmer.includes(req.user.id)) {
     return Response.denined(res, 'Duplicate comfirmation')
   }
-  
-  transaction.confirmer.push(req.user.id)
-  await transaction.save()
 
-  if (transaction.confirm_require <= transaction.confirmer.length) {
+  transaction.confirmer.push(req.user.id)
+
+  if (transaction.confirm_require + 1 <= transaction.confirmer.length) {
+    if (clan.properties.money < transaction.item.money) {
+      transaction.status = 'REJECT'
+      await transaction.save()
+      return Response.denined(res, 'money is not enough. Transaction closed')
+    }
+
     clan.properties.money -= transaction.item.money
     clan.properties.fuel += transaction.item.fuel
     await clan.save()
 
     transaction.status = 'SUCCESS'
-    await transaction.save()
-  } 
+  }
 
-  Response.success(res, { 
+  await transaction.save()
+
+  Response.success(res, {
     transaction_status: transaction.status,
     clan_money: clan.properties.money,
     clan_fuel: clan.properties.fuel,
     confirm_require: transaction.confirm_require,
-    confirmer: transaction.confirmer
-  })  
+    confirmer: transaction.confirmer,
+    rejector: transaction.rejector
+  })
+})
+
+/**
+ * @method Delete
+ * @endpoint /api/clans/:id/transfer/fuel
+ * @description reject fuel transaction
+ * 
+ * @body transaction_id
+ * 
+ * @require User authentication / Clan membership
+ */
+handler.delete(async (req, res) => {
+
+  const clan = await Clan
+    .findById(req.query.id)
+    .select('properties leader')
+    .exec()
+
+  if (!mongoose.Types.ObjectId.isValid(req.body.transaction_id)) {
+    return Response.denined(res, 'Invalid transaction id')
+  }
+
+  const transaction = await Transaction
+    .findById(req.body.transaction_id)
+    .exec()
+
+  if (!transaction) {
+    return Response.denined(res, 'Transaction not found')
+  }
+
+  if (transaction.owner.id != req.user.clan_id) {
+    return Response.denined(res, 'You are not own this transaction')
+  }
+
+  if (transaction.status === 'SUCCESS') {
+    return Response.denined(res, 'Transaction already successed')
+  }
+
+  if (transaction.status === 'REJECT') {
+    return Response.denined(res, 'Transaction already rejected')
+  }
+
+  if (transaction.confirmer.includes(req.user.id) && (req.user.id != clan.leader)) {
+    return Response.denined(res, 'Cannot reject. You already confirmed')
+  }
+
+  if (transaction.rejector.includes(req.user.id)) {
+    return Response.denined(res, 'Duplicate rejection')
+  }
+
+  transaction.rejector.push(req.user.id)
+
+  if ((transaction.confirm_require <= transaction.rejector.length) || (req.user.id == clan.leader)) {
+    transaction.status = 'REJECT'
+  }
+
+  await transaction.save()
+
+  Response.success(res, {
+    transaction_status: transaction.status,
+    clan_money: clan.properties.money,
+    clan_fuel: clan.properties.fuel,
+    confirm_require: transaction.confirm_require,
+    confirmer: transaction.confirmer,
+    rejector: transaction.rejector
+  })
 })
 
 export default handler

@@ -22,7 +22,6 @@ handler.post(async (req, res) => {
 
   if (amount <= 0)
     return Response.denined(res, 'amount must be greater than 0')
-  
   const user = await User
     .findById(req.query.id)
     .select('_id clan_id properties.money')
@@ -35,6 +34,9 @@ handler.post(async (req, res) => {
     .findById(user.clan_id)
     .select('properties.money')
     .exec()
+
+  if (!clan)
+    return Response.denined(res, 'clan not found')
 
   user.properties.money -= amount
   await user.save()
@@ -57,7 +59,7 @@ handler.post(async (req, res) => {
     }
   })
 
-  Response.success(res, { 
+  Response.success(res, {
     user_money: user.properties.money,
     clan_money: clan.properties.money
   })
