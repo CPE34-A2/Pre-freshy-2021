@@ -30,6 +30,10 @@ handler.post(async (req, res) => {
     .findById(req.query.id)
     .exec()
 
+  if (clan == null) {
+    return Response.denined(res, 'mai mee clan nai database')
+  }
+
   const user = await User
     .findById(req.user.id)
     .lean()
