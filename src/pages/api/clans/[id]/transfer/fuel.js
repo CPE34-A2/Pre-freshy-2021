@@ -10,7 +10,6 @@ import User from '@/models/user'
 
 const handler = nextConnect()
 
-const FUEL_PRICE_PER_UNIT = 3
 const FUEL_CONFIRM_REQUIRE = 3
 
 handler
@@ -28,18 +27,22 @@ handler
  */
 handler.post(async (req, res) => {
   const amount = parseInt(req.body.amount)
-  const price = amount * FUEL_PRICE_PER_UNIT
-
+  
   if (isNaN(amount))
-    return Response.denined(res, 'amount is not a number')
-
+  return Response.denined(res, 'amount is not a number')
+  
   if (amount <= 0)
-    return Response.denined(res, 'amount must be greater than 0')
+  return Response.denined(res, 'amount must be greater than 0')
   
   const clan = await Clan
-    .findById(req.query.id)
-    .select('properties leader id')
-    .exec()
+  .findById(req.query.id)
+  .select('properties leader id')
+  .exec()
+  
+  if (!clan)
+    return Response.denined(res, 'clan not found')
+
+  const price = amount * clan.fuel_rate
 
   const user = await User
     .findById(req.user.id)

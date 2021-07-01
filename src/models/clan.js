@@ -16,6 +16,10 @@ const clanSchema = new mongoose.Schema({
 	position: {
 		type: Number
 	},
+	fuel_rate: {
+		type: Number,
+		default: 3
+	},
 	properties: {
 		money: {
 			type: Number,
