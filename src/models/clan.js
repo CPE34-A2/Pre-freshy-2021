@@ -14,7 +14,8 @@ const clanSchema = new mongoose.Schema({
 		type: String
 	}],
 	position: {
-		type: Number
+		type: Number,
+		default: 0
 	},
 	fuel_rate: {
 		type: Number,
