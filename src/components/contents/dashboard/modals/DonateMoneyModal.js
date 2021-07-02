@@ -49,7 +49,7 @@ export default function DonateMoneyModal({ user }) {
     useFetch('POST', `/api/users/${user._id}/transfer/coin`, { amount: donate })
       .then(async response => {
         if (response.status == 200) {
-          setDonateDone(<>Donation successful <b>(-{donate} coin)</b></>)
+          setDonateDone(<>Donation successful <b>(-{Util.numberWithCommas(donate)} coin)</b></>)
         } else {
           setDonateError('Something went wrong')
         }
