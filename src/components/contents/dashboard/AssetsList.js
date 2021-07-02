@@ -31,12 +31,12 @@ export default function AssetsList({ user, clan }) {
         <div className="space-y-4">
           <AssetItem
             image={MoneyImage}
-            value={Util.numberWithCommas(clan.money)}
+            value={Util.numberWithCommas(clan.properties.money)}
             unit="coin"
           />
           <AssetItem
             image={GallonImage}
-            value={Util.numberWithCommas(clan.fuel)}
+            value={Util.numberWithCommas(clan.properties.fuel)}
             unit="gallon"
           />
           <AssetItem
