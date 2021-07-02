@@ -17,7 +17,7 @@ export default function DonateMoneyModal({ user }) {
 
   useEffect(() => {
     // Revalidate while input donate and someone gives coin
-    (donateError && ((donate) && (user.money >= donate))) && setDonateError('')
+    (donateError && ((donate) && (donate != 0) && (user.money >= donate))) && setDonateError('')
   })
 
   const openDialog = () => setIsOpen(true)
