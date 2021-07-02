@@ -82,7 +82,8 @@ handler.post(async (req, res) => {
     title: news.title,
     content: news.content,
     category: news.category,
-    author: news.author
+    author: news.author,
+    news_id: news._id
   })
 
 })
@@ -98,7 +99,6 @@ handler.post(async (req, res) => {
  *
  * @body news_id
  *
- *
  * @require Admin authentication
  */
 
@@ -111,17 +111,23 @@ handler.delete(async (req, res) => {
     .findById(req.body.news_id)
     .exec()
 
-  news.deleter = req.user.id
-  news.category = 'DELETED'
-  await news.save()
+  const title_copy = news.title
+  const content_copy = news.content
+  const author_copy = news.author
+
+  const remove_new = await News
+    .findByIdAndDelete(req.body.news_id)
+    .exec()
+  remove_new
 
   Response.success(res, {
-    title: news.title,
-    content: news.content,
-    category: news.category,
-    author: news.author,
-    deleter: news.deleter
+    title: title_copy,
+    content: content_copy,
+    category: 'DELETED',
+    author: author_copy,
+    deleter: req.user.id
   })
+
 })
 
 export default handler
