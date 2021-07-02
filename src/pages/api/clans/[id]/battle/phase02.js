@@ -6,7 +6,7 @@ import * as Response from '@/utils/response'
 
 import Battle from '@/models/battle'
 import Planet from '@/models/planet'
-import clan from '@/models/clan'
+import Clan from '@/models/clan'
 
 const handler = nextConnect()
 
@@ -37,7 +37,7 @@ handler.patch(async (req, res) => {
   if (!battle)
     return Response.denined(res, 'battle not found')
 
-  if (battle.defender.id != req.user.clan_id)
+  if (battle.defender != req.user.clan_id)
     return Response.denined(res, 'You are not the defender of the battle')
 
   if (battle.current_phase != 2 || battle.phase01.confirmer < battle.confirm_require + 1)
@@ -112,31 +112,35 @@ handler.delete(async (req, res) => {
 
   battle.phase02.rejector.push(req.user.id)
 
-  if (battle.phase02.rejector.length >= battle.phase02.confirm_require) {
-    const attackerPlanet = Planet
+  if (battle.phase02.rejector.length >= battle.confirm_require) {
+    const attackerPlanet = await Planet
       .findById(battle.attacker)
       .select()
       .exec()
-    const defenderPlanet = Planet
+
+    const defenderPlanet = await Planet
       .findById(battle.target_planet_id)
       .select()
       .exec()
 
-    const penaltyPlanetPoint = parseInt(attackerPlanet.point / 4)
+    const penaltyPlanetPoint = parseInt(defenderPlanet.point / 4.0)
     attackerPlanet.point = attackerPlanet.point + penaltyPlanetPoint
     defenderPlanet.point = defenderPlanet.point - penaltyPlanetPoint
 
-    const attackerClan = clan
+    const attackerClan = await Clan
       .findById(battle.attacker)
       .select()
       .exec()
     
-    attackerClan.properties = parseInt(defenderPlanet.travel_cost * 2 / 3)
+    attackerClan.properties.fuel += parseInt((defenderPlanet.travel_cost * 2 ) / 3)
     attackerClan.position = attackerClan._id
+    attackerClan.properties.fuel += battle.stakes.fuel
+    attackerClan.properties.money += battle.stakes.money
 
     battle.phase02.status = 'REJECT'
     battle.status = 'DENIED'
 
+    await attackerClan.save()
     await attackerPlanet.save()
     await defenderPlanet.save()
     await battle.save()
