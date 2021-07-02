@@ -56,7 +56,7 @@ const battleSchema = new mongoose.Schema({
     }
   },
   phase03: {
-    confimer: {
+    confirmer: {
       type: String
     },
     status: {
