@@ -24,7 +24,7 @@ handler.get(async (req, res) => {
 	if (userId.length == 11 && !isNaN(userId)) {
 		user = await User
 			.findById(userId)
-			.select('properties.money')
+			.select('money')
 			.lean()
 			.exec()
 	}
@@ -32,7 +32,7 @@ handler.get(async (req, res) => {
 	res.status(200)
 		.json({
 			sucesss: !!user,
-			data: user && user.properties.money,
+			data: user && user.money,
 			timestamp: new Date()
 		})
 })

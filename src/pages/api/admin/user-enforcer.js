@@ -49,10 +49,10 @@ handler.post(async (req, res) => {
 
   // add or remove money
   if (!isNaN(money)) {
-    if (user.properties.money + money < 0)
+    if (user.money + money < 0)
       return Response.denined(res, 'You are so heartless. Why would you like to make someone\'s money go negative?')
 
-    user.properties.money += money
+    user.money += money
   }
 
   // change password

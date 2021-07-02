@@ -19,11 +19,9 @@ const userSchema = new mongoose.Schema({
 	clan_id: {
 		type: Number
 	},
-	properties: {
-		money: {
-			type: Number,
-			default: 0
-		}
+	money: {
+		type: Number,
+		default: 0
 	},
 }, { timestamps: true })
 
