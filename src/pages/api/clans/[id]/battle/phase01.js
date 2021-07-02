@@ -7,13 +7,14 @@ import * as Response from '@/utils/response'
 import Clan from '@/models/clan'
 import Planet from '@/models/planet'
 import Battle from '@/models/battle'
+import { compareSync } from 'bcryptjs'
 
 
 const handler = nextConnect()
 
 const MONEY_POINT_PER_UNIT = 1 / 2
 const FUEL_POINT_PER_UNIT = 1 / 6
-const EXPECTED_REQUIRER = 3
+const EXPECTED_REQUIRER = 2
 
 handler
   .use(middleware)
@@ -32,8 +33,8 @@ handler
  * @require User authentication / Clan leadership
  */
 handler.post(async (req, res) => {
-  const betMoney = req.body.bet_money
-  const betFuel = req.body.bet_fuel
+  const betMoney = parseInt(req.body.bet_money) || 0
+  const betFuel = parseInt(req.body.bet_fuel) || 0
   let betPlanetIds = req.body.bet_planet_ids
   const targetPlanetId = req.body.target_planet_id
 
@@ -54,7 +55,7 @@ handler.post(async (req, res) => {
   }
     
   const duplicateAttcak = await Battle
-    .findOne({'attacker': req.user.clan_id , 'status': { $nin: ['ATTACKER_WON', 'DEFENDER_WON'] }})
+    .findOne({'attacker': req.user.clan_id , 'status': 'PENDING' })
     .select()
     .lean()
     .exec()
@@ -62,12 +63,12 @@ handler.post(async (req, res) => {
   if (duplicateAttcak)
     return Response.denined(res, 'There are still pending battle')
 
-  const attakerClan = await Clan
+  const attackerClan = await Clan
     .findById(req.user.clan_id)
     .select()
     .exec()
 
-  if (attakerClan.leader != req.user.id)
+  if (attackerClan.leader != req.user.id)
     return Response.denined(res, 'This is very important!!! ask your leader to preform this action!!!!')
 
   const attackerPlanets = await Planet
@@ -93,18 +94,21 @@ handler.post(async (req, res) => {
     return Response.denined(res, `This planet has no owner`)
 
   const defenderOtherBattle = await Battle
-    .findOne({'attacker': defenderPlanet.owner}, { $nin: ['ATTACKER_WON', 'DEFENDER_WON'] })
+    .findOne({'attacker': defenderPlanet.owner, 'status': { $nin: ['ATTACKER_WON', 'DEFENDER_WON'] }})
     .select('stakes.planet_ids')
     .lean()
     .exec()
-  
-  if (defenderOtherBattle.stakes.planet_ids.includes(targetPlanetId))
-    return Response.denined(res, `The planet you want to attack has been involved to other battle`)
 
-  if (attakerClan.properties.money < betMoney)
+  if (defenderOtherBattle)
+    if (defenderOtherBattle.stakes.planet_ids.includes(targetPlanetId))
+      return Response.denined(res, `The planet you want to attack has been involved to other battle`)
+
+  if (attackerClan.properties.money < betMoney)
     return Response.denined(res, `low money`)
   
-  if (attakerClan.properties.fuel < betFuel)
+  console.log(attackerClan.properties.fuel)
+  console.log(betFuel)
+  if (attackerClan.properties.fuel < betFuel + defenderPlanet.travel_cost)
     return Response.denined(res, `low fuel`)
 
   const betWeight = (betMoney * MONEY_POINT_PER_UNIT) + (betFuel * FUEL_POINT_PER_UNIT) + (attackerPlanets.map(e => e.point).reduce((a, b) => a + b, 0))
@@ -160,7 +164,7 @@ handler.patch(async (req, res) => {
   if (battle.attacker != req.user.clan_id)
     return Response.denined(res, 'This battle is belong to other clan. What do you want???')
 
-  if (battle.phase01.status == 'SUCEESS')
+  if (battle.phase01.status == 'SUCCESS')
     return Response.denined(res, 'you are too late!!! this confirmation is already SUCCESS')
 
   if (battle.phase01.status === 'REJECT')
@@ -175,6 +179,8 @@ handler.patch(async (req, res) => {
   battle.phase01.confirmer.push(req.user.id)
   await battle.save()
 
+  console.log(battle.confirm_require)
+  console.log(battle.phase01.confirmer.length)
   // If the confirmer equal to expected require, then doing next
   if (battle.phase01.confirmer.length < battle.confirm_require + 1)
     return Response.success(res, 'confirmed done!!!')
@@ -190,12 +196,12 @@ handler.patch(async (req, res) => {
     .lean()
     .exec()
 
-  if (attackerClan.properties.fuel < defenderPlanet.travel_cost + stakes.fuel) {
+  if (attackerClan.properties.fuel < defenderPlanet.travel_cost + battle.stakes.fuel) {
     battle.phase01.status = 'REJECT'
     return Response.success(res, 'fuel too low!!!')
   }
 
-  if (attackerClan.properties.money < stakes.money) {
+  if (attackerClan.properties.money < battle.stakes.money) {
     battle.phase01.status = 'REJECT'
     return Response.success(res, 'no money')
   }
@@ -219,6 +225,7 @@ handler.patch(async (req, res) => {
 
   battle.current_phase = 2
   await battle.save()
+  return Response.success(res, battle)
 })
 
 /**
