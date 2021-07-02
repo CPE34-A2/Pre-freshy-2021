@@ -8,6 +8,7 @@ export default function Button(props) {
       className = {Util.concatClasses(
         props.style
       )}
+      disabled = {props.disabled}
     >
       {props.icon}{props.name}
     </button>
