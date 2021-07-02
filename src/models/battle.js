@@ -1,6 +1,9 @@
 import mongoose from 'mongoose'
 
 const battleSchema = new mongoose.Schema({
+  current_phase: {
+    type: Number
+  },
   attacker: {
     type: Number
   },
