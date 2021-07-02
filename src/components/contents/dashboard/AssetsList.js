@@ -5,7 +5,7 @@ import GallonImage from '@/publics/gallon.png'
 import StarImage from '@/publics/star.png'
 
 import AssetItem from './AssetItem'
-import DonateMoneyModal from './DonateMoneyModal'
+import DonateMoneyModal from './modals/DonateMoneyModal'
 
 export default function AssetsList({ user, clan }) {
   return (

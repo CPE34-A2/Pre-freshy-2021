@@ -137,17 +137,7 @@ export default function DonateMoneyModal({ user }) {
                     value={donate}
                     onChange={handleDonateChange}
                   />
-                  {/* <button
-                    type="button"
-                    className={Util.concatClasses(
-                      "flex-shrink w-16 px-4 bg-purple-700 rounded-r-lg ring-1 ring-purple-800 shadow-md text-white text-xs disabled:opacity-50",
-                      donateError ? 'cursor-not-allowed' : 'hover:bg-purple-800'
-                    )}
-                    onClick={sendDonate}
-                    disabled={donateError}
-                  >
-                    SEND
-                  </button> */}
+                  
                   <Button
                     type="submit"
                     name={isDonating ? "DONATING" : "DONATE" }
