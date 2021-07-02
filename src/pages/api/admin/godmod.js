@@ -76,7 +76,10 @@ handler.post(async (req, res) => {
 
   clan.properties.money += money
   clan.properties.fuel += fuel
-  clan.fuel_rate = fuelRate
+  
+  if (fuelRate != 3) {
+    clan.fuel_rate = fuelRate
+  }
 
   if (planetId != 0) {
     const planet = await Planet
