@@ -9,7 +9,7 @@ const newsSchema = new mongoose.Schema({
   },
   category: {
     type: String,
-    enum: ['NORMAL', 'STOCK', 'DISASTER', 'CHECKING', 'DELETED'],
+    enum: ['NORMAL', 'STOCK', 'DISASTER', 'CHECKING',],
     require: true
   },
   author: {
