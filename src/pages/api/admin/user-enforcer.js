@@ -14,22 +14,25 @@ handler
   .use(permission)
 
 /**
- * @method POST
+ * @method GET
  * @endpoint /api/admin/user-enforcer
  * @description control the user's data like a piece of cake.
  * @description positive value of 'money' to add/ negative 'money' to remove
  * 
  * @require Admin authentication
  * 
- * @body user_id *required
- * @body display_name, clan_id, money, password *optional
+ * @param user_id required
+ * @param display_name, optional
+ * @param clan_id optional
+ * @param money optional
+ * @param password optional
  */
-handler.post(async (req, res) => {
-  const userId = req.body.user_id
-  const newDisplayName = req.body.display_name
-  const newClanId = parseInt(req.body.clan_id)
-  const money = parseInt(req.body.money)
-  const password = req.body.password
+handler.get(async (req, res) => {
+  const userId = req.query.user_id
+  const newDisplayName = req.query.display_name
+  const newClanId = parseInt(req.query.clan_id)
+  const money = parseInt(req.query.money)
+  const password = req.query.password
 
   const user = await User
     .findById(userId)
