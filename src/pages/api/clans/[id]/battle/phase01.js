@@ -79,7 +79,7 @@ handler.post(async (req, res) => {
   if (!defenderPlanet)
     return Response.denined(res, `target planet not found!!! Are you attacking the void???`)
 
-  if (isNaN(defenderPlanet.owner))
+  if (defenderPlanet.owner == 0)
     return Response.denined(res, `This planet has no owner`)
 
   if (attakerClan.properties.money < betMoney)
