@@ -33,16 +33,16 @@ handler.post(async (req, res) => {
     return Response.denined(res, 'Invalid battle id')
   }
 
-  const battle = Battle
+  const battle = await Battle
     .findById(req.body.battle_id)
-    .select('-phase04 -status -stakes -confirm_require')
+    .select('-phase04 -stakes -confirm_require')
     .exec()
 
   if (!battle) {
     return Response.denined(res, 'Battle not found')
   }
 
-  if (battle != 'PENDING') {
+  if (battle.status != 'PENDING') {
     return Response.denined(res, 'Battle ended')
   }
   
@@ -54,7 +54,7 @@ handler.post(async (req, res) => {
     return Response.denined(res, 'You skipped phase')
   }
 
-  if ((req.query.id != battle.attacker) || (req.query.id != battle.defender)) {
+  if ((req.query.id != battle.attacker) && (req.query.id != battle.defender)) {
     return Response.denined(res, 'This is not your battle')
   }
 
