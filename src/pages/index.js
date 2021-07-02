@@ -15,8 +15,6 @@ export default function IndexPage({ user: rawUser, clan: rawClan }) {
   const [user, setUser] = useState(rawUser)
   const [clan, setClan] = useState(rawClan)
 
-  console.log(clan)
-
   useSocket('set.money', (userId, money) => {
     (userId == user._id) && setUser({ ...user, money: money })
   })

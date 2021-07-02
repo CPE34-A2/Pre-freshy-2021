@@ -23,7 +23,8 @@ export default function AssetsList({ user, clan }) {
             value={Util.numberWithCommas(user.money)}
             unit="coin"
           />
-          <DonateMoneyModal user={user} />
+          
+          {(user.money != 0) && (<DonateMoneyModal user={user} />)}
         </div>
 
         <div className="font-medium text-gray-500 mt-4 mb-2">Clan items</div>
