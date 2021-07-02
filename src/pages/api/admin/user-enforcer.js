@@ -98,6 +98,10 @@ handler.get(async (req, res) => {
 
   await user.save()
 
+  if (money) {
+    req.socket.server.io.emit('set.money', money)
+  }
+
   return Response.success(res, {
     userId: userId,
     newDisplayName: newDisplayName ? newDisplayName : 'not changed',

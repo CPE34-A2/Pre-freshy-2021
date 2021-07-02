@@ -19,7 +19,7 @@ export default function AssetsList({ user, clan }) {
         <div className="flex flex-row items-center">
           <AssetItem
             image={MoneyImage}
-            value={Util.numberWithCommas(user.properties.money)}
+            value={Util.numberWithCommas(user.money)}
             unit="coin"
           />
         </div>
