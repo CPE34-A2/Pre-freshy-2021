@@ -50,7 +50,7 @@ handler.post(async (req, res) => {
     return Response.denined(res, 'date is not valid')
 
   const stockHistory = await StockHistory
-    .findOne({ symbol: symbol, date: date })
+    .findOne({ symbol: symbol, date: new Date(date) })
     .select()
     .exec()
 
