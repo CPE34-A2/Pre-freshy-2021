@@ -6,6 +6,7 @@ import * as Response from '@/utils/response'
 
 import Clan from '@/models/clan'
 import Planet from '@/models/planet'
+import Battle from '@/models/battle'
 
 
 const handler = nextConnect()
@@ -20,12 +21,12 @@ handler
 
 /**
  * @method Post
- * @endpoint /api/clans/:id/battle
+ * @endpoint /api/clans/:id/battle/phase01
  * @description 
  * 
  * @body bet_money
  * @body bet_fuel
- * @body bet_planets
+ * @body bet_planet_ids
  * @body target_planet
  * 
  * @require User authentication / Clan leadership
@@ -33,7 +34,7 @@ handler
 handler.post(async (req, res) => {
   const betMoney = req.body.bet_money
   const betFuel = req.body.bet_fuel
-  const betPlanetIds = req.body.bet_planet_ids.split(',').map((e) => { return parseInt(e) })
+  let betPlanetIds = req.body.bet_planet_ids
   const targetPlanetId = req.body.target_planet_id
 
   if (isNaN(betMoney))
@@ -42,15 +43,24 @@ handler.post(async (req, res) => {
   if (isNaN(betFuel))
     return Response.denined(res, 'bet_Fuel is not a number')
 
-  betPlanetIds.map((e) => {
-    if (isNaN(e))
-      return Response.denined(res, 'invalid betPlanet')
-  })
+  if (betPlanetIds) {
+    betPlanetIds = betPlanetIds.split(',').map((e) => { return parseInt(e) })
+    betPlanetIds.map((e) => {
+      if (isNaN(e))
+        return Response.denined(res, 'invalid betPlanet')
+    })
+  } else {
+    betPlanetIds = []
+  }
+    
+  const duplicateAttcak = await Battle
+    .findOne({'attacker': req.user.clan_id , 'status': { $nin: ['ATTACKER_WON', 'DEFENDER_WON'] }})
+    .select()
+    .lean()
+    .exec()
 
-  // TODO: Check duplicate battle
-  // const duplicateTransaction = await Transaction.findOne({'owner.id': req.user.clan_id , 'status': 'PENDING'}).select().lean().exec()
-  // if (duplicateTransaction && duplicateTransaction.target_planet_id)
-  //   return Response.denined(res, 'There are still pending battle transaction')
+  if (duplicateAttcak)
+    return Response.denined(res, 'There are still pending battle')
 
   const attakerClan = await Clan
     .findById(req.user.clan_id)
@@ -82,6 +92,15 @@ handler.post(async (req, res) => {
   if (defenderPlanet.owner == 0)
     return Response.denined(res, `This planet has no owner`)
 
+  const defenderOtherBattle = await Battle
+    .findOne({'attacker': defenderPlanet.owner}, { $nin: ['ATTACKER_WON', 'DEFENDER_WON'] })
+    .select('stakes.planet_ids')
+    .lean()
+    .exec()
+  
+  if (defenderOtherBattle.stakes.planet_ids.includes(targetPlanetId))
+    return Response.denined(res, `The planet you want to attack has been involved to other battle`)
+
   if (attakerClan.properties.money < betMoney)
     return Response.denined(res, `low money`)
   
@@ -107,8 +126,9 @@ handler.post(async (req, res) => {
     phase01: {
       confirmer: [req.user.id],
       rejector: [],
-      status: PENDING
-    }
+      status: 'PENDING'
+    },
+    status: 'PENDING'
   })
 
   Response.success(res, battle)
@@ -116,7 +136,7 @@ handler.post(async (req, res) => {
 
 /**
  * @method Patch
- * @endpoint /api/clans/:id/battle
+ * @endpoint /api/clans/:id/battle/phase01
  * @description 
  * 
  * @body battle_id
@@ -180,15 +200,15 @@ handler.patch(async (req, res) => {
     return Response.success(res, 'no money')
   }
 
-  // TODO: check planet
-  // if (attackerClan.properties.money < transaction.item.money) {
-  //   transaction.status = 'REJECT'
-  //   return Response.success(res, 'no planet')
-  // }
+  if (battle.stakes.planet_ids.filter(e => !attackerClan.owned_planet_ids.includes(e)).length) {
+    transaction.status = 'REJECT'
+    return Response.success(res, 'no planet')
+  }
     
   attackerClan.properties.fuel -= defenderPlanet.travel_cost
   attackerClan.properties.fuel -= battle.stakes.fuel
   attackerClan.properties.money -= battle.stakes.money
+  attackerClan.position = attackerClan._id
   await attackerClan.save()
 
   battle.phase01.status = 'SUCCESS'
@@ -197,13 +217,13 @@ handler.patch(async (req, res) => {
   battle.phase02.rejector = []
   battle.phase02.status = 'PENDING'
 
-  battle.current_phase = 1
+  battle.current_phase = 2
   await battle.save()
 })
 
 /**
  * @method Delete
- * @endpoint /api/clans/:id/battle
+ * @endpoint /api/clans/:id/battle/phase01
  * @description 
  * 
  * @body battle_id
