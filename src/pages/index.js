@@ -15,18 +15,18 @@ export default function IndexPage({ user: rawUser, clan: rawClan }) {
   const [user, setUser] = useState(rawUser)
   const [clan, setClan] = useState(rawClan)
 
-  useSocket('set.money', (money) => {
-    const currentMoney = user.money
-    setUser({ ...user, money: currentMoney + money })
+  console.log(clan)
+
+  useSocket('set.money', (userId, money) => {
+    (userId == user._id) && setUser({ ...user, money: money })
   })
 
-  useSocket('set.clan.fuel', (fuel) => {
-    const currentFuel = clan.properties.fuel
-    setClan({ ...clan, properties: { fuel: currentFuel + fuel } })
+  useSocket('set.clan.money', (clanId, money) => {
+    (clanId == user.clan_id) && setClan({ ...clan, money: money })
   })
 
-  useSocket('set.clan.star', (star) => {
-    
+  useSocket('set.clan.fuel', (clanId, fuel) => {
+    (clanId == user.clan_id) && setClan({ ...clan, fuel: fuel })
   })
 
   return (
