@@ -119,7 +119,7 @@ handler.post(async (req, res) => {
     stakes: {
       money: betMoney || 0,
       fuel: betFuel || 0,
-      planet: betPlanetIds || []
+      planet_ids: betPlanetIds || []
     },
     target_planet_id: targetPlanetId,
     confirm_require: EXPECTED_REQUIRER,

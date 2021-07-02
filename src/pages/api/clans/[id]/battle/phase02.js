@@ -122,7 +122,7 @@ handler.delete(async (req, res) => {
       .select()
       .exec()
 
-    const penaltyPlanetPoint = PraseInt(attackerPlanet.point / 4)
+    const penaltyPlanetPoint = parseInt(attackerPlanet.point / 4)
     attackerPlanet.point = attackerPlanet.point + penaltyPlanetPoint
     defenderPlanet.point = defenderPlanet.point - penaltyPlanetPoint
 
@@ -131,7 +131,7 @@ handler.delete(async (req, res) => {
       .select()
       .exec()
     
-    attackerClan.properties = PraseInt(defenderPlanet.travel_cost * 2 / 3)
+    attackerClan.properties = parseInt(defenderPlanet.travel_cost * 2 / 3)
     attackerClan.position = attackerClan._id
 
     battle.phase02.status = 'REJECT'
