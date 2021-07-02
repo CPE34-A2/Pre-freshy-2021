@@ -1,6 +1,6 @@
 const baseUrl = process.env.NEXT_PUBLIC_WEB_URL || 'http://localhost:3000'
 
-export default async function fetchAPI(method, url, body) {
+export default async function useFetch(method, url, body) {
   const response = await fetch(`${baseUrl}${url}`, {
     method: method,
     headers: {
