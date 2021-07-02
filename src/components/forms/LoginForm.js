@@ -11,7 +11,7 @@ import InputBox from '@/components/common/InputBox'
 import Button from '@/components/common/Button'
 import Spinner from '@/components/common/Spinner'
 import AlertNotification from '@/components/common/AlertNotification'
-import { EyeIcon, EyeOffIcon, ExclamationCircleIcon } from '@heroicons/react/outline'
+import { EyeIcon, EyeOffIcon } from '@heroicons/react/outline'
 
 export default function LoginForm() {
   const USERNAME_REGAX = /^[0-9\b]+$/
@@ -100,7 +100,10 @@ export default function LoginForm() {
           </div>
         </div>
 
-        <AlertNotification error={loginError} />
+        <AlertNotification
+          type="error"
+          info={loginError}
+        />
 
         <Button
           type="submit"
