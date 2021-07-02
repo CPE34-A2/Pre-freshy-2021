@@ -7,6 +7,8 @@ import Stock from '@/models/stock'
 import Clan from '@/models/clan'
 import StockHistory from '@/models/stock-history'
 
+import moment from 'moment-timezone'
+
 const handler = nextConnect()
 
 handler
@@ -29,7 +31,8 @@ const SYMBOL = ['MINT', 'ECML', 'HCA', 'LING', 'MALP']
 handler.post(async (req, res) => {
   let symbol = req.body.symbol
   const rate = parseInt(req.body.rate)
-  const date = req.body.date
+  const date = moment.tz((req.body.date), "DD/MM/YYYY",  "Asia/Bangkok").utcOffset('+0700').valueOf()
+  const currentDate = moment().utcOffset('+0700').startOf('day').valueOf()
 
   if (symbol)
     symbol = symbol.toUpperCase()
@@ -57,12 +60,12 @@ handler.post(async (req, res) => {
   } else {
     var newStockHistory = await StockHistory.create({
       symbol: symbol,
-      date: date,
+      date: new Date(date),
       rate: rate
     })
   }
 
-  if (date === (new Date()).toLocaleDateString()) {
+  if (currentDate == date) {
     const stock = await Stock
       .findOne({ 'symbol': symbol })
       .select()

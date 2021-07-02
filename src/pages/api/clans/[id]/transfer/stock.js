@@ -8,6 +8,8 @@ import Clan from '@/models/clan'
 import Stock from '@/models/stock'
 import Transaction from '@/models/transaction'
 
+import moment from 'moment-timezone'
+
 const handler = nextConnect()
 
 handler
@@ -35,9 +37,9 @@ handler.post(async (req, res) => {
   let method = req.body.method
   let symbol = req.body.symbol
   const amount = parseInt(req.body.amount)
-  const requestHour = (new Date()).getHours()
+  const currentTime = moment().utcOffset('+0700').hour()
 
-  if (requestHour < OPEN_MARKET_TIME || requestHour > CLOSE_MARKET_TIME) {
+  if (currentTime < OPEN_MARKET_TIME || currentTime > CLOSE_MARKET_TIME) {
     return Response.denined(res, 'market closed!!!')
   }
 
