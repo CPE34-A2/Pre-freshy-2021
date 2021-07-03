@@ -59,6 +59,9 @@ handler.post(async (req, res) => {
     }
   })
 
+  req.socket.server.io.emit('set.money', user._id, user.money)
+  req.socket.server.io.emit('set.clan.money', user.clan_id, clan.properties.money)
+
   Response.success(res, {
     user_money: user.money,
     clan_money: clan.properties.money
