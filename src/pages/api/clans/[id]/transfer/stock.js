@@ -23,6 +23,33 @@ const OPEN_MARKET_TIME = 9
 const CLOSE_MARKET_TIME = 22
 
 /**
+ * @method GET
+ * @endpoint /api/clans/:id/transfer/stock
+ * @description Get the pending stock trasaction
+ * 
+ * @require User authentication
+ */
+handler.get(async (req, res) => {
+  const clanId = parseInt(req.query.id)
+  let transaction = null
+
+  if (!isNaN(clanId)) {
+    transaction = await Transaction.findOne({ $or: [{ 'owner.id': req.query.id, 'receiver.type': 'market' }, { 'receiver.id': req.query.id, 'owner.type': 'market' }] }, { 'status': 'PENDING' })
+      .select('_id')
+      .lean()
+      .exec()
+  }
+
+  res
+    .status(transaction ? 200 : 400)
+    .json({
+      sucesss: true,
+      data: transaction,
+      timestamp: new Date()
+    })
+})
+
+/**
  * @method POST
  * @endpoint /api/clans/:id/stock
  * @description Make new pending trasaction of stock trading
@@ -160,7 +187,7 @@ handler.patch(async (req, res) => {
     return Response.denined(res, `Don't be indecisive. You can't confirm what you rejected.`)
 
   const stock = await Stock
-    .findOne({'symbol': transaction.itme.stock.symbol})
+    .findOne({ 'symbol': transaction.itme.stock.symbol })
     .select('rate')
     .lean()
     .exec()
@@ -170,7 +197,7 @@ handler.patch(async (req, res) => {
     await transaction.save()
     return Response.denined(res, `The price has been changed`)
   }
-    
+
   transaction.confirmer.push(req.user.id)
   await transaction.save()
 
