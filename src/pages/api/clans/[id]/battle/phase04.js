@@ -296,7 +296,7 @@ handler.delete(async (req, res) => {
     attackerClan.properties.fuel += battle.stakes.fuel
     attackerClan.owned_planet_ids.push(battle.target_planet_id)
     clan.owned_planet_ids.pull(battle.target_planet_id)
-    attackerClan.position = clan._id
+    attackerClan.position = attackerClan._id
     targetPlanet.owner = attackerClan._id
     await attackerClan.save()
     await targetPlanet.save()
