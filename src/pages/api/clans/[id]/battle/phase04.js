@@ -47,7 +47,7 @@ handler.patch(async (req, res) => {
     return Response.denined(res, 'You skipped phase')
   }
 
-  if ((req.query.id != battle.attacker) || (req.query.id != battle.defender)) {
+  if ((req.query.id != battle.attacker) && (req.query.id != battle.defender)) {
     return Response.denined(res, 'This is not your battle')
   }
 
