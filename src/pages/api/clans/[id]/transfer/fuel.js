@@ -210,7 +210,6 @@ handler.patch(async (req, res) => {
  * @require User authentication / Clan membership
  */
 handler.delete(async (req, res) => {
-
   const clan = await Clan
     .findById(req.query.id)
     .select('properties leader')

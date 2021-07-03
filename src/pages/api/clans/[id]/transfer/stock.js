@@ -197,7 +197,6 @@ handler.patch(async (req, res) => {
     await transaction.save()
     return Response.denined(res, `The price has been changed`)
   }
-
   transaction.confirmer.push(req.user.id)
   await transaction.save()
 
