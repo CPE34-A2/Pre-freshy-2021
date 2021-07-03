@@ -1,4 +1,7 @@
-<h1 align="center">CPE PREFRESHY 2021</h1>
+<p align="center">
+  <img src="https://github.com/CPE34-A2/pre-freshy-2021/blob/main/public/logo-with-text-alt.png" alt="pre-freshy 2021" width="200" />
+</p>
+
 <p align="center">Activities website for CPE KMUTT FRESHY 2021</p>
 
 ### 📝 Requirements
