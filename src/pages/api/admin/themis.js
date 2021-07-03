@@ -33,7 +33,6 @@ handler.post(async (req, res) => {
   var command = req.body.command
   const battleId = req.body.battle_id
 
-  // validating input
   if (!command)
     return Response.denined(res, 'Please insert your command')
 
@@ -64,41 +63,16 @@ handler.post(async (req, res) => {
     if (battle.current_phase == 1) {
       battle.phase01.status = 'REJECT'
       battle.status == 'REJECT'
+      battle.current_phase = 0
       await battle.save()
 
       return Response.success(res, `End phase01 compleded!!!`)
     }
 
+    battle.current_phase = 0
     battle.phase02.status = 'REJECT'
-    battle.phase03.status = 'REJECT'
-    battle.phase04.status = 'REJECT'
-    battle.status == 'REJECT'
-    await battle.save()
-
-    const attackerClan = await Clan
-      .findById(battle.attacker)
-      .select()
-      .exec()
-
-    const defenderClan = await Clan
-      .findById(battle.defender)
-      .select()
-      .exec()
-
-    attackerClan.properties.fuel += defenderPlanet.travel_cost
-    attackerClan.properties.fuel += battle.stakes.fuel
-    attackerClan.properties.money += battle.stakes.money
-    attackerClan.position = attackerClan._id
-
-    await attackerClan.save()
-    await defenderClan.save()
-    return Response.success(res, `The war is ended like it never happended`)
-  }
-
-  if (command == 'ATTACKER_WIN') {
-    if (battle.current_phase == 1)
-      return Response.denined(res, `The war is not declared yet!!! You can't force someone to be defeated`)
-
+    battle.status = 'REJECT'
+    
     const attackerClan = await Clan
       .findById(battle.attacker)
       .select()
@@ -117,20 +91,14 @@ handler.post(async (req, res) => {
     attackerClan.properties.fuel += defenderPlanet.travel_cost
     attackerClan.properties.fuel += battle.stakes.fuel
     attackerClan.properties.money += battle.stakes.money
+    attackerClan.position = attackerClan._id
 
-    attackerClan.owned_planet_ids.push(battle.target_planet_id)
-    defenderClan.owned_planet_ids.pull(battle.target_planet_id)
-    defenderPlanet.owner = battle.attacker
-
-    battle.current_phase = 4
-    battle.status = 'ATTACKER_WON'
-
+    await battle.save()
     await attackerClan.save()
     await defenderClan.save()
     await defenderPlanet.save()
-    await battle.save()
+    return Response.success(res, `The war is ended like it never happended`)
 
-    return Response.success(res, `Attacker win!!!`)
   }
 
   if (command == 'ATTACKER_WIN') {
@@ -152,7 +120,6 @@ handler.post(async (req, res) => {
       .select()
       .exec()
 
-    attackerClan.properties.fuel += defenderPlanet.travel_cost
     attackerClan.properties.fuel += battle.stakes.fuel
     attackerClan.properties.money += battle.stakes.money
 
@@ -162,7 +129,7 @@ handler.post(async (req, res) => {
 
     attackerClan.position = attackerClan._id
 
-    battle.current_phase = 4
+    battle.current_phase = 0
     battle.status = 'ATTACKER_WON'
 
     await attackerClan.save()
@@ -192,18 +159,29 @@ handler.post(async (req, res) => {
 
     defenderClan.owned_planet_ids.push(...battle.stakes.planet_ids)
     attackerClan.owned_planet_ids.pull(...battle.stakes.planet_ids)
-    battle.stakes.planet_ids.forEach((e) => { e.owner = battle.defender })
+
+    const stakePlanets = await Planet
+      .find({ _id: { $in: [...battle.stakes.planet_ids] } })
+      .select('owner')
+      .exec()
+
+    if (!stakePlanets)
+      return Response.denined(res, 'error finding stake planets')
+
+    stakePlanets.forEach(planet => {
+      planet.owner = defenderClan._id
+      planet.save()
+    })
 
     attackerClan.position = attackerClan._id
-
-    battle.current_phase = 4
+    battle.current_phase = 0
     battle.status = 'DEFENDER_WON'
 
     await attackerClan.save()
     await defenderClan.save()
     await battle.save()
 
-    return Response.success(res, `Attacker win!!!`)
+    return Response.success(res, `Defender win!!!`)
   }
 
   return Response.denined(res, `If you are seeing this response, please contact us`)
