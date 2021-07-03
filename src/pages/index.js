@@ -62,7 +62,6 @@ export async function getServerSideProps({ req, res }) {
     delete clan.properties.stocks
     delete clan.members
     delete clan.position
-    delete clan.fuel_rate
     
     return { props: { user: user, clan: clan } }
   } catch (error) {

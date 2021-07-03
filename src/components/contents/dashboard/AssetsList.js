@@ -6,6 +6,7 @@ import StarImage from '@/publics/star.png'
 
 import AssetItem from './AssetItem'
 import DonateMoneyModal from './modals/DonateMoneyModal'
+import BuyFuelModal from './modals/BuyFuelModal'
 
 export default function AssetsList({ user, clan }) {
   return (
@@ -23,8 +24,8 @@ export default function AssetsList({ user, clan }) {
             value={Util.numberWithCommas(user.money)}
             unit="coin"
           />
-          
-          {(user.money != 0) && (<DonateMoneyModal user={user} />)}
+
+          <DonateMoneyModal user={user} />
         </div>
 
         <div className="font-medium text-gray-500 mt-4 mb-2">Clan items</div>
@@ -34,11 +35,17 @@ export default function AssetsList({ user, clan }) {
             value={Util.numberWithCommas(clan.properties.money)}
             unit="coin"
           />
-          <AssetItem
-            image={GallonImage}
-            value={Util.numberWithCommas(clan.properties.fuel)}
-            unit="gallon"
-          />
+
+          <div className="flex flex-row items-center justify-between">
+            <AssetItem
+              image={GallonImage}
+              value={Util.numberWithCommas(clan.properties.fuel)}
+              unit="gallon"
+            />
+
+            {(user._id == clan.leader) && <BuyFuelModal clan={clan} />}
+          </div>
+
           <AssetItem
             image={StarImage}
             value={clan.owned_planet_ids.length}
