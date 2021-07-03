@@ -25,7 +25,7 @@ export default function DonateMoneyModal({ user }) {
   })
 
   const openDialog = () => setIsOpen(true)
-  const closeModal = () => { setIsOpen(false); setDonateError(''); setDonate(''); }
+  const closeModal = () => { setIsOpen(false); setDonateError(''); setDonate(''); setDonateDone(false); }
 
   const handleDonateChange = (e) => {
     const value = e.target.value
@@ -33,7 +33,7 @@ export default function DonateMoneyModal({ user }) {
     // Prevent user to input non-integer, starts with 0 and negative integer
     const isNotInteger = !(/^\+?(0|[1-9]\d*)$/.test(value))
     const isStartsWithZero = (/^0/.test(value))
-    
+
     if (isNaN(value) || isStartsWithZero || (value && isNotInteger) || parseInt(value) < 0) return
 
     setDonateError((value > user.money) ? 'Your coin is not enough' : '')
@@ -141,10 +141,10 @@ export default function DonateMoneyModal({ user }) {
                     value={donate}
                     onChange={handleDonateChange}
                   />
-                  
+
                   <Button
                     type="submit"
-                    name={isDonating ? "DONATING" : "DONATE" }
+                    name={isDonating ? "DONATING" : "DONATE"}
                     icon={isDonating && <Spinner style="mr-2 w-3 h-3 text-white" />}
                     style={Util.concatClasses(
                       "inline-flex items-center justify-center px-3 bg-purple-700 rounded-r-lg ring-1 ring-purple-800 shadow-md font-semibold text-white text-sm disabled:opacity-50",
