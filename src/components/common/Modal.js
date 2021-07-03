@@ -19,7 +19,7 @@ export default function Modal({ children, open, close }) {
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <Dialog.Overlay className="fixed inset-0 bg-gray-700 opacity-40" />
+            <Dialog.Overlay className="fixed inset-0 bg-gray-700 opacity-70" />
           </Transition.Child>
 
           <Transition.Child
