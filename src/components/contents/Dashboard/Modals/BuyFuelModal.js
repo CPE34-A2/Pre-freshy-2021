@@ -88,7 +88,7 @@ export default function BuyFuelModal({ clan }) {
           <div className="flex flex-col justify-center w-56 md:w-72">
             <div className="flex flex-row items-center bg-purple-100 rounded-lg px-4 py-2">
               <div className="w-14 h-14">
-                <Image src={GallonImage} />
+                <Image src={GallonImage} alt="" />
               </div>
               <div className="ml-3 leading-none">
                 <div className="font-bold text-purple-900 text-lg">Starship fuel</div>

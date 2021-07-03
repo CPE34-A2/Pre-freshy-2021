@@ -93,13 +93,13 @@ export default function DonateMoneyModal({ user }) {
                 </div>
 
                 <div className="hidden md:flex absolute top-0 left-0 -translate-y-8 translate-x-6 w-32 h-32">
-                  <Image src={MoneyImage} />
+                  <Image src={MoneyImage} alt="" />
                 </div>
 
                 <div className="flex flex-row justify-center mb-6">
                   <div className="flex w-44 items-center justify-center">
                     <div className="flex md:hidden w-24 h-24">
-                      <Image src={MoneyImage} />
+                      <Image src={MoneyImage} alt="" />
                     </div>
                   </div>
 

@@ -5,7 +5,7 @@ export default function AssetItem({ image, value, unit }) {
     <div className="flex flex-row items-center">
       <div className="flex items-center justify-center drop-shadow-sm">
         <div className="w-10 h-10">
-          <Image src={image} />
+          <Image src={image} alt="" />
         </div>
       </div>
       <div className="flex flex-col ml-3 leading-none">
