@@ -18,10 +18,13 @@ handler
  * @endpoint /api/admin/sorayuth
  * @description add news by admin
  * @description category(number) 
- *              [1] NORMAL
- *              [2] STOCK
- *              [3] DISATER
- *
+ *              [1] DAILY
+ *              [2] DISASTER
+ * @description affect(number)
+ *              [0] NONE
+ *              [1] COIN
+ *              [2] FUEL
+ *              [3] PLANET
  * @body title content and category *required
  *
  *
@@ -31,11 +34,11 @@ handler
 handler.post(async (req, res) => {
   const title = req.body.title
   const content = req.body.content
+  const englishContent = req.body.english_content
   const category = parseInt(req.body.category)
+  const affect = parseInt(req.body.affect) || 0
 
-  console.log(title, content, category)
-
-  if ((!title) && (!content) && (!category)) {
+  if ((!title) && (!content) && (!category) && (!affect) && (!englishContent)) {
     return Response.denined(res, 'Please fill in the blanks')
   }
 
@@ -53,28 +56,39 @@ handler.post(async (req, res) => {
     return Response.denined(res, 'Please fill blanks of category to number')
   }
 
-  if (category < 1 || category > 3) {
-    return Response.denined(res, 'Please enter a valid value.')
+  if (category < 1 || category > 2) {
+    return Response.denined(res, 'Please enter a valid category value.')
+  }
+
+  if (affect <= 0 || affect >= 3) {
+    return Response.denined(res, 'Please enter a valid affect value')
   }
 
   const news = await News.create({
     title: title,
     content: content,
+    english_content: englishContent ? englishContent : '',
     category: 'CHECKING',
+    affect: 'NONE',
     author: req.user.id
   })
 
   if (category == 1) {
-    news.category = 'NORMAL'
+    news.category = 'DAILY'
   }
 
   if (category == 2) {
-    news.category = 'STOCK'
-  }
-
-  if (category == 3) {
     news.category = 'DISASTER'
   }
+
+  if (affect == 1)
+    news.affect = 'COIN'
+
+  if (affect == 2)
+    news.affect = 'FUEL'
+
+  if (affect == 3)
+    news.affect = 'PLANET'
 
   await news.save()
 
@@ -93,9 +107,6 @@ handler.post(async (req, res) => {
  * @endpoint /api/admin/sorayuth
  * @description delete news by admin
  * @description category(number)
- *              [1] NORMAL
- *              [2] STOCK
- *              [3] DISATER
  *
  * @body news_id
  *
@@ -112,7 +123,7 @@ handler.delete(async (req, res) => {
     .exec()
 
   if (!news)
-    return Response.denined(res, 'News not found')
+    return Response.denined(res, 'news not found')
 
   const title_copy = news.title
   const content_copy = news.content
@@ -129,7 +140,6 @@ handler.delete(async (req, res) => {
     author: author_copy,
     deleter: req.user.id
   })
-
 })
 
 export default handler
