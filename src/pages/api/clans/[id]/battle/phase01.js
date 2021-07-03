@@ -214,7 +214,7 @@ handler.patch(async (req, res) => {
   attackerClan.properties.fuel -= defenderPlanet.travel_cost
   attackerClan.properties.fuel -= battle.stakes.fuel
   attackerClan.properties.money -= battle.stakes.money
-  attackerClan.position = attackerClan._id
+  attackerClan.position = target_planet_id
   await attackerClan.save()
 
   battle.phase01.status = 'SUCCESS'
