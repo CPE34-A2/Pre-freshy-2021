@@ -27,7 +27,7 @@ handler.patch(async (req, res) => {
     return Response.denined(res, 'Invalid battle id')
   }
 
-  const battle = Battle
+  const battle = await Battle
     .findById(req.body.battle_id)
     .exec()
 
@@ -64,13 +64,12 @@ handler.patch(async (req, res) => {
   const clan = await Clan
     .findById(req.query.id)
     .select('properties owned_planet_ids')
-    .lean()
     .exec()
 
   if (!clan)
     return Response.denined(res, 'clan not found')
 
-  if (battle.phase04.attacker_vote_won.includes(req.user.id) || battle.phase04.defender_vote_won.includes(req.user.id)) {
+  if (battle.phase04.attacker_vote_win.includes(req.user.id) || battle.phase04.defender_vote_win.includes(req.user.id)) {
     return Response.denined(res, 'You already voted win')
   }
 
@@ -81,21 +80,21 @@ handler.patch(async (req, res) => {
   let winner
 
   if (role == 'attacker') {
-    battle.phase04.attacker_vote_won.push(req.user.id)
+    battle.phase04.attacker_vote_win.push(req.user.id)
 
-    if (battle.phase04.attacker_vote_won.length >= battle.confirm_require) {
+    if (battle.phase04.attacker_vote_win.length >= battle.confirm_require) {
       winner = 'attacker'
     }
 
   } else if (role == 'defender') {
-    battle.phase04.defender_vote_won.push(req.user.id)
+    battle.phase04.defender_vote_win.push(req.user.id)
     
-    if (battle.phase04.defender_vote_won.length >= battle.confirm_require) {
+    if (battle.phase04.defender_vote_win.length >= battle.confirm_require) {
       winner = 'defender'
     }
   }
 
-  if ((battle.phase04.defender_vote_won.length >= battle.confirm_require) && (battle.phase04.attacker_vote_won.length >= battle.confirm_require)) {
+  if ((battle.phase04.defender_vote_win.length >= battle.confirm_require) && (battle.phase04.attacker_vote_win.length >= battle.confirm_require)) {
     battle.phase04.status = 'SUS'
     battle.status = 'SUS'
   }
@@ -165,7 +164,7 @@ handler.delete(async (req, res) => {
     return Response.denined(res, 'Invalid battle id')
   }
 
-  const battle = Battle
+  const battle = await Battle
     .findById(req.body.battle_id)
     .exec()
 
@@ -173,7 +172,7 @@ handler.delete(async (req, res) => {
     return Response.denined(res, 'Battle not found')
   }
   
-  if (battle != 'PENDING') {
+  if (battle.status != 'PENDING') {
     return Response.denined(res, 'Battle ended')
   }
 
@@ -185,7 +184,7 @@ handler.delete(async (req, res) => {
     return Response.denined(res, 'You skipped phase')
   }
 
-  if ((req.query.id != battle.attacker) || (req.query.id != battle.defender)) {
+  if ((req.query.id != battle.attacker) && (req.query.id != battle.defender)) {
     return Response.denined(res, 'This is not your battle')
   }
 
@@ -202,7 +201,6 @@ handler.delete(async (req, res) => {
   const clan = await Clan
     .findById(req.query.id)
     .select('properties owned_planet_ids')
-    .lean()
     .exec()
 
   if (!clan)

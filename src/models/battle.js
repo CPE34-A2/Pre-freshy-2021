@@ -66,13 +66,13 @@ const battleSchema = new mongoose.Schema({
     }
   },
   phase04: {
-    attacker_vote_won: {
+    attacker_vote_win: {
       type: Array
     },
     attacker_vote_lose: {
       type: Array
     },
-    defender_vote_won: {
+    defender_vote_win: {
       type: Array
     },
     defender_vote_lose: {
