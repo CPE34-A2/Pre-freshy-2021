@@ -17,16 +17,17 @@ export default function DonateMoneyModal({ user }) {
   const [isOpen, setIsOpen] = useState(false)
   const [isDonating, setIsDonating] = useState(false)
   const [amount, setAmount] = useState('')
-  const [donateDone, setDonateDone] = useState('')
-  const [donateError, setDonateError] = useState('')
+  
+  const [notification, notify] = useState({ type: '', info: '' })
+  const clearNotification = () => notify({ type: '', info: '' })
 
   useEffect(() => {
     // Revalidate while input donate and someone gives coin
-    (donateError && ((amount) && (amount != 0) && (user.money >= amount))) && setDonateError('')
+    ((notification.type == 'error') && ((amount) && (amount != 0) && (user.money >= amount))) && clearNotification()
   })
 
   const openModal = () => setIsOpen(true)
-  const closeModal = () => { setIsOpen(false); setDonateError(''); setAmount(''); setDonateDone(false); }
+  const closeModal = () => { setIsOpen(false); setAmount(''); clearNotification() }
 
   const handleDonateChange = (e) => {
     const value = e.target.value
@@ -37,8 +38,12 @@ export default function DonateMoneyModal({ user }) {
 
     if (isNaN(value) || isStartsWithZero || (value && isNotInteger) || parseInt(value) < 0) return
 
-    setDonateError((value > user.money) ? 'Your coin is not enough' : '')
-    setDonateDone(!donateError && '')
+    if (value > user.money) {
+      notify({ type: 'error', info: 'Your coin is not enough' })
+    } else {
+      clearNotification()
+    }
+
     setAmount(value)
   }
 
@@ -46,18 +51,18 @@ export default function DonateMoneyModal({ user }) {
     e.preventDefault()
 
     if (!amount) {
-      return setDonateError('Please insert your coin amount')
+      return notify({ type: 'error', info: 'Please insert your coin amount' })
     }
 
     setIsDonating(true)
-    setDonateDone(false)
+    clearNotification()
 
     useFetch('POST', `/api/users/${user._id}/transfer/coin`, { amount: amount })
       .then(async response => {
         if (response.status == 200) {
-          setDonateDone(<>Donation successful <b>(-{Util.numberWithCommas(amount)} coin)</b></>)
+          notify({ type: 'success', info: <>Donation successful <b>(-{Util.numberWithCommas(amount)} coin)</b></> })
         } else {
-          setDonateError('Something went wrong')
+          notify({ type: 'error', info: 'Something went wrong' })
         }
       })
       .finally(() => {
@@ -113,8 +118,8 @@ export default function DonateMoneyModal({ user }) {
           </div>
 
           <AlertNotification
-            type={donateDone ? 'success' : 'error'}
-            info={donateDone || donateError}
+            type={notification.type}
+            info={notification.info}
             style="mb-3"
           />
 
@@ -133,9 +138,9 @@ export default function DonateMoneyModal({ user }) {
               icon={isDonating && <Spinner style="mr-2 w-3 h-3 text-white" />}
               style={Util.concatClasses(
                 "inline-flex items-center justify-center px-3 bg-purple-700 rounded-r-lg ring-1 ring-purple-800 shadow-md font-semibold text-white text-sm disabled:opacity-50",
-                (donateError) || (user.money < amount) ? 'cursor-not-allowed' : 'hover:bg-purple-800'
+                ((notification.type == 'error') || (user.money < amount)) ? 'cursor-not-allowed' : 'hover:bg-purple-800'
               )}
-              disabled={donateError || isDonating || (user.money < amount)}
+              disabled={(notification.type == 'error') || isDonating || (user.money < amount)}
             />
           </form>
         </div>
