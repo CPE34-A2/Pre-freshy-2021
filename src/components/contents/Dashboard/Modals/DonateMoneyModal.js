@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import Image from 'next/image'
 
 import * as Util from '@/utils/common'
-import useFetch from '@/hooks/useFetch'
+import fetchAPI from '@/utils/fetch'
 
 import Modal from '@/components/common/modal'
 import InputBox from '@/components/common/InputBox'
@@ -57,7 +57,7 @@ export default function DonateMoneyModal({ user }) {
     setIsDonating(true)
     clearNotification()
 
-    useFetch('POST', `/api/users/${user._id}/transfer/coin`, { amount: amount })
+    fetchAPI('POST', `/api/users/${user._id}/transfer/coin`, { amount: amount })
       .then(async response => {
         if (response.status == 200) {
           notify({ type: 'success', info: <>Donation successful <b>(-{Util.numberWithCommas(amount)} coin)</b></> })
