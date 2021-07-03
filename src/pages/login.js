@@ -1,7 +1,6 @@
 import WebContainer from '@/components/common/WebContainer'
 import Head from '@/components/common/Head'
-import Footer from '@/components/footer/Footer'
-import LoginForm from '@/components/forms/LoginForm'
+import LoginForm from '@/components/common/Forms/LoginForm'
 
 export default function LoginPage() {
   return (
@@ -13,7 +12,8 @@ export default function LoginPage() {
 
       <LoginForm />
 
-      <Footer />
+      {/* Fake element for centering LoginForm */}
+      <footer />
     </WebContainer>
   )
 }

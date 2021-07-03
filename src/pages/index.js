@@ -6,10 +6,9 @@ import { getUser } from '@/pages/api/users/[id]/index'
 import { getClan } from '@/pages/api/clans/[id]/index'
 
 import Head from '@/components/common/Head'
-import Navbar from '@/components/navbar/Navbar'
-import DashboardContainer from '@/components/contents/dashboard/DashboardCotainer'
-import Dashboard from '@/components/contents/dashboard/Dashboard'
-import Footer from '@/components/footer/Footer'
+import Navbar from '@/components/common/Navbar/Navbar'
+import DashboardContainer from '@/components/contents/Dashboard/DashboardCotainer'
+import Dashboard from '@/components/contents/Dashboard/Dashboard'
 
 export default function IndexPage({ user: rawUser, clan: rawClan }) {
   const [user, setUser] = useState(rawUser)
@@ -40,8 +39,6 @@ export default function IndexPage({ user: rawUser, clan: rawClan }) {
         user={user}
         clan={clan}
       />
-
-      <Footer />
     </DashboardContainer>
   )
 }
