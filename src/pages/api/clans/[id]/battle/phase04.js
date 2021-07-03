@@ -6,6 +6,7 @@ import * as Response from '@/utils/response'
 
 import Clan from '@/models/clan'
 import Battle from '@/models/battle'
+import Planet from '@/models/planet'
 
 const handler = nextConnect()
 
@@ -118,11 +119,21 @@ handler.patch(async (req, res) => {
     if (!defenderClan)
       return Response.denined(res, 'error finding defender clan')
 
+    const targetPlanet = await Planet
+      .findById(battle.target_planet_id)
+      .select('owner')
+      .exec()
+
+    if (!targetPlanet)
+      return Response.denined(res, 'error finding target planet')
+
     clan.properties.money += battle.stakes.money
     clan.properties.fuel += battle.stakes.fuel
     clan.owned_planet_ids.push(battle.target_planet_id)
     defenderClan.owned_planet_ids.pull(battle.target_planet_id)
     clan.position = clan._id
+    targetPlanet.owner = clan._id
+    await targetPlanet.save()
     await defenderClan.save()
   }
 
@@ -139,11 +150,23 @@ handler.patch(async (req, res) => {
     if (!attackerClan)
       return Response.denined(res, 'error finding attacker clan')
 
+    const stakePlanets = await Planet
+      .find({ _id: { $in: [...battle.stakes.planet_ids]}})
+      .select('owner')
+      .exec()
+
+    if (!stakePlanets) 
+      return Response.denined(res, 'error finding stake planets')
+
     clan.properties.money += battle.stakes.money
     clan.properties.fuel += battle.stakes.fuel
     clan.owned_planet_ids.push(...battle.stakes.planet_ids)
     battle.stakes.planet_ids.forEach(planet => {
       attackerClan.owned_planet_ids.pull(planet)
+    })
+    stakePlanets.forEach(planet => {
+      planet.owner = clan._id
+      planet.save()
     })
     attackerClan.position = attackerClan._id
     await attackerClan.save()
@@ -261,12 +284,22 @@ handler.delete(async (req, res) => {
     if (!attackerClan)
       return Response.denined(res, 'error finding attacker clan')
 
+    const targetPlanet = await Planet
+      .findById(battle.target_planet_id)
+      .select('owner')
+      .exec()
+
+    if (!targetPlanet)
+      return Response.denined(res, 'error finding target planet')
+
     attackerClan.properties.money += battle.stakes.money
     attackerClan.properties.fuel += battle.stakes.fuel
     attackerClan.owned_planet_ids.push(battle.target_planet_id)
     clan.owned_planet_ids.pull(battle.target_planet_id)
     attackerClan.position = clan._id
+    targetPlanet.owner = attackerClan._id
     await attackerClan.save()
+    await targetPlanet.save()
   }
 
   if ((loser == 'attacker') && (battle.phase04.defender_vote_win.length >= battle.confirm_require)) {
@@ -282,11 +315,23 @@ handler.delete(async (req, res) => {
     if (!defenderClan)
       return Response.denined(res, 'error finding defender clan')
 
+    const stakePlanets = await Planet
+      .find({ _id: { $in: [...battle.stakes.planet_ids]}})
+      .select('owner')
+      .exec()
+
+    if (!stakePlanets) 
+      return Response.denined(res, 'error finding stake planets')
+
     defenderClan.properties.money += battle.stakes.money
     defenderClan.properties.fuel += battle.stakes.fuel
     defenderClan.owned_planet_ids.push(...battle.stakes.planet_ids)
     battle.stakes.planet_ids.forEach(planet => {
       clan.owned_planet_ids.pull(planet)
+    })
+    stakePlanets.forEach(planet => {
+      planet.owner = defenderClan._id
+      planet.save()
     })
     clan.position = clan._id
     await defenderClan.save()
