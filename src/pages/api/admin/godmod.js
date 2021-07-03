@@ -16,24 +16,24 @@ handler
   .use(permission)
 
 /**
- * @method POST
+ * @method GET
  * @endpoint /api/admin/godmod
  * @description add/del resoureces by admin-god-moderator power
  * @description assign someone as a clan leader
  * @description positive resource to add/ negative resource to del
  * 
- * @body clan_id *required
- * @body money,fuel,planet_id,leader_id,fuel_rate *optional
+ * @param clan_id *required
+ * @param money,fuel,planet_id,leader_id,fuel_rate *optional
  * 
  * @require Admin authentication
  */
-handler.post(async (req, res) => {
-  const money = parseInt(req.body.money) || 0
-  const fuel = parseInt(req.body.fuel) || 0
-  const planetId = parseInt(req.body.planet_id) || 0
-  const clanId = parseInt(req.body.clan_id)
-  const leaderId = parseInt(req.body.leader_id) || 0
-  const fuelRate = parseInt(req.body.fuel_rate) || 3
+handler.get(async (req, res) => {
+  const money = parseInt(req.query.money) || 0
+  const fuel = parseInt(req.query.fuel) || 0
+  const planetId = parseInt(req.query.planet_id) || 0
+  const clanId = parseInt(req.query.clan_id)
+  const leaderId = parseInt(req.query.leader_id) || 0
+  const fuelRate = parseInt(req.query.fuel_rate) || 3
 
   if (isNaN(clanId))
     return Response.denined(res, 'clan id is invalid')
