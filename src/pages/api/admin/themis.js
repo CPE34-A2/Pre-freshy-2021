@@ -63,11 +63,13 @@ handler.post(async (req, res) => {
     if (battle.current_phase == 1) {
       battle.phase01.status = 'REJECT'
       battle.status == 'REJECT'
+      battle.current_phase = 0
       await battle.save()
 
       return Response.success(res, `End phase01 compleded!!!`)
     }
 
+    battle.current_phase = 0
     battle.phase02.status = 'REJECT'
     battle.status = 'REJECT'
     
@@ -126,7 +128,7 @@ handler.post(async (req, res) => {
 
     attackerClan.position = attackerClan._id
 
-    battle.current_phase = 4
+    battle.current_phase = 0
     battle.status = 'ATTACKER_WON'
 
     await attackerClan.save()
@@ -172,7 +174,7 @@ handler.post(async (req, res) => {
 
     attackerClan.position = attackerClan._id
 
-    battle.current_phase = 4
+    battle.current_phase = 0
     battle.status = 'DEFENDER_WON'
 
     await attackerClan.save()
@@ -183,7 +185,6 @@ handler.post(async (req, res) => {
   }
 
   return Response.denined(res, `If you are seeing this response, please contact us`)
-
 })
 
 export default handler
