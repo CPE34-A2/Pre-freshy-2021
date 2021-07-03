@@ -88,7 +88,6 @@ handler.post(async (req, res) => {
     attackerClan.properties.fuel += battle.stakes.fuel
     attackerClan.properties.money += battle.stakes.money
     attackerClan.position = attackerClan._id
-    defenderClan.position = defenderClan._id
 
     await attackerClan.save()
     await defenderClan.save()
@@ -161,7 +160,6 @@ handler.post(async (req, res) => {
     defenderPlanet.owner = battle.attacker
 
     attackerClan.position = attackerClan._id
-    defenderClan.position = defenderClan._id
 
     battle.current_phase = 4
     battle.status = 'ATTACKER_WON'
@@ -196,7 +194,6 @@ handler.post(async (req, res) => {
     battle.stakes.planet_ids.forEach((e) => { e.owner = battle.defender })
 
     attackerClan.position = attackerClan._id
-    defenderClan.position = defenderClan._id
 
     battle.current_phase = 4
     battle.status = 'DEFENDER_WON'
