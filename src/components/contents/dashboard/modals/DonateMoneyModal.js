@@ -1,11 +1,12 @@
-import { Dialog, Transition } from '@headlessui/react'
+import { Dialog } from '@headlessui/react'
 import { ChevronRightIcon, XIcon } from '@heroicons/react/outline'
-import { useState, Fragment, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import Image from 'next/image'
 
 import * as Util from '@/utils/common'
 import useFetch from '@/hooks/useFetch'
 
+import Modal from '@/components/common/modal'
 import InputBox from '@/components/common/InputBox'
 import AlertNotification from '@/components/common/AlertNotification'
 import Button from '@/components/common/Button'
@@ -24,7 +25,7 @@ export default function DonateMoneyModal({ user }) {
     (donateError && ((donate) && (donate != 0) && (user.money >= donate))) && setDonateError('')
   })
 
-  const openDialog = () => setIsOpen(true)
+  const openModal = () => setIsOpen(true)
   const closeModal = () => { setIsOpen(false); setDonateError(''); setDonate(''); setDonateDone(false); }
 
   const handleDonateChange = (e) => {
@@ -68,100 +69,77 @@ export default function DonateMoneyModal({ user }) {
     <>
       <button
         className={Util.concatClasses(
-          "animate-ping p-1 hover:bg-purple-300 rounded-lg",
-          (user.money == 0) && 'hidden' 
+          "animate-ping p-1 hover:bg-purple-300 rounded-lg focus:outline-none",
+          (user.money == 0) && 'hidden'
         )}
-        onClick={openDialog}
+        onClick={openModal}
       >
-        <ChevronRightIcon className="text-purple-800 w-4 h-4" />
+        <ChevronRightIcon className="text- purple-800 w-4 h-4" />
       </button>
 
-      <Transition show={isOpen} as={Fragment}>
-        <Dialog
-          as="div"
-          onClose={closeModal}
-          className="fixed inset-0 z-10"
-        >
-          <div className="flex flex-col justify-center items-center h-screen">
-            <Transition.Child
-              as={Fragment}
-              enter="ease-out duration-200"
-              enterFrom="opacity-0"
-              enterTo="opacity-100"
-              leave="ease-in duration-100"
-              leaveFrom="opacity-100"
-              leaveTo="opacity-0"
-            >
-              <Dialog.Overlay className="fixed inset-0 bg-gray-700 opacity-40" />
-            </Transition.Child>
+      <Modal
+        open={isOpen}
+        close={closeModal}
+      >
+        <div className="transition-all transform flex flex-col py-7 px-12 max-w-sm mx-6 md:mx-0 bg-white rounded-3xl shadow-xl">
+          <button
+            type="button"
+            className="absolute top-0 right-0 m-4 focus:outline-none"
+            onClick={closeModal}
+          >
+            <XIcon className="w-5 h-5 text-gray-400 hover:text-gray-800" />
+          </button>
 
-            <Transition.Child
-              as={Fragment}
-              enter="ease-out duration-300"
-              enterFrom="opacity-0 scale-95"
-              enterTo="opacity-100 scale-100"
-              leave="ease-in duration-200"
-              leaveFrom="opacity-100 scale-100"
-              leaveTo="opacity-0 scale-95"
-            >
-              <div className="transition-all transform flex flex-col py-7 px-12 max-w-sm mx-6 md:mx-0 bg-white rounded-3xl shadow-xl">
-                <div className="absolute top-0 right-0 p-4">
-                  <XIcon className="w-5 h-5 text-gray-400 hover:text-gray-800" onClick={closeModal} />
-                </div>
-
-                <div className="hidden md:flex absolute top-0 left-0 -translate-y-8 translate-x-6 w-32 h-32">
-                  <Image src={MoneyImage} />
-                </div>
-
-                <div className="flex flex-row justify-center mb-6">
-                  <div className="flex w-44 items-center justify-center">
-                    <div className="flex md:hidden w-24 h-24">
-                      <Image src={MoneyImage} />
-                    </div>
-                  </div>
-
-                  <div className="flex flex-col ml-4 justify-center">
-                    <Dialog.Title as="h3" className="font-semibold text-lg leading-tight">
-                      Donate to your clan.
-                    </Dialog.Title>
-
-                    <Dialog.Description className="font-light text-xs font-gray-800 mt-2">
-                      Drive your team to victory by giving away your special coins
-                    </Dialog.Description>
-                  </div>
-                </div>
-
-                <AlertNotification
-                  type={donateDone ? 'success' : 'error'}
-                  info={donateDone || donateError}
-                  style="mb-3"
-                />
-
-                <form className="flex flex-row drop-shadow-md mb-3 md:mb-1" onSubmit={sendDonate}>
-                  <InputBox
-                    type="text"
-                    pattern="\d*"
-                    style="flex-grow w-24 rounded-l-lg bg-purple-100 ring-1 ring-purple-200 focus:ring-purple-500 text-purple-800"
-                    value={donate}
-                    onChange={handleDonateChange}
-                  />
-
-                  <Button
-                    type="submit"
-                    name={isDonating ? "DONATING" : "DONATE"}
-                    icon={isDonating && <Spinner style="mr-2 w-3 h-3 text-white" />}
-                    style={Util.concatClasses(
-                      "inline-flex items-center justify-center px-3 bg-purple-700 rounded-r-lg ring-1 ring-purple-800 shadow-md font-semibold text-white text-sm disabled:opacity-50",
-                      (donateError) || (user.money == 0) ? 'cursor-not-allowed' : 'hover:bg-purple-800'
-                    )}
-                    disabled={donateError || isDonating || (user.money == 0)}
-                  />
-                </form>
-              </div>
-            </Transition.Child>
+          <div className="hidden md:flex absolute top-0 left-0 -translate-y-8 translate-x-6 w-32 h-32">
+            <Image src={MoneyImage} />
           </div>
-        </Dialog>
-      </Transition>
+
+          <div className="flex flex-row justify-center mb-6">
+            <div className="flex w-44 items-center justify-center">
+              <div className="flex md:hidden w-24 h-24">
+                <Image src={MoneyImage} />
+              </div>
+            </div>
+
+            <div className="flex flex-col ml-4 justify-center">
+              <Dialog.Title as="h3" className="font-semibold text-lg leading-tight">
+                Donate to your clan.
+              </Dialog.Title>
+
+              <Dialog.Description className="font-light text-xs font-gray-800 mt-2">
+                Drive your team to victory by giving away your special coins
+              </Dialog.Description>
+            </div>
+          </div>
+
+          <AlertNotification
+            type={donateDone ? 'success' : 'error'}
+            info={donateDone || donateError}
+            style="mb-3"
+          />
+
+          <form className="flex flex-row drop-shadow-md mb-3 md:mb-1" onSubmit={sendDonate}>
+            <InputBox
+              type="text"
+              pattern="\d*"
+              style="flex-grow w-24 rounded-l-lg bg-purple-100 ring-1 ring-purple-200 focus:ring-purple-500 text-purple-800"
+              value={donate}
+              onChange={handleDonateChange}
+            />
+
+            <Button
+              type="submit"
+              name={isDonating ? "DONATING" : "DONATE"}
+              icon={isDonating && <Spinner style="mr-2 w-3 h-3 text-white" />}
+              style={Util.concatClasses(
+                "inline-flex items-center justify-center px-3 bg-purple-700 rounded-r-lg ring-1 ring-purple-800 shadow-md font-semibold text-white text-sm disabled:opacity-50",
+                (donateError) || (user.money < donate) ? 'cursor-not-allowed' : 'hover:bg-purple-800'
+              )}
+              disabled={donateError || isDonating || (user.money < donate)}
+            />
+          </form>
+        </div>
+      </Modal>
     </>
   )
 }
