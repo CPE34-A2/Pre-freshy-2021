@@ -24,7 +24,7 @@ export default function DonateMoneyModal({ user }) {
   useEffect(() => {
     // Revalidate while input donate and someone gives coin
     ((notification.type == 'error') && ((amount) && (amount != 0) && (user.money >= amount))) && clearNotification()
-  })
+  }, [user.money])
 
   const openModal = () => setIsOpen(true)
   const closeModal = () => { setIsOpen(false); setAmount(''); clearNotification() }
@@ -96,13 +96,13 @@ export default function DonateMoneyModal({ user }) {
           </button>
 
           <div className="hidden md:flex absolute top-0 left-0 -translate-y-8 translate-x-6 w-32 h-32">
-            <Image src={MoneyImage} />
+            <Image src={MoneyImage} alt="" />
           </div>
 
           <div className="flex flex-row justify-center mb-6">
             <div className="flex w-44 items-center justify-center">
               <div className="flex md:hidden w-24 h-24">
-                <Image src={MoneyImage} />
+                <Image src={MoneyImage} alt="" />
               </div>
             </div>
 
