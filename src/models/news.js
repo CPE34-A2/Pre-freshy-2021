@@ -7,9 +7,17 @@ const newsSchema = new mongoose.Schema({
   content: {
     type: String
   },
+  english_content: {
+    type: String
+  },
   category: {
     type: String,
-    enum: ['NORMAL', 'STOCK', 'DISASTER', 'CHECKING',],
+    enum: ['DAILY', 'DISASTER', 'CHECKING'],
+    require: true
+  },
+  affect: {
+    type: String,
+    enum: ['COIN', 'FUEL', 'PLANET', 'NONE'],
     require: true
   },
   author: {
