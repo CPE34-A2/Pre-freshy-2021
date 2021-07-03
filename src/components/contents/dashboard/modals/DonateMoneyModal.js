@@ -133,7 +133,7 @@ export default function DonateMoneyModal({ user }) {
                   style="mb-3"
                 />
 
-                <form className="flex flex-row shadow-md mb-3 md:mb-1" onSubmit={sendDonate}>
+                <form className="flex flex-row drop-shadow-md mb-3 md:mb-1" onSubmit={sendDonate}>
                   <InputBox
                     type="text"
                     pattern="\d*"
