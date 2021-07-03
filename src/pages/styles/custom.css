@@ -19,3 +19,10 @@
   background-repeat: no-repeat;
   background-size: cover;
 }
+
+.dashboard-background {
+  background-image: url("../../../public/dashboard-bg.png");
+  background-position: fit;
+  background-repeat: no-repeat;
+  background-size: cover;
+}

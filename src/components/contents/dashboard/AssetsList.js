@@ -12,8 +12,8 @@ export default function AssetsList({ user, clan }) {
   return (
     <>
       <div className="flex flex-row gap-x-1 text-xl">
-        <div className="font-extrabold text-purple-800">Assets</div>
-        <div className="font-light text-gray-600">List</div>
+        <div className="font-extrabold text-purple-400">Assets</div>
+        <div className="font-light text-gray-300">List</div>
       </div>
 
       <div className="flex flex-col w-full md:w-52 mt-4 bg-purple-50 p-5 rounded-2xl shadow-lg">
