@@ -30,7 +30,11 @@ export default function DonateMoneyModal({ user }) {
   const handleDonateChange = (e) => {
     const value = e.target.value
 
-    if (isNaN(value) || parseInt(value) < 0) return
+    // Prevent user to input non-integer, starts with 0 and negative integer
+    const isNotInteger = !(/^\+?(0|[1-9]\d*)$/.test(value))
+    const isStartsWithZero = (/^0/.test(value))
+    
+    if (isNaN(value) || isStartsWithZero || (value && isNotInteger) || parseInt(value) < 0) return
 
     setDonateError((value > user.money) ? 'Your coin is not enough' : '')
     setDonateDone(!donateError && '')
