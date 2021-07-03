@@ -34,7 +34,7 @@ handler.patch(async (req, res) => {
   if (!battle) {
     return Response.denined(res, 'Battle not found')
   }
-  
+   
   if (battle.status != 'PENDING') {
     return Response.denined(res, 'Battle ended')
   }
@@ -55,10 +55,16 @@ handler.patch(async (req, res) => {
 
   if (req.query.id == battle.attacker) {
     role = 'attacker'
+    if ((battle.phase04.attacker_vote_lose.length >= battle.confirm_require) || (battle.phase04.attacker_vote_win.length >= battle.confirm_require)) {
+      return Response.denined(res, 'Your team already voted enough')
+    }
   }
 
   if (req.query.id == battle.defender) {
     role = 'defender'
+    if ((battle.phase04.defender_vote_lose.length >= battle.confirm_require) || (battle.phase04.defender_vote_win.length >= battle.confirm_require)) {
+      return Response.denined(res, 'Your team already voted enough')
+    }
   }
 
   const clan = await Clan
@@ -68,15 +74,15 @@ handler.patch(async (req, res) => {
 
   if (!clan)
     return Response.denined(res, 'clan not found')
-
+    
   if (battle.phase04.attacker_vote_win.includes(req.user.id) || battle.phase04.defender_vote_win.includes(req.user.id)) {
     return Response.denined(res, 'You already voted win')
   }
-
+   
   if (battle.phase04.attacker_vote_lose.includes(req.user.id) || battle.phase04.defender_vote_lose.includes(req.user.id)) {
     return Response.denined(res, 'Cannot vote win. You already vote lose')
   }
-
+  
   let winner
 
   if (role == 'attacker') {
@@ -192,10 +198,16 @@ handler.delete(async (req, res) => {
 
   if (req.query.id == battle.attacker) {
     role = 'attacker'
+    if ((battle.phase04.attacker_vote_lose.length >= battle.confirm_require) || (battle.phase04.attacker_vote_win.length >= battle.confirm_require)) {
+      return Response.denined(res, 'Your team already voted enough')
+    }
   }
 
   if (req.query.id == battle.defender) {
     role = 'defender'
+    if ((battle.phase04.defender_vote_lose.length >= battle.confirm_require) || (battle.phase04.defender_vote_win.length >= battle.confirm_require)) {
+      return Response.denined(res, 'Your team already voted enough')
+    }
   }
 
   const clan = await Clan
