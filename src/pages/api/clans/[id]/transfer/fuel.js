@@ -36,7 +36,7 @@ handler.post(async (req, res) => {
   
   const clan = await Clan
     .findById(req.query.id)
-    .select('properties leader id')
+    .select('properties leader id fuel_rate')
     .exec()
 
   if (!clan)
