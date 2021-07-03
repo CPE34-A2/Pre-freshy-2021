@@ -18,6 +18,33 @@ handler
   .use(permission)
 
 /**
+ * @method GET
+ * @endpoint /api/clans/:id/transfer/planet
+ * @description Get the pending fuel trasaction
+ * 
+ * @require User authentication
+ */
+ handler.get(async (req, res) => {
+  const clanId = parseInt(req.query.id)
+  let transaction = null
+
+  if (!isNaN(clanId)) {
+    transaction = await Transaction
+      .findOne({'owner.type': 'planet', 'receiver.id': clanId, 'status': 'PENDING' })
+      .lean()
+      .exec()
+  }
+
+  res
+    .status(transaction ? 200 : 400)
+    .json({
+      sucesss: !!transaction,
+      data: transaction,
+      timestamp: new Date()
+    })
+})
+
+/**
  * @method post
  * @endpoint /api/clans/:id/transfer/planet
  * @description Get owner on planet (need summit)

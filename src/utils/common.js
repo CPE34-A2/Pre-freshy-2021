@@ -3,5 +3,6 @@ export function concatClasses(...classes) {
 }
 
 export function numberWithCommas(number) {
+  number = parseInt(number)
   return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }

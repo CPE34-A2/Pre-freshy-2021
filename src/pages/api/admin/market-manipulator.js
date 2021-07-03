@@ -18,20 +18,20 @@ handler
 const SYMBOL = ['MINT', 'ECML', 'HCA', 'LING', 'MALP']
 
 /**
- * @method POST
+ * @method GET
  * @endpoint /api/admin/market-manipulator
  * @description Deus ex machina of the market; That true god who manipulate them all.
  * 
  * @require Admin authentication
  * 
- * @body symbol
- * @body rate
- * @body date
+ * @param symbol
+ * @param rate
+ * @param date
  */
-handler.post(async (req, res) => {
-  let symbol = req.body.symbol
-  const rate = parseInt(req.body.rate)
-  const date = moment.tz((req.body.date), "DD/MM/YYYY",  "Asia/Bangkok").utcOffset('+0700').valueOf()
+handler.get(async (req, res) => {
+  let symbol = req.query.symbol
+  const rate = parseInt(req.query.rate)
+  const date = moment.tz((req.query.date), "DD/MM/YYYY",  "Asia/Bangkok").utcOffset('+0700').valueOf()
   const currentDate = moment().utcOffset('+0700').startOf('day').valueOf()
 
   if (symbol)

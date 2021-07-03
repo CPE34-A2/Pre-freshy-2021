@@ -17,6 +17,34 @@ handler
   .use(permission)
 
 /**
+* @method GET
+* @endpoint /api/clans/:id/transfer/fuel
+* @description Get the pending fuel trasaction
+* 
+* @require User authentication
+*/
+handler.get(async (req, res) => {
+  const clanId = parseInt(req.query.id)
+  let transaction = null
+
+  if (!isNaN(clanId)) {
+    transaction = await Transaction
+      .findOne({ 'owner.id': req.user.clan_id, 'receiver.id': req.user.clan_id, 'owner.type': 'clan', 'receiver.type': 'clan', 'status': 'PENDING' })
+      .select()
+      .lean()
+      .exec()
+  }
+
+  res
+    .status(transaction ? 200 : 400)
+    .json({
+      sucesss: !!transaction,
+      data: transaction,
+      timestamp: new Date()
+    })
+})
+
+/**
  * @method Post
  * @endpoint /api/clans/:id/transfer/fuel
  * @description create fuel transaction
@@ -33,10 +61,10 @@ handler.post(async (req, res) => {
 
   if (amount <= 0)
     return Response.denined(res, 'amount must be greater than 0')
-  
+
   const clan = await Clan
     .findById(req.query.id)
-    .select('properties leader id')
+    .select('properties leader _id fuel_rate')
     .exec()
 
   if (!clan)
@@ -57,7 +85,7 @@ handler.post(async (req, res) => {
     })
 
   if (dupeTransaction) {
-    return Response.denined(res, 'Stop spamming. Go confirm/reject the other one')
+    return Response.denined(res, `There're still pending transaction`)
   }
 
   if ((clan.leader != req.user.id) && (user.role != 'admin')) {
@@ -65,7 +93,7 @@ handler.post(async (req, res) => {
   }
 
   if (clan.properties.money < price)
-    return Response.denined(res, 'money is not enough')
+    return Response.denined(res, 'Money is not enough')
 
   const transaction = await Transaction.create({
     owner: {

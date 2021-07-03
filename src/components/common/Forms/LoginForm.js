@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { Component, useState } from 'react'
 import Router from 'next/router'
 
 import * as Util from '@/utils/common'
@@ -10,7 +10,8 @@ import LogoWithText from '@/publics/logo-with-text-alt.png'
 import InputBox from '@/components/common/InputBox'
 import Button from '@/components/common/Button'
 import Spinner from '@/components/common/Spinner'
-import { EyeIcon, EyeOffIcon, ExclamationCircleIcon } from '@heroicons/react/outline'
+import AlertNotification from '@/components/common/AlertNotification'
+import { EyeIcon, EyeOffIcon } from '@heroicons/react/outline'
 
 export default function LoginForm() {
   const USERNAME_REGAX = /^[0-9\b]+$/
@@ -99,14 +100,10 @@ export default function LoginForm() {
           </div>
         </div>
 
-        {loginError && (
-          <div className="relative px-4 py-2 text-sm leading-normal text-red-700 bg-red-100 rounded-lg" role="alert">
-            <span className="absolute inset-y-0 left-0 flex items-center ml-4">
-              <ExclamationCircleIcon className="w-4 h-4 text-red-600" />
-            </span>
-            <p className="ml-6">{loginError}</p>
-          </div>
-        )}
+        <AlertNotification
+          type="error"
+          info={loginError}
+        />
 
         <Button
           type="submit"

@@ -22,12 +22,9 @@ handler.get(async (req, res) => {
 	let clan = null
 
 	if (!isNaN(clanId)) {
-		clan = await Clan
-			.findById(clanId)
-			.lean()
-			.exec()
+		clan = await getClan(clanId)
 	}
-	
+
 	res.status(200)
 		.json({
 			sucesss: !!clan,
@@ -35,5 +32,12 @@ handler.get(async (req, res) => {
 			timestamp: new Date()
 		})
 })
+
+export async function getClan(id) {
+	return Clan
+		.findById(id)
+		.lean()
+		.exec()
+}
 
 export default handler

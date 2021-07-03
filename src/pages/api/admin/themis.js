@@ -58,7 +58,7 @@ handler.post(async (req, res) => {
   if (battle.status == 'DENIED' || battle.status == 'REJECT')
     return Response.denined(res, `This battle is already rejected or denined, You can't do anything.`)
 
-  // excute command phase
+  // excute command 
   if (command == 'REVERT') {
     if (battle.current_phase == 1) {
       battle.phase01.status = 'REJECT'
@@ -98,6 +98,7 @@ handler.post(async (req, res) => {
     await defenderClan.save()
     await defenderPlanet.save()
     return Response.success(res, `The war is ended like it never happended`)
+
   }
 
   if (command == 'ATTACKER_WIN') {
@@ -173,7 +174,6 @@ handler.post(async (req, res) => {
     })
 
     attackerClan.position = attackerClan._id
-
     battle.current_phase = 0
     battle.status = 'DEFENDER_WON'
 

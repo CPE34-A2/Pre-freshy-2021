@@ -13,22 +13,22 @@ handler
   .use(permission)
 
 /**
-* @method POST
+* @method GET
 * @endpoint /api/admin/eternal
 * @description control planets' quests and points with the eternal power
 * @description specify quest and planet id to change the planet quest and point
 * @description specify mode "D", "C", "LV" to alter the reality and change the planet points
 * @description positive point to add/ negative point to subtract
 
-* @body 1. mode / 2. point,quest,planet_id *choose only one option
+* @params 1. mode / 2. point,quest,planet_id *choose only one option
 * 
 * @require Admin authentication
 */
-handler.post(async (req, res) => {
-  const quest = req.body.quest
-  let mode = req.body.mode
-  const planetId = parseInt(req.body.planet_id)
-  const point = parseInt(req.body.point) || 0
+handler.get(async (req, res) => {
+  const quest = req.query.quest
+  let mode = req.query.mode
+  const planetId = parseInt(req.query.planet_id)
+  const point = parseInt(req.query.point) || 0
 
   if (mode) {
     mode = mode.toUpperCase()
@@ -129,7 +129,7 @@ handler.post(async (req, res) => {
   }
 
   Response.success(res, {
-    planet: !!planet ? req.body.planet_id : 0,
+    planet: !!planet ? req.query.planet_id : 0,
     quest: !!planet ? quest : '',
     mode: affectedPlanets.length != 0 ? mode : '',
     affectedPlanets: affectedPlanets.length != 0 ? affectedPlanets : []
