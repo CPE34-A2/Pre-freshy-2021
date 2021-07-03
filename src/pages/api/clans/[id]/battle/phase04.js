@@ -113,7 +113,7 @@ handler.patch(async (req, res) => {
 
     const defenderClan = await Clan
       .findById(battle.defender)
-      .select('owned_planet_ids position _id')
+      .select('owned_planet_ids position _id properties')
       .exec()
 
     if (!defenderClan)
@@ -144,7 +144,7 @@ handler.patch(async (req, res) => {
 
     const attackerClan = await Clan
     .findById(battle.attacker)
-    .select('owned_planet_ids position _id')
+    .select('owned_planet_ids position _id properties')
     .exec()
 
     if (!attackerClan)
@@ -278,7 +278,7 @@ handler.delete(async (req, res) => {
 
     const attackerClan = await Clan
       .findById(battle.attacker)
-      .select('owned_planet_ids position _id')
+      .select('owned_planet_ids position _id properties')
       .exec()
 
     if (!attackerClan)
@@ -309,7 +309,7 @@ handler.delete(async (req, res) => {
 
     const defenderClan = await Clan
     .findById(battle.defender)
-    .select('owned_planet_ids position _id')
+    .select('owned_planet_ids position _id properties')
     .exec()
 
     if (!defenderClan)
