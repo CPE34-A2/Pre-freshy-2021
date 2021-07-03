@@ -49,6 +49,7 @@ export default function DonateMoneyModal({ user }) {
     }
 
     setIsDonating(true)
+    setDonateDone(false)
 
     useFetch('POST', `/api/users/${user._id}/transfer/coin`, { amount: donate })
       .then(async response => {
