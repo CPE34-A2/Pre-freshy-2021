@@ -87,7 +87,7 @@ handler.post(async (req, res) => {
   })
 
   clan.owned_planet_ids.push(planet._id)
-  clan.position = 0
+  clan.position = clan._id
   await clan.save()
   planet.owner = clan._id
   await planet.save()
