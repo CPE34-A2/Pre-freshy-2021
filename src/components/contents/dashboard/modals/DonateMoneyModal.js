@@ -15,18 +15,18 @@ import MoneyImage from '@/publics/money.png'
 
 export default function DonateMoneyModal({ user }) {
   const [isOpen, setIsOpen] = useState(false)
-  const [donate, setDonate] = useState('')
   const [isDonating, setIsDonating] = useState(false)
+  const [amount, setAmount] = useState('')
   const [donateDone, setDonateDone] = useState('')
   const [donateError, setDonateError] = useState('')
 
   useEffect(() => {
     // Revalidate while input donate and someone gives coin
-    (donateError && ((donate) && (donate != 0) && (user.money >= donate))) && setDonateError('')
+    (donateError && ((amount) && (amount != 0) && (user.money >= amount))) && setDonateError('')
   })
 
   const openModal = () => setIsOpen(true)
-  const closeModal = () => { setIsOpen(false); setDonateError(''); setDonate(''); setDonateDone(false); }
+  const closeModal = () => { setIsOpen(false); setDonateError(''); setAmount(''); setDonateDone(false); }
 
   const handleDonateChange = (e) => {
     const value = e.target.value
@@ -39,23 +39,23 @@ export default function DonateMoneyModal({ user }) {
 
     setDonateError((value > user.money) ? 'Your coin is not enough' : '')
     setDonateDone(!donateError && '')
-    setDonate(value)
+    setAmount(value)
   }
 
   const sendDonate = (e) => {
     e.preventDefault()
 
-    if (!donate) {
+    if (!amount) {
       return setDonateError('Please insert your coin amount')
     }
 
     setIsDonating(true)
     setDonateDone(false)
 
-    useFetch('POST', `/api/users/${user._id}/transfer/coin`, { amount: donate })
+    useFetch('POST', `/api/users/${user._id}/transfer/coin`, { amount: amount })
       .then(async response => {
         if (response.status == 200) {
-          setDonateDone(<>Donation successful <b>(-{Util.numberWithCommas(donate)} coin)</b></>)
+          setDonateDone(<>Donation successful <b>(-{Util.numberWithCommas(amount)} coin)</b></>)
         } else {
           setDonateError('Something went wrong')
         }
@@ -123,7 +123,7 @@ export default function DonateMoneyModal({ user }) {
               type="text"
               pattern="\d*"
               style="flex-grow w-24 rounded-l-lg bg-purple-100 ring-1 ring-purple-200 focus:ring-purple-500 text-purple-800"
-              value={donate}
+              value={amount}
               onChange={handleDonateChange}
             />
 
@@ -133,9 +133,9 @@ export default function DonateMoneyModal({ user }) {
               icon={isDonating && <Spinner style="mr-2 w-3 h-3 text-white" />}
               style={Util.concatClasses(
                 "inline-flex items-center justify-center px-3 bg-purple-700 rounded-r-lg ring-1 ring-purple-800 shadow-md font-semibold text-white text-sm disabled:opacity-50",
-                (donateError) || (user.money < donate) ? 'cursor-not-allowed' : 'hover:bg-purple-800'
+                (donateError) || (user.money < amount) ? 'cursor-not-allowed' : 'hover:bg-purple-800'
               )}
-              disabled={donateError || isDonating || (user.money < donate)}
+              disabled={donateError || isDonating || (user.money < amount)}
             />
           </form>
         </div>
