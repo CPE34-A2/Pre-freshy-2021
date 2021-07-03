@@ -111,14 +111,16 @@ handler.delete(async (req, res) => {
     .findById(req.body.news_id)
     .exec()
 
+  if (!news)
+    return Response.denined(res, 'News not found')
+
   const title_copy = news.title
   const content_copy = news.content
   const author_copy = news.author
 
-  const remove_new = await News
+  await News
     .findByIdAndDelete(req.body.news_id)
     .exec()
-  remove_new
 
   Response.success(res, {
     title: title_copy,
