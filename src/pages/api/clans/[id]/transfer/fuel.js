@@ -57,7 +57,7 @@ handler.post(async (req, res) => {
     })
 
   if (dupeTransaction) {
-    return Response.denined(res, 'Stop spamming. Go confirm/reject the other one')
+    return Response.denined(res, `There're still pending transaction`)
   }
 
   if ((clan.leader != req.user.id) && (user.role != 'admin')) {
@@ -65,7 +65,7 @@ handler.post(async (req, res) => {
   }
 
   if (clan.properties.money < price)
-    return Response.denined(res, 'money is not enough')
+    return Response.denined(res, 'Money is not enough')
 
   const transaction = await Transaction.create({
     owner: {
