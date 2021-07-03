@@ -67,7 +67,10 @@ export default function DonateMoneyModal({ user }) {
   return (
     <>
       <button
-        className="animate-ping p-1 hover:bg-purple-300 rounded-lg"
+        className={Util.concatClasses(
+          "animate-ping p-1 hover:bg-purple-300 rounded-lg",
+          (user.money == 0) && 'hidden' 
+        )}
         onClick={openDialog}
       >
         <ChevronRightIcon className="text-purple-800 w-4 h-4" />
@@ -149,9 +152,9 @@ export default function DonateMoneyModal({ user }) {
                     icon={isDonating && <Spinner style="mr-2 w-3 h-3 text-white" />}
                     style={Util.concatClasses(
                       "inline-flex items-center justify-center px-3 bg-purple-700 rounded-r-lg ring-1 ring-purple-800 shadow-md font-semibold text-white text-sm disabled:opacity-50",
-                      donateError ? 'cursor-not-allowed' : 'hover:bg-purple-800'
+                      (donateError) || (user.money == 0) ? 'cursor-not-allowed' : 'hover:bg-purple-800'
                     )}
-                    disabled={donateError || isDonating}
+                    disabled={donateError || isDonating || (user.money == 0)}
                   />
                 </form>
               </div>
