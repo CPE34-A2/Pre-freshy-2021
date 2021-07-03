@@ -38,7 +38,7 @@ handler.get(async (req, res) => {
   res
     .status(transaction ? 200 : 400)
     .json({
-      sucesss: true,
+      sucesss: !!transaction,
       data: transaction,
       timestamp: new Date()
     })
