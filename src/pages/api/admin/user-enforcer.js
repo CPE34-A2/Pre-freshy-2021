@@ -99,7 +99,7 @@ handler.get(async (req, res) => {
   await user.save()
 
   if (money) {
-    req.socket.server.io.emit('set.money', user._id, user.money)
+    req.socket.server.io.emit('set.user.money', user._id, user.money)
   }
 
   return Response.success(res, {

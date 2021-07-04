@@ -13,7 +13,7 @@ export default function IndexPage({ user: rawUser, clan: rawClan }) {
   const [clan, setClan] = useState(rawClan)
 
   // WebSocket event listeners for real-time updating 
-  useSocket('set.money', (userId, money) => {
+  useSocket('set.user.money', (userId, money) => {
     (userId == user._id) && setUser({ ...user, money: money })
   })
 
