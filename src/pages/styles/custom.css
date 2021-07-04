@@ -15,14 +15,14 @@
 
 .login-background {
   background-image: url("../../../public/login-page-bg.png");
-  background-position: fit;
+  background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
 }
 
 .dashboard-background {
   background-image: url("../../../public/dashboard-bg.png");
-  background-position: fit;
+  background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
 }

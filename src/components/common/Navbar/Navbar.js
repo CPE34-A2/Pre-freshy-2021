@@ -1,42 +1,41 @@
 import { Disclosure, Transition } from "@headlessui/react"
 import { MenuIcon, TemplateIcon, MapIcon, ChartSquareBarIcon } from "@heroicons/react/outline"
 
-import Link from 'next/link'
 import Image from 'next/image'
 import Logo from '@/publics/logo.png'
 
 import NavMenu from './NavMenu'
 import ProfileBar from './ProfileBar'
 
-const navigation = [
-  { name: 'Dashboard', icon: <TemplateIcon className="w-5 h-5 mr-3" />, href: '#', current: true },
-  { name: 'Map', icon: <MapIcon className="w-5 h-5 mr-3" />, href: '#', current: false },
-  { name: 'Stock', icon: <ChartSquareBarIcon className="w-5 h-5 mr-3" />, href: '#', current: false },
-]
+export default function Navbar({ current, user }) {
+  const navigation = [
+    { name: 'Home', icon: <TemplateIcon className="w-5 h-5 mr-3" />, href: '/', current: (current == 'home') },
+    { name: 'Map', icon: <MapIcon className="w-5 h-5 mr-3" />, href: '/map', current: (current == 'map') },
+    { name: 'Stock', icon: <ChartSquareBarIcon className="w-5 h-5 mr-3" />, href: '/stock', current: (current == 'stock') },
+  ]
 
-const getAllMenus = () => {
-  return navigation.map((item) => (
-    <NavMenu
-      key={item.name}
-      name={item.name}
-      href={item.href}
-      current={item.current}
-      icon={item.icon}
-    />
-  ))
-}
+  const getAllMenus = () => {
+    return navigation.map((item) => (
+      <NavMenu
+        key={item.name}
+        name={item.name}
+        href={item.href}
+        current={item.current}
+        icon={item.icon}
+      />
+    ))
+  }
 
-const getProfileBar = (user, mobile) => {
-  return (
-    <ProfileBar
-      username={user._id}
-      role={user.role}
-      mobile={mobile}
-    />
-  )
-}
+  const getProfileBar = (user, mobile) => {
+    return (
+      <ProfileBar
+        username={user._id}
+        role={user.role}
+        mobile={mobile}
+      />
+    )
+  }
 
-export default function Navbar({ user }) {
   return (
     <Disclosure>
       {({ open }) => (

@@ -1,14 +1,12 @@
-import middleware from '@/middlewares/middleware'
 import { useState } from 'react'
+
+import middleware from '@/middlewares/middleware'
 import useSocket from '@/hooks/useSocket'
 
 import { getUser } from '@/pages/api/users/[id]/index'
 import { getClan } from '@/pages/api/clans/[id]/index'
 
-import Head from '@/components/common/Head'
-import Navbar from '@/components/common/Navbar/Navbar'
-import DashboardContainer from '@/components/contents/Dashboard/DashboardCotainer'
-import Dashboard from '@/components/contents/Dashboard/Dashboard'
+import Home from '@/components/contents/Home/Home'
 
 export default function IndexPage({ user: rawUser, clan: rawClan }) {
   const [user, setUser] = useState(rawUser)
@@ -28,18 +26,10 @@ export default function IndexPage({ user: rawUser, clan: rawClan }) {
   })
 
   return (
-    <DashboardContainer>
-      <Head />
-
-      <Navbar
-        user={user}
-      />
-
-      <Dashboard
-        user={user}
-        clan={clan}
-      />
-    </DashboardContainer>
+    <Home 
+      user={user}
+      clan={clan}
+    />
   )
 }
 

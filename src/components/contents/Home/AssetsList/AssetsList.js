@@ -10,13 +10,10 @@ import BuyFuelModal from '../Modals/BuyFuelModal'
 
 export default function AssetsList({ user, clan }) {
   return (
-    <>
-      <div className="flex flex-row gap-x-1 text-xl">
-        <div className="font-extrabold text-purple-400">Assets</div>
-        <div className="font-light text-gray-300">List</div>
-      </div>
+    <div className="flex flex-col w-full md:w-auto p-12">
+      <div className="flex flex-col md:w-52 mt-4 bg-purple-50 p-5 rounded-2xl shadow-lg">
+        <div className="text-xl font-extrabold tracking-wider text-indigo-800 mb-3">ASSETS</div>
 
-      <div className="flex flex-col w-full md:w-52 mt-4 bg-purple-50 p-5 rounded-2xl shadow-lg">
         <div className="font-medium text-gray-500 mb-2">Your items</div>
         <div className="flex flex-row items-center justify-between">
           <AssetItem
@@ -53,6 +50,6 @@ export default function AssetsList({ user, clan }) {
           />
         </div>
       </div>
-    </>
+    </div>
   )
 }
