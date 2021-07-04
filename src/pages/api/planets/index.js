@@ -34,4 +34,13 @@ handler.get(async (req, res) => {
 		})
 })
 
+export async function getPlanets() {
+	return Planet
+		.find()
+		.select('-quest -redeem -__v')
+		.sort({_id: 1})
+		.lean()
+		.exec()
+}
+
 export default handler
