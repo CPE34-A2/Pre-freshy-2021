@@ -2,7 +2,6 @@ import nextConnect from 'next-connect'
 import middleware from '@/middlewares/middleware'
 
 import Planet from '@/models/planet'
-import User from '@/models/user'
 
 const handler = nextConnect()
 
@@ -21,22 +20,13 @@ handler.get(async (req, res) => {
 		return res.status(401).json({ message: 'Please login in' })
 	}
 
-	let planets = null
-
-	const user = await User
-		.findById(req.user.id)		
-		.select('role')
-		.lean()
-		.exec()
-
-	if (user.role == 'admin') {
-		planets = await Planet
+	const	planets = await Planet
 			.find()
+			.select('-quest -redeem')
 			.lean()
 			.exec()
-	}
-
-	res.status(200)
+	
+	res.status(planets ? 200 : 400)
 		.json({
 			sucesss: !!planets,
 			data: planets,
