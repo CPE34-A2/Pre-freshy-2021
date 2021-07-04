@@ -81,10 +81,13 @@ handler.get(async (req, res) => {
     clan.fuel_rate = fuelRate
   }
 
+  let planet
+
   if (planetId != 0) {
-    const planet = await Planet
+    planet = await Planet
       .findById(Math.abs(planetId))
-      .select('owner')
+      .select('-__v -quest -redeem')
+      .exec()
 
     if (!planet)
       return Response.denined(res, 'planet not found')
@@ -128,6 +131,10 @@ handler.get(async (req, res) => {
       planets: [planetId]
     }
   })
+
+  if (planet) {
+    req.socket.server.io.emit('set.planet', planet._id, planet)
+  }
 
   Response.success(res, {
     clan_data: clan,

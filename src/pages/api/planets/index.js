@@ -23,6 +23,7 @@ handler.get(async (req, res) => {
 	const	planets = await Planet
 			.find()
 			.select('-quest -redeem')
+			.sort({_id: 1})
 			.lean()
 			.exec()
 	
