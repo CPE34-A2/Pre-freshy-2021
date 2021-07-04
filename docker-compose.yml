@@ -1,7 +1,13 @@
 version: '3.8'
 
 services:
-  mongodb:
+  web:
+    build: .
+    image: prefreshy-2021:test
+    container_name: webserver
+    ports:
+      - 80:3000
+  db:
     image: mongo
     container_name: mongodb
     environment:
