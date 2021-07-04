@@ -118,7 +118,7 @@ export default function BuyFuelModal({ clan }) {
                 <div className="text-gray-500 font-semibold">1 coin</div>
               </div>
               <div className="flex flex-row justify-between mb-3">
-                <div className="text-gray-700 text-sm font-semibold">Price per unit</div>
+                <div className="text-gray-700 text-sm font-semibold">Price / unit</div>
                 <div className="text-gray-700 font-semibold">{clan.fuel_rate} coin</div>
               </div>
 

@@ -60,7 +60,7 @@ export default function DonateMoneyModal({ user }) {
     fetchAPI('POST', `/api/users/${user._id}/transfer/coin`, { amount: amount })
       .then(async response => {
         if (response.status == 200) {
-          notify({ type: 'success', info: <>Donation successful <b>(-{Util.numberWithCommas(amount)} coin)</b></> })
+          notify({ type: 'success', info: <>Donation successful <b>({Util.numberWithCommas(amount)} coin)</b></> })
         } else {
           notify({ type: 'error', info: 'Something went wrong' })
         }
