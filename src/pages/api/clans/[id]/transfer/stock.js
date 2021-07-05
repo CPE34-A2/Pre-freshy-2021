@@ -39,7 +39,8 @@ handler.get(async (req, res) => {
         $or: [
           { 'owner.id': req.query.id, 'receiver.type': 'market', 'status': 'PENDING' },
           { 'receiver.id': req.query.id, 'owner.type': 'market', 'status': 'PENDING' }
-        ]})
+        ]
+      })
       .lean()
       .exec()
   }
@@ -204,14 +205,19 @@ handler.patch(async (req, res) => {
   transaction.confirmer.push(req.user.id)
   await transaction.save()
 
-  const clan = await Clan
-    .findById(req.user.clan_id)
-    .select()
-    .exec()
+  req.socket.server.io.emit('set.task.stock', transaction._id, {
+    confirmer: transaction.confirmer.length,
+    rejector: transaction.rejector.length
+  })
 
   // If the number of confirmer equal expected required, then excute the transaction
   if (transaction.confirmer.length < transaction.confirm_require + 1)
     return Response.success(res, transaction)
+
+  const clan = await Clan
+    .findById(req.user.clan_id)
+    .select()
+    .exec()
 
   const total = transaction.item.stock.rate * transaction.item.stock.amount
 
@@ -238,6 +244,9 @@ handler.patch(async (req, res) => {
 
   transaction.status = 'SUCCESS'
   await transaction.save()
+
+  req.socket.server.io.emit('set.clan.money', user.clan_id, clan.properties.money)
+  req.socket.server.io.emit('set.clan.stocks', user.clan_id, clan.properties.stocks)
 
   Response.success(res, transaction)
 })
@@ -292,6 +301,11 @@ handler.delete(async (req, res) => {
   }
 
   await transaction.save()
+
+  req.socket.server.io.emit('set.task.stock', transaction._id, {
+    confirmer: transaction.confirmer.length,
+    rejector: transaction.rejector.length
+  })
 
   Response.success(res, transaction)
 })
