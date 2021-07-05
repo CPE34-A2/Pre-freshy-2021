@@ -1,19 +1,24 @@
 import Image from "next/image"
+import PlanetPopOver from "./PlanetPopOver"
+import { useState } from "react"
+import PlanetModal from "./PlanetModal"
 
+export default function Planet({planet, image, className}) {
+  const [isHover, setIsHover] = useState(false)
+  const [isClick, setIsClick] = useState(false)
 
-export default function Planet({planet, image}) {
+  const openPopOver = () => setIsHover(true)
+  const closePopOver = () => setIsHover(false)
+  const openModal = () => setIsClick(true)
+  const closeModal = () => setIsClick(false)
+
   return (
-    <div className="flex flex-col justify-between my-4">
-      <div className="flex flex-col transform translate-y-1/3">
-        <div className="flex justify-center">{planet.name}</div>
-        <div className="flex justify-center">Tier: {planet.tier}</div>
+    <div className="flex justify-center">
+      <PlanetPopOver planet={planet} isHover={isHover} />
+      <PlanetModal planet={planet} image={image} isOpen={isClick} close={closeModal}/>
+      <div className={className} onMouseEnter={openPopOver} onMouseLeave={closePopOver} onClick={openModal}>
+        <Image src={image} alt="" />
       </div>
-      <div className="flex justify-center">
-        <div className="transform w-3/4 scale-100">
-          <Image src={image} alt="" />
-        </div>
-      </div>
-      <div className="flex justify-center">{planet.owner != 0 ? `Owned by Clan ${planet.owner}` : "Unoccupied"}</div>
     </div>
   )
 }
