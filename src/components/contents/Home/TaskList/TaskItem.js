@@ -1,44 +1,84 @@
 import Image from 'next/image'
+import Spinner from '@/components/common/Spinner'
 
-export default function TaskItem({ image, amount, unit, coin, accept, reject }) {
+//  owenr -> receriver -> [received items, lost items]
+const transactionMap = {
+  clan: {
+    clan: ['fuel', 'money'],
+    market: ['stock', 'money',]
+  },
+  market: {
+    clan: ['money', 'stock']
+  },
+  planet: {
+    clan: ['planets', 'fuel']
+  }
+}
+
+const resolveTransactionItems = (data) => {
+  const bill = transactionMap[data.owner.type][data.receiver.type]
+  return {
+    received: data.item[bill[0]],
+    cost: data.item[bill[1]]
+  }
+}
+
+export default function TaskItem({ image, data, locale }) {
+  // When fetching the data
+  if (!data) return (
+    <div className="flex flex-row py-3 items-center bg-indigo-500 px-4 rounded-2xl">
+      <div className="mr-4"><Spinner style="w-14 h-14 text-indigo-200" /></div>
+      <div className="font-bold text-gray-300">Loading transaction data from space station...</div>
+    </div>
+  )
+
+  // If pending transaction is not present
+  if (!data.data) {
+    return (
+      <div className="flex flex-row py-3 items-center bg-indigo-500 px-4 rounded-2xl opacity-70">
+        <div className="flex-none w-14 h-14">
+          <Image src={image} alt="" />
+        </div>
+
+        <div className="flex flex-row w-full items-center justify-between ml-4">
+          <div className="font-semibold text-gray-200">{locale.not_found}</div>
+        </div>
+      </div>
+    )
+  }
+  // If pending trasaction is present
+  const { confirmer, rejector, confirm_require } = data.data
+  const item = resolveTransactionItems(data.data)
+  const confirmLeft = confirm_require - Math.max(confirmer.length, rejector.length)
+
   return (
-    <div className="flex flex-col w-52 h-52 px-4 justify-between">
-      <div className="flex flex-col justify-center items-center">
-        <div className="flex flex-row items-center">
-          <div className="flex items-center justify-center drop-shadow-sm">
-            <div className="w-14 h-14">
-              <Image 
-                src={image}
-                alt=""
-              />
-            </div>
-          </div>
-          <div className="flex flex-col text-3xl ml-3 leading-none">
-            <div className="font-bold text-indigo-900">{amount}</div>
-            <div className="font-medium text-sm text-indigo-900">{unit}</div>
-          </div>
-        </div>
+    <div className="flex flex-row py-3 items-center bg-indigo-600 opacity-95 hover:opacity-100 px-4 rounded-2xl">
+      <div className="flex-none w-14 h-14">
+        <Image src={image} alt="" />
       </div>
 
-      <div className="flex justify-center">
-        <span className="text-lg text-gray-500 mr-2">for</span>
-        <span className="font-bold text-4xl text-indigo-900 items-center">{coin}</span>
-        <span className="text-xl font-bold text-indigo-900 mt-auto ml-1">coin</span>
-      </div>
-
-      <div className="flex flex-row gap-x-2 mx-2">
-        <div className="flex flex-col flex-grow">
-          <p className="flex justify-center items-center text-lg font-semibold text-gray-500 mb-1">{accept.current} / {accept.require}</p>
-          <button className="flex justify-center items-center bg-purple-300 hover:bg-purple-400 text-purple-600 hover:text-purple-800 font-bold text-sm py-1 rounded-xl shadow-sm uppercase">
-            Accept
-          </button>
+      <div className="flex flex-row w-full items-center justify-between ml-4">
+        <div className="flex flex-col">
+          <div className="font-thin text-gray-200 text-sm">Transaction Pending</div>
+          <div className="font-medium text-white">{locale.info}</div>
         </div>
 
-        <div className="flex flex-col flex-grow">
-          <p className="flex justify-center items-center text-lg font-semibold text-gray-500 mb-1">{reject.current} / {reject.require}</p>
-          <button className="flex justify-center items-center bg-red-300 hover:bg-red-400 text-red-600 hover:text-red-800 font-bold text-sm py-1 rounded-xl shadow-sm uppercase">
-            Reject
+        <div className="flex flex-row text-center ml-8 space-x-4">
+          <div>
+            <div className="font-thin text-gray-200 text-sm">{locale.received_title}</div>
+            <div className="font-medium text-white">{item.received} {locale.received_unit}</div>
+          </div>
+          <div>
+            <div className="font-thin text-gray-200 text-sm">{locale.cost_title}</div>
+            <div className="font-medium text-white">{item.cost} {locale.cost_unit}</div>
+          </div>
+        </div>
+
+        <div className="flex flex-col items-center ml-6">
+          <button className="rounded-lg px-4 bg-purple-200 hover:bg-purple-300 text-indigo-800 hover:text-indigo-900 shadow-md font-bold">
+            VOTE
           </button>
+          <span className="text-xs mt-1 font-medium text-gray-200">({confirmLeft} left)</span>
         </div>
       </div>
     </div>
