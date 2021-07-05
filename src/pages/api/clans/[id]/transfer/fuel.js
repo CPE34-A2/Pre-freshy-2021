@@ -190,6 +190,9 @@ handler.patch(async (req, res) => {
     clan.properties.fuel += transaction.item.fuel
     await clan.save()
 
+    req.socket.server.io.emit('set.clan.money', user.clan_id, clan.properties.money)
+    req.socket.server.io.emit('set.clan.fuel', user.clan_id, clan.properties.fuel)
+
     transaction.status = 'SUCCESS'
   }
 
