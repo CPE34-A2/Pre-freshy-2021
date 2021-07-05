@@ -1,5 +1,6 @@
 import Image from 'next/image'
 import Spinner from '@/components/common/Spinner'
+import TaskVoteModal from '../Modals/TaskVoteModal'
 
 //  owenr -> receriver -> [received items, lost items]
 const transactionMap = {
@@ -26,14 +27,22 @@ const resolveTransactionItems = (data) => {
     // Stock resolver
     if (receivedItem.symbol) {
       return {
+        type: 'stock',
         received: receivedItem.symbol,
         cost: receivedItem.rate * receivedItem.amount
+      }
+    } else if (lostItem.symbol) {
+      return {
+        type: 'stock',
+        received: receivedItem.money,
+        cost: lostItem.symbol
       }
     }
 
     // Planet resovler
     if (receivedItem.name) {
       return {
+        type: 'planet',
         received: receivedItem.name,
         cost: lostItem
       }
@@ -41,12 +50,13 @@ const resolveTransactionItems = (data) => {
   }
 
   return {
+    type: 'fuel',
     received: receivedItem,
     cost: lostItem
   }
 }
 
-export default function TaskItem({ image, data, locale }) {
+export default function TaskItem({ clan, image, data, locale }) {
   // When fetching the data
   if (!data) return (
     <div className="flex flex-row py-3 items-center bg-indigo-500 px-4 rounded-2xl">
@@ -69,10 +79,11 @@ export default function TaskItem({ image, data, locale }) {
       </div>
     )
   }
+
   // If pending trasaction is present
   const { confirmer, rejector, confirm_require } = data.data
   const item = resolveTransactionItems(data.data)
-  const confirmLeft = confirm_require - Math.max(confirmer.length, rejector.length)
+  const confirmLeft = confirm_require - Math.max(confirmer.length - 1, rejector.length)
 
   return (
     <div className="flex flex-row py-3 items-center bg-indigo-600 px-4 rounded-2xl shadow-md hover:shadow-none">
@@ -98,10 +109,8 @@ export default function TaskItem({ image, data, locale }) {
             </div>
           </div>
 
-          <div className="flex flex-col items-center ml-2 md:ml-6">
-            <button className="rounded-lg px-4 bg-pink-300 hover:bg-pink-400 ring-1 text-sm md:text-base hover:animate-pulse text-pink-800 hover:text-pink-900 shadow-md font-bold">
-              VOTE
-            </button>
+          <div className="flex flex-col items-center justify-center ml-2 md:ml-6">
+            <TaskVoteModal clan={clan} image={image} transaction={data.data} item={item} locale={locale} />
             <span className="text-xs mt-1 font-medium text-gray-200">({confirmLeft} left)</span>
           </div>
         </div>
