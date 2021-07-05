@@ -174,6 +174,11 @@ handler.patch(async (req, res) => {
 
   transaction.confirmer.push(req.user.id)
 
+  req.socket.server.io.emit('set.task.fuel', transaction._id, {
+    confirmer: transaction.confirmer.length, 
+    rejector: transaction.rejector.length
+  })
+
   if (transaction.confirm_require + 1 <= transaction.confirmer.length) {
     if (clan.properties.money < transaction.item.money) {
       transaction.status = 'REJECT'
@@ -254,6 +259,11 @@ handler.delete(async (req, res) => {
   }
 
   await transaction.save()
+
+  req.socket.server.io.emit('set.task.fuel', transaction._id, {
+    confirmer: transaction.confirmer.length, 
+    rejector: transaction.rejector.length
+  })
 
   Response.success(res, {
     transaction_status: transaction.status,
