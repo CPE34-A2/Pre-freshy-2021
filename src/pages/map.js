@@ -12,10 +12,11 @@ export default function MapPage({ planets: rawPlanets}) {
 
   // WebSocket event listeners for real-time updating 
   useSocket('set.planet', (planetId, planet) => {
-    planets[planetId - 1] = planet
-    console.log(planets)
-    setPlanets(planets)
+    const newPlanets = planets.slice()
+    newPlanets[planetId - 1] = planet
+    setPlanets(newPlanets)
   })
+  
 
   return (
     <Map 
@@ -33,12 +34,6 @@ export async function getServerSideProps({ req, res }) {
     }
 
     const planets = await getPlanets()
-    
-    planets.forEach(planet => {
-      delete planet.__v
-      delete planet.redeem
-      delete planet.quest
-    })
 
     return { props: { planets: planets} }
   } catch (error) {
