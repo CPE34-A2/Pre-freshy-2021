@@ -175,8 +175,8 @@ handler.patch(async (req, res) => {
   transaction.confirmer.push(req.user.id)
 
   req.socket.server.io.emit('set.task.fuel', transaction._id, {
-    confirmer: transaction.confirmer.length, 
-    rejector: transaction.rejector.length
+    confirmer: transaction.confirmer, 
+    rejector: transaction.rejector
   })
 
   if (transaction.confirm_require + 1 <= transaction.confirmer.length) {
@@ -190,8 +190,8 @@ handler.patch(async (req, res) => {
     clan.properties.fuel += transaction.item.fuel
     await clan.save()
 
-    req.socket.server.io.emit('set.clan.money', user.clan_id, clan.properties.money)
-    req.socket.server.io.emit('set.clan.fuel', user.clan_id, clan.properties.fuel)
+    req.socket.server.io.emit('set.clan.money', req.user.clan_id, clan.properties.money)
+    req.socket.server.io.emit('set.clan.fuel', req.user.clan_id, clan.properties.fuel)
 
     transaction.status = 'SUCCESS'
   }
@@ -264,8 +264,8 @@ handler.delete(async (req, res) => {
   await transaction.save()
 
   req.socket.server.io.emit('set.task.fuel', transaction._id, {
-    confirmer: transaction.confirmer.length, 
-    rejector: transaction.rejector.length
+    confirmer: transaction.confirmer, 
+    rejector: transaction.rejector
   })
 
   Response.success(res, {

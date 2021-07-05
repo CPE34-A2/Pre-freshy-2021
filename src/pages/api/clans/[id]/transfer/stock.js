@@ -206,8 +206,8 @@ handler.patch(async (req, res) => {
   await transaction.save()
 
   req.socket.server.io.emit('set.task.stock', transaction._id, {
-    confirmer: transaction.confirmer.length,
-    rejector: transaction.rejector.length
+    confirmer: transaction.confirmer,
+    rejector: transaction.rejector
   })
 
   // If the number of confirmer equal expected required, then excute the transaction
@@ -245,8 +245,8 @@ handler.patch(async (req, res) => {
   transaction.status = 'SUCCESS'
   await transaction.save()
 
-  req.socket.server.io.emit('set.clan.money', user.clan_id, clan.properties.money)
-  req.socket.server.io.emit('set.clan.stocks', user.clan_id, clan.properties.stocks)
+  req.socket.server.io.emit('set.clan.money', req.user.clan_id, clan.properties.money)
+  req.socket.server.io.emit('set.clan.stock', req.user.clan_id, clan.properties.stocks)
 
   Response.success(res, transaction)
 })
@@ -303,8 +303,8 @@ handler.delete(async (req, res) => {
   await transaction.save()
 
   req.socket.server.io.emit('set.task.stock', transaction._id, {
-    confirmer: transaction.confirmer.length,
-    rejector: transaction.rejector.length
+    confirmer: transaction.confirmer,
+    rejector: transaction.rejector
   })
 
   Response.success(res, transaction)
