@@ -34,10 +34,10 @@ const transactionLocales = {
   }
 }
 
-export default function TaskList() {
-  const { data: fuel, error: fuelError } = useSWR('/api/clans/6/transfer/fuel', fetcher)
-  const { data: stock, error: stockError } = useSWR('/api/clans/6/transfer/stock', fetcher)
-  const { data: planet, error: planetError } = useSWR('/api/clans/6/transfer/planet', fetcher)
+export default function TaskList({ user, clan }) {
+  const { data: fuel, error: fuelError } = useSWR(`/api/clans/${user.clan_id}/transfer/fuel`, fetcher)
+  const { data: stock, error: stockError } = useSWR(`/api/clans/${user.clan_id}/transfer/stock`, fetcher)
+  const { data: planet, error: planetError } = useSWR(`/api/clans/${user.clan_id}/transfer/planet`, fetcher)
 
   return (
     <div className="flex flex-col w-full lg:w-auto">
