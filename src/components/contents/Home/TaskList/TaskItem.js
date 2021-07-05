@@ -87,7 +87,7 @@ export default function TaskItem({ image, data, locale }) {
         </div>
 
         <div className="flex flex-row">
-          <div className="hidden md:flex flex-row text-center ml-3 lg:ml-8 space-x-6">
+          <div className="hidden md:flex items-center flex-row text-center ml-3 lg:ml-8 space-x-6">
             <div>
               <div className="font-thin text-gray-200 text-sm">{locale.received_title}</div>
               <div className="font-medium text-white">{item.received} {locale.received_unit}</div>
