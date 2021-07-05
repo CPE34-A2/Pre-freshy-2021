@@ -49,7 +49,7 @@ export default function BuyFuelModal({ clan }) {
     fetchAPI('POST', `/api/clans/${clan._id}/transfer/fuel`, { amount: amount })
       .then(async response => {
         if (response.status == 200) {
-          notify({ type: 'success', info: 'success' })
+          notify({ type: 'success', info: <>Wait for confimation <b>({amount * clan.fuel_rate} coin)</b></> })
         } else {
           const data = await response.json()
           notify({ type: 'error', info: data.message })
