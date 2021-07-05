@@ -74,7 +74,7 @@ export default function DonateMoneyModal({ user }) {
     <>
       <button
         className={Util.concatClasses(
-          "animate-ping p-1 hover:bg-purple-300 rounded-lg focus:outline-none",
+          "animate-ping p-1 hover:bg-purple-300 rounded-lg focus:outline-none ml-0 sm:ml-4 xl:ml-0",
           (user.money == 0) && 'hidden'
         )}
         onClick={openModal}

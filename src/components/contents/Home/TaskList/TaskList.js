@@ -40,7 +40,7 @@ export default function TaskList({ user, clan }) {
   const { data: planet, error: planetError } = useSWR(`/api/clans/${user.clan_id}/transfer/planet`, fetcher)
 
   return (
-    <div className="flex flex-col w-full lg:w-auto">
+    <div className="flex flex-col w-full xl:w-auto">
       <div className="flex flex-col bg-purple-50 p-5 rounded-2xl shadow-lg">
         <div className="text-xl font-extrabold tracking-wider text-indigo-800 mb-4">TASKS</div>
 

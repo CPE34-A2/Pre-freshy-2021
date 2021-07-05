@@ -64,7 +64,7 @@ export default function BuyFuelModal({ clan }) {
     <>
       <button
         className={Util.concatClasses(
-          "font-semibold text-white bg-indigo-700 hover:bg-indigo-900 px-2 hover:shadow-none shadow-md rounded-lg focus:outline-none",
+          "font-semibold text-white bg-indigo-700 hover:bg-indigo-900 px-2 hover:shadow-none shadow-md rounded-lg focus:outline-none ml-0 sm:ml-4 xl:ml-0",
           (clan.properties.money >= clan.fuel_rate) && 'animate-pulse'
         )}
         onClick={openModal}
