@@ -5,7 +5,7 @@ import Spinner from '@/components/common/Spinner'
 const transactionMap = {
   clan: {
     clan: ['fuel', 'money'],
-    market: ['stock', 'money',]
+    market: ['stock', 'money']
   },
   market: {
     clan: ['money', 'stock']
@@ -17,9 +17,32 @@ const transactionMap = {
 
 const resolveTransactionItems = (data) => {
   const bill = transactionMap[data.owner.type][data.receiver.type]
+
+  const receivedItem = data.item[bill[0]]
+  const lostItem = data.item[bill[1]]
+
+  // Resolve stock or planet
+  if ((typeof receivedItem === 'object')) {
+    // Stock resolver
+    if (receivedItem.symbol) {
+      return {
+        received: receivedItem.symbol,
+        cost: receivedItem.rate * receivedItem.amount
+      }
+    }
+
+    // Planet resovler
+    if (receivedItem.name) {
+      return {
+        received: receivedItem.name,
+        cost: lostItem
+      }
+    }
+  }
+
   return {
-    received: data.item[bill[0]],
-    cost: data.item[bill[1]]
+    received: receivedItem,
+    cost: lostItem
   }
 }
 
@@ -52,7 +75,7 @@ export default function TaskItem({ image, data, locale }) {
   const confirmLeft = confirm_require - Math.max(confirmer.length, rejector.length)
 
   return (
-    <div className="flex flex-row py-3 items-center bg-indigo-600 opacity-95 hover:opacity-100 px-4 rounded-2xl">
+    <div className="flex flex-row py-3 items-center bg-indigo-600 px-4 rounded-2xl shadow-md hover:shadow-none transition ease-out duration-150 hover:scale-105">
       <div className="flex-none w-14 h-14">
         <Image src={image} alt="" />
       </div>
@@ -63,22 +86,24 @@ export default function TaskItem({ image, data, locale }) {
           <div className="font-medium text-white">{locale.info}</div>
         </div>
 
-        <div className="flex flex-row text-center ml-8 space-x-4">
-          <div>
-            <div className="font-thin text-gray-200 text-sm">{locale.received_title}</div>
-            <div className="font-medium text-white">{item.received} {locale.received_unit}</div>
+        <div className="flex flex-row">
+          <div className="flex flex-row text-center ml-8 space-x-4">
+            <div>
+              <div className="font-thin text-gray-200 text-sm">{locale.received_title}</div>
+              <div className="font-medium text-white">{item.received} {locale.received_unit}</div>
+            </div>
+            <div>
+              <div className="font-thin text-gray-200 text-sm">{locale.cost_title}</div>
+              <div className="font-medium text-white">{item.cost} {locale.cost_unit}</div>
+            </div>
           </div>
-          <div>
-            <div className="font-thin text-gray-200 text-sm">{locale.cost_title}</div>
-            <div className="font-medium text-white">{item.cost} {locale.cost_unit}</div>
-          </div>
-        </div>
 
-        <div className="flex flex-col items-center ml-6">
-          <button className="rounded-lg px-4 bg-purple-200 hover:bg-purple-300 text-indigo-800 hover:text-indigo-900 shadow-md font-bold">
-            VOTE
-          </button>
-          <span className="text-xs mt-1 font-medium text-gray-200">({confirmLeft} left)</span>
+          <div className="flex flex-col items-center ml-6">
+            <button className="rounded-lg px-4 bg-pink-300 hover:bg-pink-400 ring-1 hover:animate-pulse text-pink-800 hover:text-pink-900 shadow-md font-bold">
+              VOTE
+            </button>
+            <span className="text-xs mt-1 font-medium text-gray-200">({confirmLeft} left)</span>
+          </div>
         </div>
       </div>
     </div>

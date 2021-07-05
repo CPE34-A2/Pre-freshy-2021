@@ -1,6 +1,6 @@
 import GallonImage from '@/publics/gallon.png'
 import StarImage from '@/publics/star.png'
-import MoneyImage from '@/publics/money.png'
+import StockImage from '@/publics/stock.png'
 
 import TaskItem from './TaskItem'
 
@@ -59,7 +59,7 @@ export default function TaskList() {
           />
 
           <TaskItem
-            image={MoneyImage}
+            image={StockImage}
             data={stock}
             locale={transactionLocales.stock}
           />
