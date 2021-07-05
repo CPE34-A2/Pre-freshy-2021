@@ -212,6 +212,11 @@ handler.patch(async (req, res) => {
     clan.position = planet._id
     await clan.save()
 
+    req.socket.server.io.emit('set.task.travel', transaction._id, {
+      confirmer: transaction.confirmer.length,
+      rejector: transaction.rejector.length
+    })
+
     transaction.status = 'SUCCESS'
   }
 
@@ -286,6 +291,11 @@ handler.delete(async (req, res) => {
   }
 
   await transaction.save()
+
+  req.socket.server.io.emit('set.task.travel', transaction._id, {
+    confirmer: transaction.confirmer.length,
+    rejector: transaction.rejector.length
+  })
 
   Response.success(res, {
     transaction_status: transaction.status,
