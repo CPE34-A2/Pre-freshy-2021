@@ -12,14 +12,14 @@ export default function Modal({ children, open, close }) {
         <div className="flex flex-col justify-center items-center h-screen">
           <Transition.Child
             as={Fragment}
-            enter="ease-out duration-200"
+            enter="ease-out duration-300"
             enterFrom="opacity-0"
             enterTo="opacity-100"
-            leave="ease-in duration-100"
+            leave="ease-in duration-400"
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <Dialog.Overlay className="fixed inset-0 bg-gray-700 opacity-70" />
+            <Dialog.Overlay className="fixed inset-0 bg-gray-700 bg-opacity-70" />
           </Transition.Child>
 
           <Transition.Child
@@ -31,7 +31,7 @@ export default function Modal({ children, open, close }) {
             leaveFrom="opacity-100 scale-100"
             leaveTo="opacity-0 scale-95"
           >
-            
+
             {children}
 
           </Transition.Child>
