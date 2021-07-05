@@ -3,11 +3,12 @@ import { useState } from 'react'
 import middleware from '@/middlewares/middleware'
 import useSocket from '@/hooks/useSocket'
 
+import { getUser } from '@/pages/api/users/[id]/index'
 import { getPlanets } from '@/pages/api/planets/index'
 
 import Map from '@/components/contents/Map/Map'
 
-export default function MapPage({ planets: rawPlanets}) {
+export default function MapPage({ user: rawUser, planets: rawPlanets }) {
   const [planets, setPlanets] = useState(rawPlanets)
 
   // WebSocket event listeners for real-time updating 
@@ -20,7 +21,8 @@ export default function MapPage({ planets: rawPlanets}) {
 
   return (
     <Map 
-      planets = {planets}
+      user={rawUser}
+      planets={planets}
     />
   )
 }
@@ -32,10 +34,12 @@ export async function getServerSideProps({ req, res }) {
     if (!req.isAuthenticated()) {
       return { redirect: { destination: '/login', permanent: false } }
     }
-
+    const user = await getUser(req.user.id)
     const planets = await getPlanets()
 
-    return { props: { planets: planets} }
+    delete user.__v
+
+    return { props: { user: user, planets: planets} }
   } catch (error) {
     console.log(error.message)
   }
