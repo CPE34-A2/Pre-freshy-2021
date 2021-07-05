@@ -58,7 +58,7 @@ export default function TaskItem({ image, data, locale }) {
   // If pending transaction is not present
   if (!data.data) {
     return (
-      <div className="flex flex-row py-3 items-center bg-indigo-500 px-4 rounded-2xl opacity-70">
+      <div className="flex flex-row py-3 items-center bg-indigo-500 px-4 rounded-2xl opacity-75">
         <div className="flex-none w-12 h-12 md:w-14 md:h-14">
           <Image src={image} alt="" />
         </div>
