@@ -95,7 +95,7 @@ export default function DonateMoneyModal({ user }) {
             <XIcon className="w-5 h-5 text-gray-400 hover:text-gray-800" />
           </button>
 
-          <div className="hidden md:flex absolute top-0 left-0 -translate-y-8 translate-x-6 w-32 h-32">
+          <div className="hidden md:flex absolute top-0 left-0 transform -translate-y-8 translate-x-6 w-32 h-32">
             <Image src={MoneyImage} alt="" />
           </div>
 
