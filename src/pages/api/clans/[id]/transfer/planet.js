@@ -34,16 +34,18 @@ handler.get(async (req, res) => {
       .lean()
       .exec()
 
-    const planet = await Planet
-      .findById(transaction.owner.id)
-      .select('name _id')
-      .lean()
-      .exec()
+    if (transaction) {
+      const planet = await Planet
+        .findById(transaction.owner.id)
+        .select('name _id')
+        .lean()
+        .exec()
 
-    delete transaction.item.planets
-    transaction.item.planet = {}
-    transaction.item.planet.id = planet._id
-    transaction.item.planet.name = planet.name
+      delete transaction.item.planets
+      transaction.item.planet = {}
+      transaction.item.planet.id = planet._id
+      transaction.item.planet.name = planet.name
+    }
   }
 
   res
