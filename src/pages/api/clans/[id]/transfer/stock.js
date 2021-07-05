@@ -35,7 +35,7 @@ handler.get(async (req, res) => {
 
   if (!isNaN(clanId)) {
     transaction = await Transaction.findOne({ $or: [{ 'owner.id': req.query.id, 'receiver.type': 'market' }, { 'receiver.id': req.query.id, 'owner.type': 'market' }] }, { 'status': 'PENDING' })
-      .select('_id')
+      .select()
       .lean()
       .exec()
   }
