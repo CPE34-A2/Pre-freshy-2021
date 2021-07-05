@@ -37,9 +37,8 @@ handler.get(async (req, res) => {
     transaction = await Transaction
       .findOne({
         $or: [
-          { 'owner.id': req.query.id, 'receiver.type': 'market' },
-          { 'receiver.id': req.query.id, 'owner.type': 'market' },
-          { 'status': 'PENDING' }
+          { 'owner.id': req.query.id, 'receiver.type': 'market', 'status': 'PENDING' },
+          { 'receiver.id': req.query.id, 'owner.type': 'market', 'status': 'PENDING' }
         ]})
       .lean()
       .exec()

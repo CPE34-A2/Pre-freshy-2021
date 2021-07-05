@@ -11,7 +11,7 @@ const transactionMap = {
     clan: ['money', 'stock']
   },
   planet: {
-    clan: ['planets', 'fuel']
+    clan: ['planet', 'fuel']
   }
 }
 
@@ -75,7 +75,7 @@ export default function TaskItem({ image, data, locale }) {
   const confirmLeft = confirm_require - Math.max(confirmer.length, rejector.length)
 
   return (
-    <div className="flex flex-row py-3 items-center bg-indigo-600 px-4 rounded-2xl shadow-md hover:shadow-none transition ease-out duration-150 hover:scale-105">
+    <div className="flex flex-row py-3 items-center bg-indigo-600 px-4 rounded-2xl shadow-md hover:shadow-none">
       <div className="flex-none w-14 h-14">
         <Image src={image} alt="" />
       </div>
@@ -87,7 +87,7 @@ export default function TaskItem({ image, data, locale }) {
         </div>
 
         <div className="flex flex-row">
-          <div className="flex flex-row text-center ml-8 space-x-4">
+          <div className="flex flex-row text-center ml-8 space-x-6">
             <div>
               <div className="font-thin text-gray-200 text-sm">{locale.received_title}</div>
               <div className="font-medium text-white">{item.received} {locale.received_unit}</div>
