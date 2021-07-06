@@ -206,7 +206,7 @@ handler.patch(async (req, res) => {
   await transaction.save()
 
   req.socket.server.io.emit('set.task.stock', req.user.clan_id,
-    transaction.status = 'PENDING' ? transaction : null
+    transaction.status == 'PENDING' ? transaction : null
   )
 
   // If the number of confirmer equal expected required, then excute the transaction
@@ -302,7 +302,7 @@ handler.delete(async (req, res) => {
   await transaction.save()
 
   req.socket.server.io.emit('set.task.stock', req.user.clan_id,
-    transaction.status = 'PENDING' ? transaction : null
+    transaction.status == 'PENDING' ? transaction : null
   )
 
   Response.success(res, transaction)

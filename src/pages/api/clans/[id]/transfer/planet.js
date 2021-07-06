@@ -213,7 +213,7 @@ handler.patch(async (req, res) => {
     await clan.save()
 
     req.socket.server.io.emit('set.task.travel', req.user.clan_id,
-      transaction.status = 'PENDING' ? transaction : null
+      transaction.status == 'PENDING' ? transaction : null
     )
 
     transaction.status = 'SUCCESS'
@@ -292,7 +292,7 @@ handler.delete(async (req, res) => {
   await transaction.save()
 
   req.socket.server.io.emit('set.task.travel', req.user.clan_id,
-    transaction.status = 'PENDING' ? transaction : null
+    transaction.status == 'PENDING' ? transaction : null
   )
 
   Response.success(res, {
