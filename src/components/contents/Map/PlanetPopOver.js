@@ -1,4 +1,4 @@
-export default function PlanetPopover({ planet, isHover }) {
+export default function PlanetPopover({ clan, planet, isHover }) {
   return (
     <>
       {isHover &&

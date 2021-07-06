@@ -1,11 +1,20 @@
 import Modal from "@/components/common/Modal"
 import { Dialog } from '@headlessui/react'
-import { ChevronRightIcon, XIcon } from '@heroicons/react/outline'
-import Image from 'next/image'
+import { XIcon } from '@heroicons/react/outline'
+import PlanetConfirmModal from './PlanetConfirmModal'
 import Conquer from '@/publics/conquer.png'
 import Battle from '@/publics/battle.png'
+import Image from "next/image"
+import { useState } from 'react' 
 
-export default function PlanetModal({ planet, image, isOpen, close }) {
+export default function PlanetModal({ clan, planet, image, isOpen, close }) {
+  const [isClick, setIsClick] = useState(false)
+  const isBattle = planet.owner != 0 ? true : false
+
+  const openConfirmModal = () => setIsClick(true)
+  const closeConfirmModal = () => setIsClick(false)
+  
+
   return (
     <Modal
       open={isOpen}
@@ -31,13 +40,11 @@ export default function PlanetModal({ planet, image, isOpen, close }) {
         <div>Tier: {planet.tier}</div>
         <div>Point: {planet.point}</div>
         <div>Travel Cost: {planet.travel_cost}</div>
-        <div>Owner: {planet.owner != 0 ? planet.owner : "None"}</div>
-        <div>
-          {planet.owner == 0
-            ? <Image src={Conquer} alt="" />
-            : <Image src={Battle} alt="" />
-          }
+        <div>Owner: {isBattle ? planet.owner : "None"}</div>
+        <div className="flex flex-col justify-center" onClick={openConfirmModal} >
+          <Image src={isBattle ? Battle : Conquer} alt="" />
         </div>
+        <PlanetConfirmModal planet={planet} closeAll={close} close={closeConfirmModal} isOpen={isClick} clan={clan} isBattle={isBattle} />
       </div>
     </Modal>
   )

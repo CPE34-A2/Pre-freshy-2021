@@ -36,7 +36,7 @@ handler.post(async (req, res) => {
   const betMoney = parseInt(req.body.bet_money) || 0
   const betFuel = parseInt(req.body.bet_fuel) || 0
   let betPlanetIds = req.body.bet_planet_ids
-  const targetPlanetId = req.body.target_planet_id
+  const targetPlanetId = req.body.target_planet
 
   if (isNaN(betMoney))
     return Response.denined(res, 'bet_money is not a number')

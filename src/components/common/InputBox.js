@@ -4,6 +4,7 @@ export default function InputBox(props) {
   return (
     <>
       <input
+        name = {props.name}
         placeholder = {props.placeholder} 
         type = {props.type}
         maxLength = {props.maxLength}

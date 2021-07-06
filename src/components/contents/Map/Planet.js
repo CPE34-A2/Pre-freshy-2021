@@ -3,7 +3,7 @@ import PlanetPopOver from "./PlanetPopOver"
 import { useState } from "react"
 import PlanetModal from "./PlanetModal"
 
-export default function Planet({planet, image, className}) {
+export default function Planet({ clan, planet, image, className}) {
   const [isHover, setIsHover] = useState(false)
   const [isClick, setIsClick] = useState(false)
 
@@ -14,8 +14,8 @@ export default function Planet({planet, image, className}) {
 
   return (
     <div className="flex justify-center">
-      <PlanetPopOver planet={planet} isHover={isHover} />
-      <PlanetModal planet={planet} image={image} isOpen={isClick} close={closeModal}/>
+      <PlanetPopOver clan={clan} planet={planet} isHover={isHover} />
+      <PlanetModal clan={clan} planet={planet} image={image} isOpen={isClick} close={closeModal}/>
       <div className={className} onMouseEnter={openPopOver} onMouseLeave={closePopOver} onClick={openModal}>
         <Image src={image} alt="" />
       </div>
