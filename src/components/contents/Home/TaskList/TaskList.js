@@ -66,35 +66,33 @@ export default function TaskList({ user, clan }) {
   })
 
   return (
-    <div className="flex flex-col w-full xl:w-auto">
-      <div className="flex flex-col bg-purple-50 p-5 rounded-2xl shadow-lg">
-        <div className="text-xl font-extrabold tracking-wider text-indigo-800 mb-4">TASKS</div>
+    <div className="flex flex-col bg-gray-300 bg-opacity-40 filter backdrop-blur-3xl p-5 rounded-2xl shadow-lg">
+      <div className="text-3xl font-bold tracking-wider text-white mb-4">TASKS</div>
 
-        <div className="flex flex-col space-y-4">
-          <TaskItem
-            user={user}
-            clan={clan}
-            image={GallonImage}
-            data={fuel}
-            locale={transactionLocales.fuel}
-          />
+      <div className="flex flex-col space-y-4">
+        <TaskItem
+          user={user}
+          clan={clan}
+          image={GallonImage}
+          data={fuel}
+          locale={transactionLocales.fuel}
+        />
 
-          <TaskItem
-            user={user}
-            clan={clan}
-            image={StarImage}
-            data={planet}
-            locale={transactionLocales.planet}
-          />
+        <TaskItem
+          user={user}
+          clan={clan}
+          image={StarImage}
+          data={planet}
+          locale={transactionLocales.planet}
+        />
 
-          <TaskItem
-            user={user}
-            clan={clan}
-            image={StockImage}
-            data={stock}
-            locale={transactionLocales.stock}
-          />
-        </div>
+        <TaskItem
+          user={user}
+          clan={clan}
+          image={StockImage}
+          data={stock}
+          locale={transactionLocales.stock}
+        />
       </div>
     </div>
   )
