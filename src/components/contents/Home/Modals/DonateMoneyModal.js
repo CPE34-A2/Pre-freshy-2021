@@ -1,5 +1,5 @@
 import { Dialog } from '@headlessui/react'
-import { ChevronRightIcon, XIcon } from '@heroicons/react/outline'
+import { XIcon } from '@heroicons/react/outline'
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
 
@@ -74,12 +74,12 @@ export default function DonateMoneyModal({ user }) {
     <>
       <button
         className={Util.concatClasses(
-          "animate-ping p-1 hover:bg-purple-300 rounded-lg focus:outline-none ml-0 sm:ml-4 xl:ml-0",
+          "animate-pulse font-semibold text-white bg-indigo-700 hover:bg-indigo-900 px-2 hover:shadow-none shadow-md rounded-lg focus:outline-none ml-0 sm:ml-4 xl:ml-0",
           (user.money == 0) && 'hidden'
         )}
         onClick={openModal}
       >
-        <ChevronRightIcon className="text- purple-800 w-4 h-4" />
+        Donate
       </button>
 
       <Modal

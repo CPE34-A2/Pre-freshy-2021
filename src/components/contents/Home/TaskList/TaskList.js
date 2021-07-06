@@ -35,6 +35,11 @@ const transactionLocales = {
   }
 }
 
+const fetchTransaction = (clanId, type, setState) => {
+  fetchAPI('GET', `/api/clans/${clanId}/transfer/${type}`)
+    .then(async response => setState(await response.json()))
+}
+
 export default function TaskList({ user, clan }) {
   const [fuel, setFuel] = useState(null)
   const [planet, setPlanet] = useState(null)
@@ -42,30 +47,22 @@ export default function TaskList({ user, clan }) {
 
   // Fetch after render finished
   useEffect(() => {
-    fetchAPI('GET', `/api/clans/${user.clan_id}/transfer/fuel`)
-      .then(async response => setFuel(await response.json()))
-
-    fetchAPI('GET', `/api/clans/${user.clan_id}/transfer/planet`)
-      .then(async response => setPlanet((await response.json()) || {}))
-
-    fetchAPI('GET', `/api/clans/${user.clan_id}/transfer/stock`)
-      .then(async response => setStock((await response.json()) || {}))
-  }, [user.clan_id])
+    fetchTransaction(clan._id, 'fuel', setFuel)
+    fetchTransaction(clan._id, 'planet', setPlanet)
+    fetchTransaction(clan._id, 'stock', setStock)
+  }, [])
 
   // WebSocket event listeners for real-time updating 
-  useSocket('set.task.fuel', (transactionId, data) => {
-    (transactionId == fuel.data._id) &&
-      setFuel({ ...fuel, data: { ...fuel.data, confirmer: data.confirmer, rejector: data.rejector } })
+  useSocket('set.task.fuel', async (targetClanId, data) => {
+    (targetClanId == clan._id) && setFuel({ data: data })
   })
 
-  useSocket('set.task.travel', (transactionId, data) => {
-    (transactionId == fuel.data._id) &&
-      setFuel({ ...planet, data: { ...planet.data, confirmer: data.confirmer, rejector: data.rejector } })
+  useSocket('set.task.travel', (targetClanId, data) => {
+    (targetClanId == clan._id) && setPlanet({ data: data })
   })
 
-  useSocket('set.task.stock', (transactionId, data) => {
-    (transactionId == stock.data._id) &&
-      setFuel({ ...stock, data: { ...stock.data, confirmer: data.confirmer, rejector: data.rejector } })
+  useSocket('set.task.stock', (targetClanId, data) => {
+    (targetClanId == clan._id) && setStock({ data: data })
   })
 
   return (
