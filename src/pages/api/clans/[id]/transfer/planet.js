@@ -96,13 +96,13 @@ handler.post(async (req, res) => {
 
   const dupeTransaction = await Transaction
     .findOne({
-      "owner.id": planet._id,
+      "owner.type": 'planet',
       "receiver.id": clan.id,
       status: 'PENDING'
     })
 
   if (dupeTransaction) {
-    return Response.denined(res, 'Stop spamming. Go confirm/reject the other one')
+    return Response.denined(res, 'There are still pending transactions')
   }
 
   if (planet.owner != 0) {
