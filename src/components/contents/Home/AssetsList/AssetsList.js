@@ -46,7 +46,7 @@ export default function AssetsList({ user, clan }) {
           <AssetItem
             image={StarImage}
             value={clan.owned_planet_ids.length}
-            unit="star"
+            unit="planet"
           />
         </div>
       </div>

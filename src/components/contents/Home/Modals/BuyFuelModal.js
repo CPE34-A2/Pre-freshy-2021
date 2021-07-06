@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { XIcon, ChevronDownIcon } from '@heroicons/react/outline'
+import { XIcon } from '@heroicons/react/outline'
 import Image from 'next/image'
 
 import * as Util from '@/utils/common'
@@ -101,7 +101,6 @@ export default function BuyFuelModal({ clan }) {
                 <div className="font-bold">
                   Detail
                 </div>
-                <ChevronDownIcon className="w-4 h-4 text-gray-500" />
               </div>
 
               {/* Detail for decoration */}
