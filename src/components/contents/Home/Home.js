@@ -4,7 +4,7 @@ import TaskList from './TaskList/TaskList'
 
 export default function Home({ user, clan }) {
   return (
-    <Dashboard current="home" user={user} >
+    <Dashboard current="home" user={user} clan={clan} >
 
       <AssetsList
         user={user}

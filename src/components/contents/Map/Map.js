@@ -7,7 +7,7 @@ import X from '@/publics/planets/X.png'
 import TheOne from '@/publics/planets/The_one.png'
 import Dashboard from '@/components/common/Dashboard'
 
-export default function Map({ user, planets }) {
+export default function Map({ user, clan, planets }) {
   function filterTier(planet, tier) {
     return planet.tier == tier ? true : false
   }
@@ -26,7 +26,7 @@ export default function Map({ user, planets }) {
   const planetD2 = planetD.slice((planetD.length) / 2)
 
   return (
-    <Dashboard current="map" user={user}>
+    <Dashboard current="map" user={user} clan={clan} >
       <div className="flex flex-col-reverse md:flex-row justify-evenly w-full h-screen">
         <PlanetCol planets={theOne} image={TheOne} className="w-40 h-40" />
         <PlanetCol planets={planetB} image={B} className="w-28 h-28" />

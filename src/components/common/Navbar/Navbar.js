@@ -6,8 +6,9 @@ import Logo from '@/publics/logo.png'
 
 import NavMenu from './NavMenu'
 import ProfileBar from './ProfileBar'
+import ClanBar from './ClanBar'
 
-export default function Navbar({ current, user }) {
+export default function Navbar({ current, user, clan }) {
   const navigation = [
     { name: 'Home', icon: <TemplateIcon className="w-5 h-5 mr-3" />, href: '/', current: (current == 'home') },
     { name: 'Map', icon: <MapIcon className="w-5 h-5 mr-3" />, href: '/map', current: (current == 'map') },
@@ -24,16 +25,6 @@ export default function Navbar({ current, user }) {
         icon={item.icon}
       />
     ))
-  }
-
-  const getProfileBar = (user, mobile) => {
-    return (
-      <ProfileBar
-        username={user._id}
-        role={user.role}
-        mobile={mobile}
-      />
-    )
   }
 
   return (
@@ -65,7 +56,12 @@ export default function Navbar({ current, user }) {
                 </nav>
               </div>
 
-              {getProfileBar(user, false)}
+              <ClanBar clan={clan} />
+
+              <ProfileBar
+                username={user._id}
+                role={user.role}
+              />
             </>
 
             {/* Mobile nav panel */}
@@ -81,10 +77,16 @@ export default function Navbar({ current, user }) {
               <Disclosure.Panel className="md:hidden px-4">
                 <nav className="border-t border-indigo-700 pt-4 pb-1">
                   {getAllMenus()}
+
+                  <ClanBar clan={clan} mobile />
                 </nav>
               </Disclosure.Panel>
 
-              {getProfileBar(user, true)}
+              <ProfileBar
+                username={user._id}
+                role={user.role}
+                mobile
+              />
             </Transition>
           </div>
         </>
