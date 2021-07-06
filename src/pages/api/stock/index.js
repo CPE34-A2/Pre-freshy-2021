@@ -5,6 +5,7 @@ import Clan from '@/models/clan'
 import Stock from '@/models/stock'
 import StockHistory from '@/models/stock-history'
 
+import * as Response from '@/utils/response'
 import moment from 'moment-timezone'
 
 const handler = nextConnect()
@@ -43,14 +44,14 @@ handler.get(async (req, res) => {
     .find({ date: new Date(currentTime.startOf('day').valueOf() - 86400000) })
     .select('symbol rate')
     .exec()
-    
+
   if (IS_FIRSTTIME_FETCH) {
     IS_FIRSTTIME_FETCH = false
     let todayStockPrice = await StockHistory
       .find({ date: new Date(currentTime.startOf('day').valueOf()) })
       .select()
       .exec()
-    
+
     if (todayStockPrice) {
       todayStockPrice.forEach((e) => {
         stocks.forEach((f) => {

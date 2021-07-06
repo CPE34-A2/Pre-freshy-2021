@@ -23,24 +23,24 @@ const resolveTransactionItems = (data) => {
   const lostItem = data.item[bill[1]]
 
   // Resolve stock or planet
-  if ((typeof receivedItem === 'object')) {
+  if ((typeof receivedItem === 'object') || (typeof lostItem === 'object')) {
     // Stock resolver
-    if (receivedItem.symbol) {
+    if (receivedItem && receivedItem.symbol) {
       return {
         type: 'stock',
         received: receivedItem.symbol,
         cost: receivedItem.rate * receivedItem.amount
       }
-    } else if (lostItem.symbol) {
+    } else if (lostItem && lostItem.symbol) {
       return {
         type: 'stock',
-        received: receivedItem.money,
+        received: lostItem.rate * lostItem.amount,
         cost: lostItem.symbol
       }
     }
 
     // Planet resovler
-    if (receivedItem.name) {
+    if (receivedItem && receivedItem.name) {
       return {
         type: 'planet',
         received: receivedItem.name,

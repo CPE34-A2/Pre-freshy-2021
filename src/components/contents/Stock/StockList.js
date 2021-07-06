@@ -1,47 +1,34 @@
-import Itemlist from '@/components/contents/Stock/StockItem'
+import StockItem from '@/components/contents/Stock/StockItem'
 
-export default function StockList() {
+export default function StockList({ clan, stocks }) {
   return (
-    <div className='flex flex-col bg-purple-200 rounded-2xl w-full shadow-2xl '>
+    <div className='flex flex-col bg-purple-100 rounded-2xl w-full shadow-2xl '>
       {/* upper list */}
-      <div className='rounded-t-2xl bg-purple-500 flex flex-row py-4  w:11/12 md:w-full font-bold text-white text-lg'>
+      <div className='text-center rounded-t-2xl bg-indigo-700 flex flex-row py-4 px-6 w-full font-semibold text-white text-lg'>
         {/* รายชื่อหมวดหมู่ */}
         <div className='flex-1  md:pl-4 2xl:pl-5  '>
-          symbol
+          Symbol
         </div>
         <div className='flex-1 md:pl-20 2xl:pl-52'>
-          last price
+          Last
         </div>
         <div className='flex-1 md:pl-4 2xl:pl-44'>
-          change | %
+          Change
         </div>
         <div className='px-2 2xl:px-32 md:px-14'>
-          Buy
+          Manage
         </div>
       </div>
       {/* lower list */}
-      <div className=''>
-        <Itemlist
-          symbol="EMCL"
-          price="12"
-          change="5.02" />
-        <Itemlist
-          symbol="MINT"
-          price="12"
-          change="5.02" />
-        <Itemlist
-          symbol="EMCL"
-          price="12"
-          change="5.02" />
-        <Itemlist
-          symbol="EMCL"
-          price="12"
-          change="5.02" />
-        <Itemlist
-          symbol="EMCL"
-          price="12"
-          change="5.02" />
+      <div className='px-6 text-center'>
 
+        {stocks && stocks.map(stock => (
+          <StockItem
+            key={stock.symbol}
+            clan={clan}
+            data={stock}
+          />
+        ))}
       </div>
     </div>
   )
