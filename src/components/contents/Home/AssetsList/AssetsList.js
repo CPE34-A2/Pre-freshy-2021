@@ -11,9 +11,9 @@ import BuyFuelModal from '../Modals/BuyFuelModal'
 export default function AssetsList({ user, clan }) {
   return (
     <div className="flex flex-col bg-gray-300 bg-opacity-40 filter backdrop-blur-3xl p-5 rounded-2xl shadow-lg">
-      <div className="text-3xl font-bold tracking-wider text-white mb-4">ASSETS</div>
+      <div className="text-2xl font-bold tracking-wider text-white mb-4">ASSETS</div>
 
-      <div className="font-medium text-xl text-gray-200 mb-2">Your items</div>
+      <div className="font-medium text-xl text-gray-400 mb-2">Your items</div>
       <div className="flex flex-col mb-6">
         <AssetItem
           image={MoneyImage}
@@ -23,7 +23,7 @@ export default function AssetsList({ user, clan }) {
         />
       </div>
 
-      <div className="font-medium text-xl text-gray-200 mb-2">Clan items</div>
+      <div className="font-medium text-xl text-gray-400 mb-2">Clan items</div>
       <div className="flex flex-col space-y-4">
         <AssetItem
           image={MoneyImage}

@@ -67,7 +67,7 @@ export default function TaskList({ user, clan }) {
 
   return (
     <div className="flex flex-col bg-gray-300 bg-opacity-40 filter backdrop-blur-3xl p-5 rounded-2xl shadow-lg">
-      <div className="text-3xl font-bold tracking-wider text-white mb-4">TASKS</div>
+      <div className="text-2xl font-bold tracking-wider text-white mb-4">TASKS</div>
 
       <div className="flex flex-col space-y-4">
         <TaskItem
