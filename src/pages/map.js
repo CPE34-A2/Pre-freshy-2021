@@ -4,11 +4,12 @@ import middleware from '@/middlewares/middleware'
 import useSocket from '@/hooks/useSocket'
 
 import { getUser } from '@/pages/api/users/[id]/index'
+import { getClan } from '@/pages/api/clans/[id]/index'
 import { getPlanets } from '@/pages/api/planets/index'
 
 import Map from '@/components/contents/Map/Map'
 
-export default function MapPage({ user: rawUser, planets: rawPlanets }) {
+export default function MapPage({ user: rawUser, planets: rawPlanets, clan: clan }) {
   const [planets, setPlanets] = useState(rawPlanets)
 
   // WebSocket event listeners for real-time updating 
@@ -22,7 +23,8 @@ export default function MapPage({ user: rawUser, planets: rawPlanets }) {
   return (
     <Map 
       user={rawUser}
-      planets={planets}
+      clan={clan}
+      planets={planets} 
     />
   )
 }
@@ -35,11 +37,12 @@ export async function getServerSideProps({ req, res }) {
       return { redirect: { destination: '/login', permanent: false } }
     }
     const user = await getUser(req.user.id)
+    const clan = await getClan(req.user.clan_id)
     const planets = await getPlanets()
 
     delete user.__v
 
-    return { props: { user: user, planets: planets} }
+    return { props: { user: user, clan: clan, planets: planets } }
   } catch (error) {
     console.log(error.message)
   }

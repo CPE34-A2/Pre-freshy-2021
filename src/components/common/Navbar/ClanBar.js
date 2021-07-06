@@ -2,7 +2,7 @@ import * as Util from '@/utils/common'
 
 export default function ClanBar({ clan, mobile }) {
   return (
-    <div 
+    <div
       className={Util.concatClasses(
         "flex flex-row mb-4 p-2 bg-indigo-800 rounded-lg",
         mobile ? "my-4" : "hidden md:flex mx-4"
