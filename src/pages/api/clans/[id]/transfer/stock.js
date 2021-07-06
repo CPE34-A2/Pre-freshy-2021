@@ -205,10 +205,12 @@ handler.patch(async (req, res) => {
   transaction.confirmer.push(req.user.id)
   await transaction.save()
 
-  req.socket.server.io.emit('set.task.stock', transaction._id, {
-    confirmer: transaction.confirmer,
-    rejector: transaction.rejector
-  })
+  req.socket.server.io.emit('set.task.stock', req.user.clan_id,
+    transaction.status = 'SUCESS' ? null : {
+      confirmer: transaction.confirmer,
+      rejector: transaction.rejector
+    }
+  )
 
   // If the number of confirmer equal expected required, then excute the transaction
   if (transaction.confirmer.length < transaction.confirm_require + 1)
@@ -302,10 +304,12 @@ handler.delete(async (req, res) => {
 
   await transaction.save()
 
-  req.socket.server.io.emit('set.task.stock', transaction._id, {
-    confirmer: transaction.confirmer,
-    rejector: transaction.rejector
-  })
+  req.socket.server.io.emit('set.task.stock', req.user.clan_id,
+    transaction.status = 'REJECT' ? null : {
+      confirmer: transaction.confirmer,
+      rejector: transaction.rejector
+    }
+  )
 
   Response.success(res, transaction)
 })
