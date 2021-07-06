@@ -205,44 +205,43 @@ handler.patch(async (req, res) => {
   transaction.confirmer.push(req.user.id)
   await transaction.save()
 
+  // If the number of confirmer equal expected required, then excute the transaction
+  if (transaction.confirm_require + 1 <= transaction.confirmer.length) {
+    const clan = await Clan
+      .findById(req.user.clan_id)
+      .select()
+      .exec()
+
+    const total = transaction.item.stock.rate * transaction.item.stock.amount
+
+    if (transaction.owner.type === 'clan') {
+      if (clan.properties.money < total) {
+        transaction.status = 'REJECT'
+        await transaction.save()
+        return Response.denined(res, 'no money, lol')
+      }
+      clan.properties.money -= total
+      clan.properties.stocks[transaction.item.stock.symbol] += transaction.item.stock.amount
+      await clan.save()
+
+    } else if (transaction.owner.type === 'market') {
+      if (clan.properties.stocks[transaction.item.stock.symbol] < transaction.item.stock.amount) {
+        transaction.status = 'REJECT'
+        await transaction.save()
+        return Response.denined(res, 'not enough stock, lol')
+      }
+      clan.properties.money += total
+      clan.properties.stocks[transaction.item.stock.symbol] -= transaction.item.stock.amount
+      await clan.save()
+    }
+
+    transaction.status = 'SUCCESS'
+    await transaction.save()
+  }
+
   req.socket.server.io.emit('set.task.stock', req.user.clan_id,
     transaction.status == 'PENDING' ? transaction : null
   )
-
-  // If the number of confirmer equal expected required, then excute the transaction
-  if (transaction.confirmer.length < transaction.confirm_require + 1)
-    return Response.success(res, transaction)
-
-  const clan = await Clan
-    .findById(req.user.clan_id)
-    .select()
-    .exec()
-
-  const total = transaction.item.stock.rate * transaction.item.stock.amount
-
-  if (transaction.owner.type === 'clan') {
-    if (clan.properties.money < total) {
-      transaction.status = 'REJECT'
-      await transaction.save()
-      return Response.denined(res, 'no money, lol')
-    }
-    clan.properties.money -= total
-    clan.properties.stocks[transaction.item.stock.symbol] += transaction.item.stock.amount
-    await clan.save()
-
-  } else if (transaction.owner.type === 'market') {
-    if (clan.properties.stocks[transaction.item.stock.symbol] < transaction.item.stock.amount) {
-      transaction.status = 'REJECT'
-      await transaction.save()
-      return Response.denined(res, 'not enough stock, lol')
-    }
-    clan.properties.money += total
-    clan.properties.stocks[transaction.item.stock.symbol] -= transaction.item.stock.amount
-    await clan.save()
-  }
-
-  transaction.status = 'SUCCESS'
-  await transaction.save()
 
   req.socket.server.io.emit('set.clan.money', req.user.clan_id, clan.properties.money)
   req.socket.server.io.emit('set.clan.stock', req.user.clan_id, clan.properties.stocks)
