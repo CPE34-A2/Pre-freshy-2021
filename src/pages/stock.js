@@ -8,7 +8,13 @@ import { getClan } from '@/pages/api/clans/[id]/index'
 
 import Stock from '@/components/contents/Stock/Stock'
 
-export default function StockPage({ user, clan }) {
+export default function StockPage({ user, clan: rawClan }) {
+  const [clan, setClan] = useState(rawClan)
+
+  useSocket('set.clan.stock', (clanId, stocks) => {
+    (clanId == user.clan_id) && setClan({ ...clan, properties: { ...clan.properties, stocks } })
+  })
+
   return (
     <Stock
       user={user}

@@ -23,24 +23,24 @@ const resolveTransactionItems = (data) => {
   const lostItem = data.item[bill[1]]
 
   // Resolve stock or planet
-  if ((typeof receivedItem === 'object')) {
+  if ((typeof receivedItem === 'object') || (typeof lostItem === 'object')) {
     // Stock resolver
-    if (receivedItem.symbol) {
+    if (receivedItem && receivedItem.symbol) {
       return {
         type: 'stock',
         received: receivedItem.symbol,
         cost: receivedItem.rate * receivedItem.amount
       }
-    } else if (lostItem.symbol) {
+    } else if (lostItem && lostItem.symbol) {
       return {
         type: 'stock',
-        received: receivedItem.money,
+        received: lostItem.rate * lostItem.amount,
         cost: lostItem.symbol
       }
     }
 
     // Planet resovler
-    if (receivedItem.name) {
+    if (receivedItem && receivedItem.name) {
       return {
         type: 'planet',
         received: receivedItem.name,
@@ -59,8 +59,8 @@ const resolveTransactionItems = (data) => {
 export default function TaskItem({ user, clan, image, data, locale }) {
   // When fetching the data
   if (!data) return (
-    <div className="flex flex-row py-3 items-center bg-indigo-500 px-4 rounded-2xl">
-      <div className="mr-4"><Spinner style="w-14 h-14 text-indigo-200" /></div>
+    <div className="flex flex-row items-center p-4 bg-gray-800 bg-opacity-40 filter backdrop-blur-3xl rounded-xl">
+      <div className="mr-4"><Spinner style="w-16 h-16 text-indigo-200" /></div>
       <div className="font-bold text-gray-300">Loading transaction data from space station...</div>
     </div>
   )
@@ -68,13 +68,13 @@ export default function TaskItem({ user, clan, image, data, locale }) {
   // If pending transaction is not present
   if (!data.data) {
     return (
-      <div className="flex flex-row py-3 items-center bg-indigo-500 px-4 rounded-2xl opacity-75">
-        <div className="flex-none w-12 h-12 md:w-14 md:h-14">
+      <div className="flex flex-row items-center p-4 bg-gray-800 opacity-40 filter backdrop-blur-3xl rounded-xl">
+        <div className="flex-none w-12 h-12 md:w-16 md:h-16">
           <Image src={image} alt="" />
         </div>
 
-        <div className="flex flex-row w-full items-center justify-between ml-2 md:ml-4 md:px-12">
-          <div className="font-semibold text-gray-200">{locale.not_found}</div>
+        <div className="flex flex-row items-center ml-2 md:ml-4">
+          <div className="font-semibold uppercase text-base md:text-lg tracking-wide text-gray-300">{locale.not_found}</div>
         </div>
       </div>
     )
@@ -86,32 +86,32 @@ export default function TaskItem({ user, clan, image, data, locale }) {
   const confirmLeft = confirm_require - Math.max(confirmer.length - 1, rejector.length)
 
   return (
-    <div className="flex flex-row py-3 items-center bg-indigo-600 px-4 rounded-2xl shadow-md hover:shadow-none">
-      <div className="flex-none w-12 h-12 md:w-14 md:h-14">
+    <div className="flex flex-row items-center p-4 bg-white bg-opacity-40 filter backdrop-blur-3xl rounded-xl">
+      <div className="flex-none w-12 h-12 md:w-16 md:h-16">
         <Image src={image} alt="" />
       </div>
 
       <div className="flex flex-row w-full items-center justify-between ml-2 md:ml-4">
         <div className="flex flex-col">
-          <div className="hidden md:flex font-thin text-gray-200 text-sm">Request Pending</div>
-          <div className="font-medium text-white">{locale.info}</div>
+          <div className="hidden md:flex font-semibold text-base text-gray-800">Request Pending</div>
+          <div className="font-bold text-lg md:text-xl text-center md:text-left uppercase text-indigo-900">{locale.info}</div>
         </div>
 
         <div className="flex flex-row">
-          <div className="hidden md:flex items-center flex-row text-center ml-3 lg:ml-8 space-x-6">
+          <div className="hidden lg:flex items-center flex-row text-center ml-3 lg:ml-8 space-x-6">
             <div>
-              <div className="font-thin text-gray-200 text-sm">{locale.received_title}</div>
-              <div className="font-medium text-white">{item.received} {locale.received_unit}</div>
+              <div className="font-bold text-gray-800 text-base">{locale.received_title}</div>
+              <div className="font-bold text-xl text-indigo-700">{item.received} {locale.received_unit}</div>
             </div>
             <div>
-              <div className="font-thin text-gray-200 text-sm">{locale.cost_title}</div>
-              <div className="font-medium text-white">{item.cost} {locale.cost_unit}</div>
+              <div className="font-bold text-gray-800 text-base">{locale.cost_title}</div>
+              <div className="font-bold text-xl text-indigo-700">{item.cost} {locale.cost_unit}</div>
             </div>
           </div>
 
-          <div className="flex flex-col items-center justify-center ml-2 md:ml-6">
+          <div className="flex flex-col flex-shrink-0 items-center justify-center ml-2 md:ml-6">
             <TaskVoteModal user={user} clan={clan} image={image} transaction={data.data} item={item} locale={locale} />
-            <span className="text-xs mt-1 font-medium text-gray-200">({confirmLeft} left)</span>
+            <span className="text-sm mt-1 font-medium text-indigo-800">({confirmLeft} LEFT)</span>
           </div>
         </div>
       </div>

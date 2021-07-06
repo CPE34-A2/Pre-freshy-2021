@@ -67,7 +67,7 @@ export default function TaskVoteModal({ user, clan, image, transaction, item, lo
   return (
     <>
       <button
-        className="rounded-lg px-4 bg-pink-300 hover:bg-pink-400 ring-1 text-sm md:text-base hover:animate-pulse text-pink-800 hover:text-pink-900 shadow-md font-bold focus:outline-none"
+        className="font-bold rounded-lg w-full md:w-28 px-3 py-1 text-white text-lg bg-indigo-700 hover:bg-indigo-900 ring-1 hover:animate-pulse shadow-md hover:shadow-none focus:outline-none"
         onClick={openModal}
       >
         VOTE

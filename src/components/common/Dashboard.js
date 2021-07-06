@@ -1,5 +1,6 @@
 import Head from './Head'
 import Navbar from './Navbar/Navbar'
+import * as Util from '@/utils/common'
 
 export default function Dashboard({ children, current, user, clan }) {
   return (
@@ -8,10 +9,13 @@ export default function Dashboard({ children, current, user, clan }) {
 
       <Navbar current={current} user={user} clan={clan} />
 
-      <div className="flex flex-col w-full dashboard-background h-screen overflow-y-auto">
-        <div className="flex flex-row flex-wrap space-y-8 lg:space-y-12 xl:space-y-0 xl:space-x-12 p-8 lg:p-12">
-          {children}
-        </div>
+      <div 
+        className={Util.concatClasses(
+          "flex flex-col w-full h-screen overflow-y-auto",
+          current == 'map' ? 'dashboard-background-dark' : 'dashboard-background'
+        )}
+      >
+        {children}
       </div>
     </div>
   )

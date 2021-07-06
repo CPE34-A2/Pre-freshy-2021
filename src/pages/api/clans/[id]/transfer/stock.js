@@ -94,7 +94,13 @@ handler.post(async (req, res) => {
   if (amount <= 0)
     return Response.denined(res, 'amount must be greater than 0')
 
-  const pendingTransaction = await Transaction.findOne({ $or: [{ 'owner.id': req.query.id, 'receiver.type': 'market' }, { 'receiver.id': req.query.id, 'owner.type': 'market' }] }, { 'status': 'PENDING' })
+  const pendingTransaction = await Transaction
+    .findOne({
+      $or: [
+        { 'owner.id': req.query.id, 'receiver.type': 'market', 'status': 'PENDING' },
+        { 'receiver.id': req.query.id, 'owner.type': 'market', 'status': 'PENDING' }
+      ]
+    })
     .select('_id')
     .lean()
     .exec()
@@ -150,6 +156,10 @@ handler.post(async (req, res) => {
     }
   })
 
+  req.socket.server.io.emit('set.task.stock', req.user.clan_id,
+    newTransaction.status == 'PENDING' ? newTransaction : null
+  )
+
   Response.success(res, newTransaction)
 })
 
@@ -192,7 +202,7 @@ handler.patch(async (req, res) => {
     return Response.denined(res, `You already rejected`)
 
   const stock = await Stock
-    .findOne({ 'symbol': transaction.itme.stock.symbol })
+    .findOne({ 'symbol': transaction.item.stock.symbol })
     .select('rate')
     .lean()
     .exec()
@@ -237,14 +247,14 @@ handler.patch(async (req, res) => {
 
     transaction.status = 'SUCCESS'
     await transaction.save()
+
+    req.socket.server.io.emit('set.clan.money', req.user.clan_id, clan.properties.money) // index
+    req.socket.server.io.emit('set.clan.stock', req.user.clan_id, clan.properties.stocks) // stock
   }
 
   req.socket.server.io.emit('set.task.stock', req.user.clan_id,
     transaction.status == 'PENDING' ? transaction : null
   )
-
-  req.socket.server.io.emit('set.clan.money', req.user.clan_id, clan.properties.money)
-  req.socket.server.io.emit('set.clan.stock', req.user.clan_id, clan.properties.stocks)
 
   Response.success(res, transaction)
 })
