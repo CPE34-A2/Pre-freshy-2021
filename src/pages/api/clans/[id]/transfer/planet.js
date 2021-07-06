@@ -212,14 +212,14 @@ handler.patch(async (req, res) => {
     clan.position = planet._id
     await clan.save()
 
-    req.socket.server.io.emit('set.task.travel', req.user.clan_id,
-      transaction.status == 'PENDING' ? transaction : null
-    )
-
     transaction.status = 'SUCCESS'
   }
 
   await transaction.save()
+
+  req.socket.server.io.emit('set.task.travel', req.user.clan_id,
+    transaction.status == 'PENDING' ? transaction : null
+  )
 
   Response.success(res, {
     planet_quest: transaction.status == 'SUCCESS' ? planet.quest : '',
