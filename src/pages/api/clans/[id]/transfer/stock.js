@@ -186,10 +186,10 @@ handler.patch(async (req, res) => {
     return Response.denined(res, 'you are too late!!! this confirmation is already REJECT')
 
   if (transaction.confirmer.includes(req.user.id))
-    return Response.denined(res, 'you just already accepted it. Didn\'t you remember that?????')
+    return Response.denined(res, 'You already accepted')
 
   if (transaction.rejector.includes(req.user.id))
-    return Response.denined(res, `Don't be indecisive. You can't confirm what you rejected.`)
+    return Response.denined(res, `You already rejected`)
 
   const stock = await Stock
     .findOne({ 'symbol': transaction.itme.stock.symbol })
@@ -287,10 +287,10 @@ handler.delete(async (req, res) => {
     .exec()
 
   if (transaction.confirmer.includes(req.user.id) && (req.user.id != clan.leader))
-    return Response.denined(res, `Don't be indecisive. You can't reject what you confirmed.`)
+    return Response.denined(res, `You already accepted`)
 
   if (transaction.rejector.includes(req.user.id))
-    return Response.denined(res, `you just already rejected it. Didn't you remember that?????`)
+    return Response.denined(res, `You already rejected`)
 
   transaction.rejector.push(req.user.id)
 

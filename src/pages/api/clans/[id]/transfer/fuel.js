@@ -167,11 +167,11 @@ handler.patch(async (req, res) => {
   }
 
   if (transaction.rejector.includes(req.user.id)) {
-    return Response.denined(res, 'Cannot confirm. You already rejected')
+    return Response.denined(res, 'You already rejected')
   }
 
   if (transaction.confirmer.includes(req.user.id)) {
-    return Response.denined(res, 'Duplicate comfirmation')
+    return Response.denined(res, 'You already accepted')
   }
 
   transaction.confirmer.push(req.user.id)
@@ -249,11 +249,11 @@ handler.delete(async (req, res) => {
   }
 
   if (transaction.confirmer.includes(req.user.id) && (req.user.id != clan.leader)) {
-    return Response.denined(res, 'Cannot reject. You already confirmed')
+    return Response.denined(res, 'You already accepted')
   }
 
   if (transaction.rejector.includes(req.user.id)) {
-    return Response.denined(res, 'Duplicate rejection')
+    return Response.denined(res, 'You already rejected')
   }
 
   transaction.rejector.push(req.user.id)

@@ -1,22 +1,23 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Image from 'next/image'
+
+import * as Util from '@/utils/common'
 import fetchAPI from '@/utils/fetch'
 
 import { XIcon, ChevronDoubleDownIcon, UserIcon } from '@heroicons/react/outline'
 import { UserIcon as UserSolidIcon } from '@heroicons/react/solid'
 import Modal from '@/components/common/Modal'
 import Button from '@/components/common/Button'
-import Spinner from '@/components/common/Spinner'
 import AlertNotification from '@/components/common/AlertNotification'
 
 const showConfirmers = (confirmed, require) => {
   const confirmedExcludeLeader = confirmed.slice(1)
   const confirmers = []
   for (let i = 0; i < confirmedExcludeLeader.length; i++) {
-    confirmers.push(<UserSolidIcon key={i} className="w-4 h-4 text-purple-600" />)
+    confirmers.push(<UserSolidIcon key={i} className="w-5 h-5 text-purple-600" />)
   }
   for (let i = 0; i < require - confirmedExcludeLeader.length; i++) {
-    confirmers.push(<UserIcon key={i + confirmedExcludeLeader} className="w-4 h-4 text-purple-600" />)
+    confirmers.push(<UserIcon key={i + confirmedExcludeLeader} className="w-5 h-5 text-purple-600" />)
   }
   return confirmers
 }
@@ -24,47 +25,44 @@ const showConfirmers = (confirmed, require) => {
 const showRejectors = (rejected, require) => {
   const confirmers = []
   for (let i = 0; i < rejected.length; i++) {
-    confirmers.push(<UserSolidIcon key={i} className="w-4 h-4 text-red-600" />)
+    confirmers.push(<UserSolidIcon key={i} className="w-5 h-5 text-red-600" />)
   }
   for (let i = 0; i < require - rejected.length; i++) {
-    confirmers.push(<UserIcon key={i + rejected.length} className="w-4 h-4 text-red-600" />)
+    confirmers.push(<UserIcon key={i + rejected.length} className="w-5 h-5 text-red-600" />)
   }
   return confirmers
 }
 
-export default function TaskVoteModal({ clan, image, transaction, item, locale }) {
+export default function TaskVoteModal({ user, clan, image, transaction, item, locale }) {
   const [isOpen, setIsOpen] = useState(false)
+  const [notification, notify] = useState({ type: '', info: '' })
 
   const openModal = () => setIsOpen(true)
   const closeModal = () => setIsOpen(false)
 
-  const accept = () => {
-    fetchAPI('PATCH', `/api/clans/${clan._id}/transfer/${item.type}`, {
+  const vote = (isAccepted) => {
+    fetchAPI(isAccepted ? 'PATCH' : 'DELETE', `/api/clans/${clan._id}/transfer/${item.type}`, {
       transaction_id: transaction._id,
     })
       .then(async response => {
-        console.log('accept', response.json)
+        const data = await response.json()
         if (response.status == 200) {
-
+          notify({ type: 'success', info: `Request ${isAccepted ? 'Accepted' : 'Rejected'}` })
         } else {
+          notify({ type: 'error', info: data.message })
         }
       })
-    // .finally(() => setLoggingIn(false))
   }
 
-  const reject = () => {
-    fetchAPI('DELETE', `/api/clans/${clan._id}/transfer/${item.type}`, {
-      transaction_id: transaction._id,
-    })
-      .then(async response => {
-        console.log('reject', response)
-        if (response.status == 200) {
+  const isAlreadyAccepted = () => transaction.confirmer.includes(user._id)
+  const isAlreadyRejected = () => (transaction.rejector.includes(user._id) && (user._id != clan.leader))
+  const isAlreadyVote = () => (isAlreadyAccepted() || isAlreadyRejected())
+  const isNotLeader = () => (user._id != clan.leader)
 
-        } else {
-        }
-      })
-    // .finally(() => setLoggingIn(false))
-  }
+  useEffect(() => {
+    isAlreadyAccepted() && notify({ type: 'success', info: <>You have <b>accepted</b> this transaction</> })
+    isAlreadyRejected() && notify({ type: 'success', info: <>You have <b>rejected</b> this transaction</> })
+  }, [transaction])
 
   return (
     <>
@@ -107,26 +105,41 @@ export default function TaskVoteModal({ clan, image, transaction, item, locale }
                     {showConfirmers(transaction.confirmer, transaction.confirm_require)}
                   </div>
 
-                  <button
-                    className="bg-purple-300 text-purple-600 hover:bg-purple-400 hover:text-purple-800 font-semibold py-1 w-full rounded-lg"
-                    onClick={accept}
-                  >
-                    ACCEPT
-                  </button>
+                  <Button
+                    type="button"
+                    name="ACCEPT"
+                    style={Util.concatClasses(
+                      'bg-purple-300 text-purple-600 font-semibold py-1 w-full rounded-lg',
+                      isAlreadyVote(transaction) ? 'cursor-not-allowed opacity-40' : 'hover:bg-purple-400 hover:text-purple-800'
+                    )}
+                    onClick={() => vote(true)}
+                    disabled={isAlreadyVote(transaction)}
+                  />
                 </div>
 
                 <div className="flex flex-col flex-grow">
                   <div className="flex flex-row justify-center space-x-2 mb-2">
                     {showRejectors(transaction.rejector, transaction.confirm_require)}
                   </div>
-                  <button
-                    className="bg-red-300 text-red-600 hover:bg-red-400 hover:text-red-800 font-semibold py-1 w-full rounded-lg"
-                    onClick={reject}
-                  >
-                    REJECT
-                  </button>
+
+                  <Button
+                    type="button"
+                    name="REJECT"
+                    style={Util.concatClasses(
+                      'bg-red-300 text-red-600 font-semibold py-1 w-full rounded-lg',
+                      (isAlreadyVote(transaction) && isNotLeader()) ? 'cursor-not-allowed opacity-40' : 'hover:bg-red-400 hover:text-red-800',
+                    )}
+                    onClick={() => vote(false)}
+                    disabled={isAlreadyVote(transaction) && isNotLeader()}
+                  />
                 </div>
               </div>
+
+              <AlertNotification
+                type={notification.type}
+                info={notification.info}
+                style="mb-3"
+              />
             </div>
           </div>
         </div>

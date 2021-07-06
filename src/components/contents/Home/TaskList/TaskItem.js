@@ -56,7 +56,7 @@ const resolveTransactionItems = (data) => {
   }
 }
 
-export default function TaskItem({ clan, image, data, locale }) {
+export default function TaskItem({ user, clan, image, data, locale }) {
   // When fetching the data
   if (!data) return (
     <div className="flex flex-row py-3 items-center bg-indigo-500 px-4 rounded-2xl">
@@ -93,7 +93,7 @@ export default function TaskItem({ clan, image, data, locale }) {
 
       <div className="flex flex-row w-full items-center justify-between ml-2 md:ml-4">
         <div className="flex flex-col">
-          <div className="hidden md:flex font-thin text-gray-200 text-sm">Transaction Pending</div>
+          <div className="hidden md:flex font-thin text-gray-200 text-sm">Request Pending</div>
           <div className="font-medium text-white">{locale.info}</div>
         </div>
 
@@ -110,7 +110,7 @@ export default function TaskItem({ clan, image, data, locale }) {
           </div>
 
           <div className="flex flex-col items-center justify-center ml-2 md:ml-6">
-            <TaskVoteModal clan={clan} image={image} transaction={data.data} item={item} locale={locale} />
+            <TaskVoteModal user={user} clan={clan} image={image} transaction={data.data} item={item} locale={locale} />
             <span className="text-xs mt-1 font-medium text-gray-200">({confirmLeft} left)</span>
           </div>
         </div>

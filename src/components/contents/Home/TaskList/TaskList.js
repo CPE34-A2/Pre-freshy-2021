@@ -15,7 +15,7 @@ const transactionLocales = {
     received_unit: 'gallon',
     cost_title: 'Cost',
     cost_unit: 'coin',
-    not_found: 'No fuel transaction at this moment'
+    not_found: 'No fuel request at this moment'
   },
   stock: {
     info: 'Leader need to invest in stock',
@@ -23,7 +23,7 @@ const transactionLocales = {
     received_unit: '',
     cost_title: 'Cost',
     cost_unit: 'coin',
-    not_found: 'No stock investment at this moment'
+    not_found: 'No stock request at this moment'
   },
   planet: {
     info: 'Captain need to land on planet',
@@ -31,7 +31,7 @@ const transactionLocales = {
     received_unit: '',
     cost_title: 'Cost',
     cost_unit: 'gallon',
-    not_found: 'No planet conquered at this moment'
+    not_found: 'No planet request at this moment'
   }
 }
 
@@ -72,6 +72,7 @@ export default function TaskList({ user, clan }) {
 
         <div className="flex flex-col space-y-4">
           <TaskItem
+            user={user}
             clan={clan}
             image={GallonImage}
             data={fuel}
@@ -79,6 +80,7 @@ export default function TaskList({ user, clan }) {
           />
 
           <TaskItem
+            user={user}
             clan={clan}
             image={StarImage}
             data={planet}
@@ -86,6 +88,7 @@ export default function TaskList({ user, clan }) {
           />
 
           <TaskItem
+            user={user}
             clan={clan}
             image={StockImage}
             data={stock}
