@@ -74,7 +74,7 @@ export default function DonateMoneyModal({ user }) {
     <>
       <button
         className={Util.concatClasses(
-          "animate-pulse hover:animate-none font-semibold text-white md:text-lg bg-indigo-700 hover:bg-indigo-900 py-1 px-2 w-full md:w-28  hover:shadow-none shadow-md rounded-lg focus:outline-none",
+          "animate-pulse hover:animate-none font-semibold text-white bg-indigo-700 hover:bg-indigo-900 py-1 px-2 w-full md:w-22  hover:shadow-none shadow-md rounded-lg focus:outline-none",
           (user.money == 0) && 'hidden'
         )}
         onClick={openModal}

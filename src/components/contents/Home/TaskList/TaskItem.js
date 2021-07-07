@@ -86,8 +86,8 @@ export default function TaskItem({ user, clan, image, data, locale }) {
   const confirmLeft = confirm_require - Math.max(confirmer.length - 1, rejector.length)
 
   return (
-    <div className="flex flex-row items-center p-4 bg-white bg-opacity-40 filter backdrop-blur-3xl rounded-xl">
-      <div className="flex-none w-12 h-12 md:w-16 md:h-16">
+    <div className="flex flex-row items-center p-4 bg-white bg-opacity-40 filter backdrop-blur-3xl rounded-xl xl:max-w-xl">
+      <div className="flex-none w-12 h-12 md:w-14 md:h-14">
         <Image src={image} alt="" />
       </div>
 
@@ -98,7 +98,7 @@ export default function TaskItem({ user, clan, image, data, locale }) {
         </div>
 
         <div className="flex flex-row">
-          <div className="hidden lg:flex items-center flex-row text-center ml-3 lg:ml-8 space-x-6">
+          <div className="hidden lg:flex items-center flex-row text-center ml-3 space-x-6">
             <div>
               <div className="font-bold text-gray-800 text-base">{locale.received_title}</div>
               <div className="font-bold text-lg text-indigo-700">{item.received} {locale.received_unit}</div>

@@ -18,7 +18,7 @@ export default function Home({ user, clan }) {
               />
             </div>
 
-            <div className="flex-shrink w-full xl:max-w-xl">
+            <div className="flex-shrink w-full xl:max-w-2xl">
               <TaskList
                 user={user}
                 clan={clan}
@@ -26,7 +26,7 @@ export default function Home({ user, clan }) {
             </div>
           </div>
 
-          <div className="h-full">
+          <div className="h-full overflow-y-auto">
             <TransactionList
               user={user}
               clan={clan}
