@@ -40,7 +40,7 @@ handler.get(async (req, res) => {
   if (!user)
     return Response.denined(res, 'user not found!!!')
 
-  if ((!newDisplayName) && (!newClanId) && (!money) && (!password))
+  if ((!newDisplayName) && (!newClanId) && (!money))
     return Response.denined(res, 'no input found')
 
   // change displayName
@@ -99,8 +99,10 @@ handler.get(async (req, res) => {
     userId: userId,
     newDisplayName: newDisplayName ? newDisplayName : 'not changed',
     newClanId: newClanId ? newClanId : 'not changed',
-    money: money ? (money > 0 ? 'add amount: ' + money : 'remove amount: ' + (-money)) : 'not changed',
-    password: password ? password : 'not changed'
+    money: {
+      before: user.money - money,
+      after: user.money 
+    }
   })
 
 })
