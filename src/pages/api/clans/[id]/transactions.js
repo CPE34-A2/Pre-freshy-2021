@@ -12,7 +12,7 @@ handler
 
 /**
  * @method GET
- * @endpoint /api/clans/:id/transaction
+ * @endpoint /api/clans/:id/transactions
  * @description Get the clan's transactions
  * 
  * @param firstIndex
