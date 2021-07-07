@@ -1,17 +1,28 @@
 import Modal from "@/components/common/Modal"
 import { Dialog } from '@headlessui/react'
-import { ChevronRightIcon, XIcon } from '@heroicons/react/outline'
-import Image from 'next/image'
+import { XIcon } from '@heroicons/react/outline'
+import PlanetConfirmModal from './PlanetConfirmModal'
 import Conquer from '@/publics/conquer.png'
 import Battle from '@/publics/battle.png'
+import Image from "next/image"
+import { useState, useRef } from 'react' 
 
-export default function PlanetModal({ planet, image, isOpen, close }) {
+export default function PlanetModal({ clan, planet, image, isOpen, close }) {
+  const [isClick, setIsClick] = useState(false)
+  const isBattle = planet.owner != 0 ? true : false
+
+  const openConfirmModal = () => setIsClick(true)
+  const closeConfirmModal = () => setIsClick(false)
+  
+  let initialFocus = useRef(null)
+
   return (
     <Modal
       open={isOpen}
       close={close}
+      initialFocus={initialFocus}
     >
-      <div className="transition-all transform flex flex-col py-7 px-12 max-w-sm mx-6 md:mx-0 bg-white rounded-3xl shadow-xl">
+      <div className="transition-all transform flex flex-col py-4 px-9 max-w-sm mx-6 md:mx-0 bg-white rounded-3xl shadow-xl">
         <div className="flex flex-row">
           <div className="w-10 h-10">
             <Image src={image} alt="" />
@@ -31,13 +42,15 @@ export default function PlanetModal({ planet, image, isOpen, close }) {
         <div>Tier: {planet.tier}</div>
         <div>Point: {planet.point}</div>
         <div>Travel Cost: {planet.travel_cost}</div>
-        <div>Owner: {planet.owner != 0 ? planet.owner : "None"}</div>
-        <div>
-          {planet.owner == 0
-            ? <Image src={Conquer} alt="" />
-            : <Image src={Battle} alt="" />
-          }
-        </div>
+        <div>Owner: {isBattle ? planet.owner : "None"}</div>
+        {(planet.owner != clan._id && planet.tier != 'HOME') &&
+          <div className="flex justify-center">
+            <div onClick={openConfirmModal} ref={initialFocus} className="animate-pulse w-16 h-16">
+              <Image src={isBattle ? Battle : Conquer} alt="" />
+            </div>
+          </div>
+        }
+        <PlanetConfirmModal planet={planet} closeAll={close} close={closeConfirmModal} isOpen={isClick} clan={clan} isBattle={isBattle} />
       </div>
     </Modal>
   )
