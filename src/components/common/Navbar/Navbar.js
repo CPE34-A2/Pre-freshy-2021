@@ -8,11 +8,14 @@ import NavMenu from './NavMenu'
 import ProfileBar from './ProfileBar'
 import ClanBar from './ClanBar'
 
+import ChangePasswordModal from '@/components/common/ChangePasswordModal'
+
 export default function Navbar({ current, user, clan }) {
   const navigation = [
     { name: 'Home', icon: <TemplateIcon className="w-5 h-5 mr-3" />, href: '/', current: (current == 'home') },
     { name: 'Map', icon: <MapIcon className="w-5 h-5 mr-3" />, href: '/map', current: (current == 'map') },
     { name: 'Stock', icon: <ChartSquareBarIcon className="w-5 h-5 mr-3" />, href: '/stock', current: (current == 'stock') },
+    { name: 'Settings', modal: <ChangePasswordModal /> }
   ]
 
   const getAllMenus = () => {
@@ -23,6 +26,7 @@ export default function Navbar({ current, user, clan }) {
         href={item.href}
         current={item.current}
         icon={item.icon}
+        modal={item.modal}
       />
     ))
   }

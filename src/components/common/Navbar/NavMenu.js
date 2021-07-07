@@ -1,7 +1,9 @@
 import * as Util from '@/utils/common'
 import Link from 'next/link'
 
-export default function NavMenu({ name, href, current, icon }) {
+export default function NavMenu({ name, href, current, icon, modal }) {
+  if (modal) return modal
+
   return (
     <Link href={href} passHref>
       <a
