@@ -2,6 +2,7 @@ import Image from "next/image"
 import PlanetPopOver from "./PlanetPopOver"
 import { useState } from "react"
 import PlanetModal from "./PlanetModal"
+import * as Util from '@/utils/common'
 
 export default function Planet({ clan, planet, image, className}) {
   const [isHover, setIsHover] = useState(false)
