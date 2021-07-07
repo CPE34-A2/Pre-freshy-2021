@@ -80,19 +80,19 @@ export default function NewsModal() {
 
               <form className="ring-0 bg-white" onSubmit={changePassword}>
                 <div className="flex flex-col justify-center items-center md:px-12">
-                  <p className="text-xs text-gray-800 font-semibold mb-1">Old Password</p>
+                  <p className="text-sm text-gray-800 font-semibold mb-1">Old Password</p>
                   <InputBox
                     type={isPasswordShowed ? 'text' : 'password'}
-                    style="w-full md:w-80 rounded-xl pr-7"
+                    style="w-full md:w-80 rounded-xl pr-7 ring-gray-400"
                     value={oldPassword}
                     onChange={handleOldPasswordChange}
                     error={changePasswordError}
                   />
 
-                  <p className="text-xs text-gray-800 font-semibold mb-1 mt-5">New Password</p>
+                  <p className="text-sm text-gray-800 font-semibold mb-1 mt-5">New Password</p>
                   <InputBox
                     type={isPasswordShowed ? 'text' : 'password'}
-                    style="w-full md:w-80 rounded-xl pr-7"
+                    style="w-full md:w-80 rounded-xl pr-7 ring-gray-400"
                     value={newPassword}
                     onChange={handleNewPasswordChange}
                     error={changePasswordError}
