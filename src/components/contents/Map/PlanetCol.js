@@ -6,7 +6,7 @@ export default function PlanetCol({ clan, planets, image, className}) {
   })
 
   return (
-    <div className="flex flex-row md:flex-col justify-around">
+    <div className="flex flex-row xl:flex-col justify-around">
       {column}
     </div>
   )

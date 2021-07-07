@@ -27,7 +27,7 @@ export default function Map({ user, clan, planets }) {
 
   return (
     <Dashboard current="map" user={user} clan={clan} >
-      <div className="flex flex-col-reverse md:flex-row w-full h-full justify-between p-24">
+      <div className="flex flex-col-reverse xl:flex-row w-full h-full justify-between px-12 md:p-24 scale-75 md:scale-100">
         <PlanetCol clan={clan} planets={theOne} image={TheOne} className="w-40 h-40" />
         <PlanetCol clan={clan} planets={planetB} image={B} className="w-28 h-28" />
         <PlanetCol clan={clan} planets={planetX1} image={X} className="w-24 h-24" />
