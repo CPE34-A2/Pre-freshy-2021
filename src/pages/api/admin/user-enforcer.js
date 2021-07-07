@@ -25,14 +25,12 @@ handler
  * @param display_name, optional
  * @param clan_id optional
  * @param money optional
- * @param password optional
  */
 handler.get(async (req, res) => {
   const userId = req.query.user_id
   const newDisplayName = req.query.display_name
   const newClanId = parseInt(req.query.clan_id)
   const money = parseInt(req.query.money)
-  const password = req.query.password
 
   const user = await User
     .findById(userId)
@@ -56,11 +54,6 @@ handler.get(async (req, res) => {
       return Response.denined(res, 'You are so heartless. Why would you like to make someone\'s money go negative?')
 
     user.money += money
-  }
-
-  // change password
-  if (!!password) {
-    user.password = await bcrypt.hash(password, 10)
   }
 
   // change clanId
