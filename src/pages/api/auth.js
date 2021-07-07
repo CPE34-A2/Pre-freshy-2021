@@ -86,15 +86,15 @@ handler.patch(async (req, res) => {
   const oldPassword = req.body.old_password
   const newPassword = req.body.new_password
 
-  if (!newPassword || newPassword < MINIMUM_PASSWORD_LENGTH)
-    return res
-      .status(400)
-      .json({
-        sucess: false,
-        message: `new password doesn't match the criteria`
-      })
-
   const user = await User.findById(req.user.id).select('password').exec()
+
+  if (!newPassword || newPassword.length < MINIMUM_PASSWORD_LENGTH)
+  return res
+    .status(400)
+    .json({
+      sucess: false,
+      message: `The new password must be atleast 10 characters`
+    })
 
   if (!oldPassword || !await bcrypt.compare(oldPassword, user.password))
     return res
