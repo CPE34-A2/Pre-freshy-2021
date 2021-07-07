@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import { useState, useRef } from 'react' 
+import { useState, useRef } from 'react'
 import Modal from "@/components/common/Modal"
 import { Dialog } from '@headlessui/react'
 import InputBox from '@/components/common/InputBox'
@@ -8,7 +8,7 @@ import AlertNotification from '@/components/common/AlertNotification'
 
 export default function PlanetConfirmModal({ planet, closeAll, clan, isOpen, close, isBattle }) {
   const [betMoney, setBetMoney] = useState('')
-  const [betFuel, setBetFuel]= useState('')
+  const [betFuel, setBetFuel] = useState('')
   const [betPlanetCheck, setBetPlanetCheck] = useState(new Array(clan.owned_planet_ids.length).fill(false))
   const [notification, notify] = useState({ type: '', info: '' })
 
@@ -17,13 +17,13 @@ export default function PlanetConfirmModal({ planet, closeAll, clan, isOpen, clo
   const handleMoneyChange = (e) => {
     const target = e.target;
     const value = target.value
-    
+
     // Prevent user to input non-integer, starts with 0 and negative integer
     const isNotInteger = !(/^\+?(0|[1-9]\d*)$/.test(value))
     const isStartsWithZero = (/^0/.test(value))
 
     if (isNaN(value) || isStartsWithZero || (value && isNotInteger) || parseInt(value) < 0) return
-    
+
     if (clan.properties.money < value || clan.properties.fuel < betFuel) {
       notify({ type: 'error', info: 'Your assets is not enough' })
     } else {
@@ -36,13 +36,13 @@ export default function PlanetConfirmModal({ planet, closeAll, clan, isOpen, clo
   const handleFuelChange = (e) => {
     const target = e.target;
     const value = target.value
-    
+
     // Prevent user to input non-integer, starts with 0 and negative integer
     const isNotInteger = !(/^\+?(0|[1-9]\d*)$/.test(value))
     const isStartsWithZero = (/^0/.test(value))
 
     if (isNaN(value) || isStartsWithZero || (value && isNotInteger) || parseInt(value) < 0) return
-    
+
     if (clan.properties.fuel < value || clan.properties.money < betMoney) {
       notify({ type: 'error', info: 'Your assets is not enough' })
     } else {
@@ -64,15 +64,19 @@ export default function PlanetConfirmModal({ planet, closeAll, clan, isOpen, clo
 
   const planetList = clan.owned_planet_ids.map((planet, index) => {
     return (
-      <label>
-        {planet}
-        <input 
-          name={index}
-          type="checkbox"
-          onChange={handlePlanetChange}
-        />
-      </label>
-      )
+      <div className="flex flex-row">
+        <div className="mr-2">
+          <input
+            name={index}
+            type="checkbox"
+            onChange={handlePlanetChange}
+          />
+        </div>
+        <div className="font-semibold">
+          {planet}
+        </div>
+      </div>
+    )
   })
 
   const mapIdsWithCheckBox = (planets, checkboxes) => {
@@ -99,7 +103,7 @@ export default function PlanetConfirmModal({ planet, closeAll, clan, isOpen, clo
   }
 
   let initialFocus = useRef(null)
-  
+
   return (
     <Modal
       open={isOpen}
@@ -109,7 +113,7 @@ export default function PlanetConfirmModal({ planet, closeAll, clan, isOpen, clo
       <div className="transition-all transform flex flex-col py-7 px-12 max-w-sm mx-6 md:mx-0 bg-white rounded-3xl shadow-xl" >
         {isBattle &&
           <>
-            <div>Battle</div>
+            <div className="text-xl font-bold text-purple-900 text-center mb-4 tracking-widest">BATTLE</div>
             <form onSubmit={onAccept} autocomplete="off" className="flex flex-col">
               <InputBox
                 name="betMoney"
@@ -117,6 +121,7 @@ export default function PlanetConfirmModal({ planet, closeAll, clan, isOpen, clo
                 type="text"
                 pattern="\d*"
                 placeholder="Stake Money"
+                style="mb-2 rounded-lg ring-gray-400"
                 onChange={handleMoneyChange}
                 value={betMoney}
               />
@@ -125,11 +130,15 @@ export default function PlanetConfirmModal({ planet, closeAll, clan, isOpen, clo
                 type="text"
                 pattern="\d*"
                 placeholder="Stake Fuel"
+                style="mb-2 rounded-lg ring-gray-400"
                 onChange={handleFuelChange}
                 value={betFuel}
               />
               <div className="flex flex-row">
-                Stake Planets:{planetList}
+                <div className="text-gray-500">Stake Planets:</div>
+                <div className="ml-2">
+                  {planetList}
+                </div>
               </div>
 
               <AlertNotification
@@ -137,38 +146,38 @@ export default function PlanetConfirmModal({ planet, closeAll, clan, isOpen, clo
                 info={notification.info}
                 style="mb-3"
               />
-            
-              <div className="flex flex-row">
+
+              <div className="flex flex-row space-x-4 mt-4">
                 <button
                   type="submit"
-                  className="bg-purple-300 text-purple-600 font-semibold py-1 w-full rounded-lg"
+                  className="bg-purple-300 text-purple-600 font-semibold py-1 w-full rounded-xl"
                 >
                   Confirm
                 </button>
                 <button
                   type="reset"
                   onClick={close}
-                  className="bg-red-300 text-red-600 font-semibold py-1 w-full rounded-lg"
+                  className="bg-red-300 text-red-600 font-semibold py-1 w-full rounded-xl"
                 >
-                    Reject
-                  </button>
+                  Reject
+                </button>
               </div>
-            </form> 
+            </form>
           </>
         }
         {!isBattle &&
           <>
-            <div>Do you want to conquer this planet?</div>
-            <div className="flex flex-row">
-              <button 
-                ref={initialFocus} 
+            <div className="text-lg font-semibold text-purple-900 text-center">Do you want to conquer this planet?</div>
+            <div className="flex flex-row mt-4 space-x-4">
+              <button
+                ref={initialFocus}
                 onClick={onAccept}
-                className="bg-purple-300 text-purple-600 font-semibold py-1 w-full rounded-lg"
+                className="bg-purple-300 text-purple-600 font-semibold py-1 w-full rounded-xl"
               >
-                  Confirm</button>
-              <button 
+                Confirm</button>
+              <button
                 onClick={close}
-                className="bg-red-300 text-red-600 font-semibold py-1 w-full rounded-lg"
+                className="bg-red-300 text-red-600 font-semibold py-1 w-full rounded-xl"
               >
                 Reject
               </button>
