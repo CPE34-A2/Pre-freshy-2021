@@ -38,3 +38,23 @@ img {
   -webkit-touch-callout: none;
   pointer-events: none;
 }
+
+/* Custom scrollbar */
+
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: #b3b3b3;
+  border-radius: 24px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #7e7e7e;
+  border-radius: 24px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #7e7e7e;
+}
