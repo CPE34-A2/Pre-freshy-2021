@@ -150,14 +150,14 @@ export default function PlanetConfirmModal({ planet, closeAll, clan, isOpen, clo
               <div className="flex flex-row space-x-4 mt-4">
                 <button
                   type="submit"
-                  className="bg-purple-300 text-purple-600 font-semibold py-1 w-full rounded-xl"
+                  className="bg-purple-300 hover:bg-purple-400  text-purple-600 hover:text-purple-800 font-semibold py-1 w-full rounded-xl focus:outline-none"
                 >
                   Confirm
                 </button>
                 <button
                   type="reset"
                   onClick={close}
-                  className="bg-red-300 text-red-600 font-semibold py-1 w-full rounded-xl"
+                  className="bg-red-300 hover:bg-red-400 text-red-600 hover:text-red-800 font-semibold py-1 w-full rounded-xl focus:outline-none"
                 >
                   Reject
                 </button>
@@ -172,12 +172,12 @@ export default function PlanetConfirmModal({ planet, closeAll, clan, isOpen, clo
               <button
                 ref={initialFocus}
                 onClick={onAccept}
-                className="bg-purple-300 text-purple-600 font-semibold py-1 w-full rounded-xl"
+                className="bg-purple-300 hover:bg-purple-400 text-purple-600 hover:text-purple-800 font-semibold py-1 w-full rounded-xl focus:outline-none"
               >
                 Confirm</button>
               <button
                 onClick={close}
-                className="bg-red-300 text-red-600 font-semibold py-1 w-full rounded-xl"
+                className="bg-red-300 hover:bg-red-400 text-red-600 hover:text-red-800 font-semibold py-1 w-full rounded-xl focus:outline-none"
               >
                 Reject
               </button>

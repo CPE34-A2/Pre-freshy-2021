@@ -17,7 +17,7 @@ export default function Planet({ clan, planet, image, className}) {
       <PlanetPopOver clan={clan} planet={planet} isHover={isHover} />
       <PlanetModal clan={clan} planet={planet} image={image} isOpen={isClick} close={closeModal}/>
       <div className={className} onMouseEnter={openPopOver} onMouseLeave={closePopOver} onClick={openModal}>
-        <Image src={image} alt="" />
+        <Image className="select-none" src={image} alt="" />
       </div>
     </div>
   )

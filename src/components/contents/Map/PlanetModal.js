@@ -22,7 +22,7 @@ export default function PlanetModal({ clan, planet, image, isOpen, close }) {
       close={close}
       initialFocus={initialFocus}
     >
-      <div className="transition-all transform flex flex-col py-8 px-9 max-w-xl mx-6 md:mx-0 bg-white rounded-3xl shadow-xl">
+      <div className="transition-all transform flex flex-col py-8 px-9 max-w-xl mx-6 md:mx-0 bg-white rounded-3xl shadow-xl scale-75 md:scale-100">
         <div className="flex flex-row w-full justify-center">
 
           <div className="flex flex-row items-center justify-center w-full">

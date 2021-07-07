@@ -33,3 +33,8 @@
   background-repeat: no-repeat;
   background-size: cover;
 }
+
+img {
+  -webkit-touch-callout: none;
+  pointer-events: none;
+}
