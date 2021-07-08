@@ -125,13 +125,13 @@ handler.post(async (req, res) => {
     return Response.denined(res, 'clan not found')
 
   if (clan.leader != req.user.id)
-    return Response.denined(res, 'you are not leader. lol')
+    return Response.denined(res, 'Please ask leader to perform this action')
 
   if (method === 'BUY' && clan.properties.money < total)
-    return Response.denined(res, 'no money, lol')
+    return Response.denined(res, `You don't have enough money to buy this stock`)
 
   if (method === 'SELL' && clan.properties.stocks[symbol] < amount)
-    return Response.denined(res, 'not enough stock, lol')
+    return Response.denined(res, `You don't have enough stock to sell`)
 
   // money as perspective
   const newTransaction = await Transaction.create({
