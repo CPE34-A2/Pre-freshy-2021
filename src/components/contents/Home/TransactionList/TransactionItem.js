@@ -78,12 +78,12 @@ const resolveTransactionItems = (data) => {
 export default function TransactionItem({ transaction }) {
   const item = resolveTransactionItems(transaction)
   return (
-    <div className="flex flex-col justify-between space-x-4 backdrop-blur-3xl rounded-xl p-4 bg-white bg-opacity-40 filter mr-1">
-      <div className="flex flex-row justify-between">
-        <div className="font-medium text-base text-gray-600 ml-2">ID: {transaction._id}</div>
+    <div className="flex flex-col justify-between backdrop-blur-3xl rounded-xl py-4 px-6 bg-white bg-opacity-40 filter mr-1">
+      <div className="flex flex-row justify-between items-center">
+        <div className="font-light text-sm lg:text-base text-gray-500">ID: {transaction._id}</div>
         <div className="text-right">Status: <span className={Util.concatClasses('font-medium', statusColor[transaction.status].color)}>{transaction.status}</span></div>
       </div>
-      <div className="flex flex-row justify-between">
+      <div className="flex flex-row justify-between items-center">
         {(item.type != 'money' && transaction.owner.type == 'clan' && transaction.receiver.type != 'planet') &&
           <>
             <div className="font-bold text-lg text-indigo-900">
@@ -119,7 +119,7 @@ export default function TransactionItem({ transaction }) {
             </div>
           </>
         }
-        <div className="text-right font-normal">Created at {transaction.createdAt.slice(0, 10)}</div>
+        <div className="text-right font-normal text-gray-500 text-sm lg:text-base">Created at {transaction.createdAt.slice(0, 10)}</div>
       </div>
     </div>
   )
