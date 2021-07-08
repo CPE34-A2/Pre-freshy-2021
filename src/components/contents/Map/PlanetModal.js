@@ -79,7 +79,7 @@ export default function PlanetModal({ clan, planet, image, isOpen, close }) {
           </div>
         </div>
 
-        {(planet.owner != clan._id && planet.tier != 'HOME') &&
+        {(planet.owner != clan._id && planet.tier != 'HOME' && planet.tier != 'X') &&
           <div className="flex justify-center mt-4">
             <div onClick={openConfirmModal} ref={initialFocus} className="animate-pulse transition duration-150 ease-in-out hover:animate-none hover:scale-110 w-20 h-20 hover:cursor-pointer drop-shadow-md">
               <Image src={isBattle ? Battle : Conquer} alt="" />

@@ -58,3 +58,31 @@ img {
 ::-webkit-scrollbar-thumb:hover {
   background: #7e7e7e;
 }
+
+.star-pink {
+  filter: sepia(100%) hue-rotate(-80deg) saturate(1.8) brightness(1); 
+}
+
+.star-yellow {
+  filter: sepia(100%) hue-rotate(20deg) saturate(2) brightness(1); 
+}
+
+.star-green {
+  filter: sepia(100%) hue-rotate(75deg) saturate(2) brightness(1); 
+}
+
+.star-purple {
+  filter: sepia(100%) hue-rotate(-145deg) saturate(1) brightness(0.9); 
+}
+
+.star-orange {
+  filter: sepia(100%) hue-rotate(-20deg) saturate(2) brightness(1); 
+}
+
+.star-blue {
+  filter: sepia(100%) hue-rotate(175deg) saturate(1.8) brightness(0.9); 
+}
+
+.star-light-blue {
+  filter: sepia(100%) hue-rotate(150deg) saturate(2) brightness(1); 
+}
