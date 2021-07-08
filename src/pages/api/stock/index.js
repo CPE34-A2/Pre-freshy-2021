@@ -30,7 +30,7 @@ handler.get(async (req, res) => {
 
   const currentTime = moment().utcOffset('+0700')
 
-  if (currentTime.hour() < OPEN_MARKET_TIME || currentTime.hour() > CLOSE_MARKET_TIME) {
+  if (currentTime.hour() < OPEN_MARKET_TIME || currentTime.hour() >= CLOSE_MARKET_TIME) {
     IS_FIRSTTIME_FETCH = true
     return Response.denined(res, 'market closed!!!')
   }
