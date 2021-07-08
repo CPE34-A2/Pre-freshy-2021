@@ -66,7 +66,7 @@ export default function TaskList({ user, clan }) {
     fetchTransaction(clan._id, 'fuel', setFuel)
     fetchTransaction(clan._id, 'planet', setPlanet)
     fetchTransaction(clan._id, 'stock', setStock)
-  }, [])
+  }, [clan._id])
 
   // WebSocket event listeners for real-time updating 
   useSocket('set.task.fuel', async (targetClanId, data) => {

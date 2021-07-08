@@ -12,7 +12,7 @@ export default function TransactionList({ clan }) {
         data = data.data.filter(Boolean)
         setTransactions(data)
     })
-  }, [])
+  }, [clan._id])
 
   return (
     <div className="flex flex-col h-full bg-gray-300 bg-opacity-40 filter backdrop-blur-3xl p-5 rounded-2xl shadow-lg overflow-y-auto">
