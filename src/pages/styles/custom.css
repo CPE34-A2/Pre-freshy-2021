@@ -60,29 +60,29 @@ img {
 }
 
 .star-pink {
-  filter: sepia(100%) hue-rotate(-80deg) saturate(1.8) brightness(1); 
-}
-
-.star-yellow {
-  filter: sepia(100%) hue-rotate(20deg) saturate(2) brightness(1); 
-}
-
-.star-green {
-  filter: sepia(100%) hue-rotate(75deg) saturate(2) brightness(1); 
-}
-
-.star-purple {
-  filter: sepia(100%) hue-rotate(-145deg) saturate(1) brightness(0.9); 
+  filter: sepia(100%) hue-rotate(90deg) saturate(0.7) brightness(0.6) contrast(4) invert();
 }
 
 .star-orange {
-  filter: sepia(100%) hue-rotate(-20deg) saturate(2) brightness(1); 
+  filter: sepia(100%) hue-rotate(175deg) saturate(1.8) brightness(0.6) contrast(4) invert();
 }
 
-.star-blue {
-  filter: sepia(100%) hue-rotate(175deg) saturate(1.8) brightness(0.9); 
+.star-yellow {
+  filter: sepia(100%) hue-rotate(192deg) saturate(1) brightness(0.56) contrast(6) invert();
+}
+
+.star-green {
+  filter: sepia(100%) hue-rotate(274deg) saturate(1.2) brightness(0.6) contrast(5) invert();
 }
 
 .star-light-blue {
-  filter: sepia(100%) hue-rotate(150deg) saturate(2) brightness(1); 
+  filter: sepia(100%) hue-rotate(-30deg) saturate(1) brightness(0.55) contrast(9) invert();
+}
+
+.star-blue {
+  filter: sepia(100%) hue-rotate(5deg) saturate(0.7) brightness(0.6) contrast(5) invert();
+}
+
+.star-purple {
+  filter: sepia(100%) hue-rotate(40deg) saturate(0.7) brightness(0.6) contrast(4) invert();
 }
