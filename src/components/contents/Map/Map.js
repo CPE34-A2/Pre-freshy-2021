@@ -27,7 +27,16 @@ export default function Map({ user, clan, planets }) {
 
   return (
     <Dashboard current="map" user={user} clan={clan} >
-      <div className="flex flex-col-reverse xl:flex-row w-full h-full justify-between px-12 md:p-24 scale-75 md:scale-100">
+
+      {/* TODO: open later when complete (now we should disable this feature in production for now because this feature incomplete) */}
+
+      <div className="w-full h-full flex flex-col items-center justify-center">
+        <div className="text-4xl font-bold text-white uppercase">COMMING SOON</div>
+        <div className="text-4xl font-bold text-gray-400 uppercase">COMMING SOON</div>
+        <div className="text-4xl font-bold text-white uppercase">COMMING SOON</div>
+      </div>
+
+      {/* <div className="flex flex-col-reverse xl:flex-row w-full h-full justify-between px-12 md:p-24 scale-75 md:scale-100">
         <PlanetCol clan={clan} planets={theOne} image={TheOne} className="w-40 h-40" />
         <PlanetCol clan={clan} planets={planetB} image={B} className="w-28 h-28" />
         <PlanetCol clan={clan} planets={planetX1} image={X} className="w-24 h-24" />
@@ -36,8 +45,8 @@ export default function Map({ user, clan, planets }) {
         <PlanetCol clan={clan} planets={planetD1} image={D} className="w-12 h-12" />
         <PlanetCol clan={clan} planets={planetD2} image={D} className="w-12 h-12" />
         <PlanetCol clan={clan} planets={planetHome} image={Home} className="w-14 h-14" />
-      </div>
+      </div> */}
     </Dashboard>
-    
+
   )
 }
