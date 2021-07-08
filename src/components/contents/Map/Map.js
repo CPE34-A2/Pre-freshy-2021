@@ -30,7 +30,7 @@ export default function Map({ user, clan, planets }) {
 
       {/* TODO: open later when complete (now we should disable this feature in production for now because this feature incomplete) */}
 
-      <div className="w-full h-full flex flex-col items-center justify-center">
+      <div className="w-full h-screen flex flex-col items-center justify-center">
         <div className="text-4xl font-bold text-white uppercase">COMMING SOON</div>
         <div className="text-4xl font-bold text-gray-400 uppercase">COMMING SOON</div>
         <div className="text-4xl font-bold text-white uppercase">COMMING SOON</div>
