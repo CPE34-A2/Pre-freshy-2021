@@ -102,7 +102,7 @@ export default function PlanetConfirmModal({ planet, closeAll, clan, isOpen, clo
         {isBattle &&
           <>
             <div className="text-xl font-bold text-purple-900 text-center mb-4 tracking-widest">BATTLE</div>
-            <form onSubmit={onAccept} autocomplete="off" className="flex flex-col">
+            <form onSubmit={onAccept} autoComplete="off" className="flex flex-col">
               <InputBox
                 name="betMoney"
                 ref={initialFocus}
