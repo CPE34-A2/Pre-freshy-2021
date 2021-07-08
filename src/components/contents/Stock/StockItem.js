@@ -1,8 +1,10 @@
-import { Dialog, Transition } from '@headlessui/react'
-import { Fragment, useState } from 'react'
+import { Dialog } from '@headlessui/react'
+import { useState } from 'react'
+import Modal from '@/components/common/Modal'
 import * as Util from '@/utils/common'
 import AlertNotification from '@/components/common/AlertNotification'
 import fetchAPI from '@/utils/fetch'
+import { XIcon } from '@heroicons/react/outline'
 
 export default function StockItem({ clan, data }) {
   const [isOpen, setIsOpen] = useState(false)
@@ -58,7 +60,7 @@ export default function StockItem({ clan, data }) {
     <div className='flex flex-row  my-8 w:11/12 md:w-full font-semibold text-lg '>
       {/* รายชื่อหมวดหมู่ */}
       <div className='flex-1 font-bold md:pl-4 2xl:pl-7 '>{data.symbol}</div>
-      <div 
+      <div
         className={Util.concatClasses(
           'flex-1 md:pl-20 2xl:pl-52 font-bold',
           data.changed > 0 && 'text-green-700',
@@ -91,99 +93,78 @@ export default function StockItem({ clan, data }) {
         </button>
       </div>
 
-      <Transition appear show={isOpen} as={Fragment}>
-        <Dialog
-          as="div"
-          className="fixed inset-0 z-10 overflow-y-auto"
-          onClose={closeModal}
-        >
-          <div className="min-h-screen px-4 text-center">
-            <Transition.Child
-              as={Fragment}
-              enter="ease-out duration-300"
-              enterFrom="opacity-0"
-              enterTo="opacity-100"
-              leave="ease-in duration-200"
-              leaveFrom="opacity-100"
-              leaveTo="opacity-0"
-            >
-              <Dialog.Overlay className="fixed inset-0" />
-            </Transition.Child>
-            <span
-              className="inline-block h-screen align-middle"
-              aria-hidden="true"
-            >
-              &#8203;
-            </span>
-            <Transition.Child
-              as={Fragment}
-              enter="ease-out duration-300"
-              enterFrom="opacity-0 scale-95"
-              enterTo="opacity-100 scale-100"
-              leave="ease-in duration-200"
-              leaveFrom="opacity-100 scale-100"
-              leaveTo="opacity-0 scale-95"
-            >
-              <div className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
-                <Dialog.Title
-                  as="h3"
-                  className="flex font-medium leading-6 text-gray-900 break-all"
-                >
-                  <div className='text-lg flex-1 space-x-2'>
-                    <span className="font-bold">{data.symbol} | </span>
-                    <span className="font-bold">{data.rate}</span>
-                    <span
-                      className={Util.concatClasses(
-                        'font-bold',
-                        data.changed >= 0 ? 'text-green-600' : 'text-red-600'
-                      )}
-                    >
-                      ({data.changed > 0 && '+'}{data.changed})
-                    </span>
-                  </div>
-                  <div className='text-sm font-bold'>OWNED: {clan.properties.stocks[data.symbol]} {data.symbol}</div>
-                </Dialog.Title>
-                <div className="flex flex-col mt-2">
-                  <div className='text-center mt-4'>
-                    <input
-                      type="text"
-                      pattern="\d*"
-                      value={amount}
-                      placeholder={`Amount (${data.symbol})`}
-                      className='text-center ring-2 ring-inset ring-black h-14'
-                      onChange={handleChange}
-                    />
-                  </div>
-                  <div className='text-center my-5'>Total: <span className="font-bold">{Util.numberWithCommas(amount * data.rate)}</span></div>
+      <Modal
+        open={isOpen}
+        close={closeModal}
+      >
+        <div className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
+          <button
+            type="button"
+            className="absolute top-0 right-0 m-4 focus:ou<Modal
+        open={isOpen}
+        close={closeModal}
+      >tline-none"
+            onClick={closeModal}
+          >
+            <XIcon className="w-5 h-5 text-gray-400 hover:text-gray-800" />
+          </button>
+          
+          <Dialog.Title
+            as="h3"
+            className="flex font-medium leading-6 text-gray-900 break-all"
+          >
+            <div className='text-lg flex flex-row items-center space-x-2'>
+              <span className="font-bold">{data.symbol} | </span>
+              <span className="font-bold">{data.rate}</span>
+              <span
+                className={Util.concatClasses(
+                  'font-bold',
+                  data.changed >= 0 ? 'text-green-600' : 'text-red-600'
+                )}
+              >
+                ({data.changed > 0 && '+'}{data.changed})
+              </span>
+              <span className='text-sm font-bold text-indigo-700'>| OWNED: {clan.properties.stocks[data.symbol]} {data.symbol}</span>
+            </div>
+          </Dialog.Title>
+          <div className="flex flex-col mt-2">
+            <div className='text-center mt-4'>
+              <input
+                type="text"
+                pattern="\d*"
+                value={amount}
+                placeholder={`Amount (${data.symbol})`}
+                className='text-center ring-1 ring-inset rounded-lg ring-gray-600 h-14'
+                onChange={handleChange}
+              />
+            </div>
+            <div className='text-center my-5'>Total: <span className="font-bold">{Util.numberWithCommas(amount * data.rate)}</span></div>
 
-                  <AlertNotification
-                    type={notification.type}
-                    info={notification.info}
-                  />
+            <AlertNotification
+              type={notification.type}
+              info={notification.info}
+            />
 
-                  <div className="flex flex-row mt-4">
-                    <button
-                      type="button"
-                      className="flex-1 px-4 py-2 text-sm font-medium text-white bg-green-700 border border-transparent rounded-md hover:bg-green-800 "
-                      onClick={buy}
-                    >
-                      BUY
-                    </button>
-                    <div className='px-2'></div>
-                    <button
-                      type="button"
-                      className="flex-1 px-4 py-2 text-sm font-medium text-white bg-red-700 border border-transparent rounded-md hover:bg-red-800 "
-                      onClick={sell}
-                    >
-                      SELL
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </Transition.Child>
+            <div className="flex flex-row mt-4">
+              <button
+                type="button"
+                className="flex-1 px-4 py-2 text-sm font-medium text-white bg-green-700 border border-transparent rounded-md hover:bg-green-800 "
+                onClick={buy}
+              >
+                BUY
+              </button>
+              <div className='px-2'></div>
+              <button
+                type="button"
+                className="flex-1 px-4 py-2 text-sm font-medium text-white bg-red-700 border border-transparent rounded-md hover:bg-red-800 "
+                onClick={sell}
+              >
+                SELL
+              </button>
+            </div>
           </div>
-        </Dialog>
-      </Transition>
+        </div>
+      </Modal>
     </div>
   )
 }
