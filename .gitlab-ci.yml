@@ -6,7 +6,7 @@ build:
   stage: build
   image: docker:latest
   only:
-    - ci/deploy
+    - main
   services: 
     - name: docker:19.03.8-dind
   before_script:
@@ -20,7 +20,7 @@ deploy:
   stage: deploy
   image: kroniak/ssh-client
   only:
-    - ci/deploy
+    - main
   before_script:
     - echo "Deploying app"
   script:

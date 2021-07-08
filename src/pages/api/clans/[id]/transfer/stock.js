@@ -71,7 +71,7 @@ handler.post(async (req, res) => {
   const amount = parseInt(req.body.amount)
   const currentTime = moment().utcOffset('+0700').hour()
 
-  if (currentTime < OPEN_MARKET_TIME || currentTime > CLOSE_MARKET_TIME) {
+  if (currentTime < OPEN_MARKET_TIME || currentTime >= CLOSE_MARKET_TIME) {
     return Response.denined(res, 'market closed!!!')
   }
 
