@@ -5,6 +5,7 @@ import { Dialog } from '@headlessui/react'
 import InputBox from '@/components/common/InputBox'
 import fetchApi from '@/utils/fetch'
 import AlertNotification from '@/components/common/AlertNotification'
+import PlanetListItem from './PlanetListItem'
 
 export default function PlanetConfirmModal({ planet, closeAll, clan, isOpen, close, isBattle }) {
   const [betMoney, setBetMoney] = useState('')
@@ -62,21 +63,8 @@ export default function PlanetConfirmModal({ planet, closeAll, clan, isOpen, clo
     setBetPlanetCheck(newPlanets)
   }
 
-  const planetList = clan.owned_planet_ids.map((planet, index) => {
-    return (
-      <div className="flex flex-row">
-        <div className="mr-2">
-          <input
-            name={index}
-            type="checkbox"
-            onChange={handlePlanetChange}
-          />
-        </div>
-        <div className="font-semibold">
-          {planet}
-        </div>
-      </div>
-    )
+  const planetList = clan.owned_planet_ids.map((ownedPlanet, index) => {
+    return <PlanetListItem key={planet._id} index={index} planet={ownedPlanet} handlePlanetChange={handlePlanetChange} />
   })
 
   const mapIdsWithCheckBox = (planets, checkboxes) => {
