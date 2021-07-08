@@ -35,10 +35,22 @@ handler.post(async (req, res) => {
   const title = req.body.title
   const content = req.body.content
   const englishContent = req.body.english_content
-  const category = parseInt(req.body.category)
+  const category = parseInt(req.body.category) || 1
   const affect = parseInt(req.body.affect) || 0
 
-  if ((!title) && (!content) && (!category) && (!affect) && (!englishContent)) {
+  const affectLocale = {
+    0: 'NONE',
+    1: 'COIN',
+    2: 'FUEL',
+    3: 'PLANET'
+  }[affect]
+
+  const categoryLocale = {
+    1: 'DAILY',
+    2: 'DISASTER'
+  }[category]
+
+  if ((!title) && (!content) && (!englishContent)) {
     return Response.denined(res, 'Please fill in the blanks')
   }
 
@@ -47,9 +59,6 @@ handler.post(async (req, res) => {
   }
   if (!content) {
     return Response.denined(res, 'Please fill content blanks')
-  }
-  if (!category) {
-    return Response.denined(res, 'Please fill category blanks')
   }
 
   if (isNaN(category)) {
@@ -60,7 +69,8 @@ handler.post(async (req, res) => {
     return Response.denined(res, 'Please enter a valid category value.')
   }
 
-  if (affect <= 0 || affect >= 3) {
+  
+  if (affect < 0 || affect > 3) {
     return Response.denined(res, 'Please enter a valid affect value')
   }
 
@@ -68,34 +78,18 @@ handler.post(async (req, res) => {
     title: title,
     content: content,
     english_content: englishContent ? englishContent : '',
-    category: 'CHECKING',
-    affect: 'NONE',
     author: req.user.id
   })
 
-  if (category == 1) {
-    news.category = 'DAILY'
-  }
-
-  if (category == 2) {
-    news.category = 'DISASTER'
-  }
-
-  if (affect == 1)
-    news.affect = 'COIN'
-
-  if (affect == 2)
-    news.affect = 'FUEL'
-
-  if (affect == 3)
-    news.affect = 'PLANET'
-
+  news.category = categoryLocale
+  news.affect = affectLocale
   await news.save()
 
   Response.success(res, {
     title: news.title,
     content: news.content,
     category: news.category,
+    affect: news.affect,
     author: news.author,
     news_id: news._id
   })
