@@ -10,11 +10,11 @@ import BuyFuelModal from '../Modals/BuyFuelModal'
 
 export default function AssetsList({ user, clan }) {
   return (
-    <div className="flex flex-col bg-gray-200 bg-opacity-30 filter backdrop-blur-xl p-5 rounded-2xl shadow-lg">
+    <div className="flex flex-col h-full bg-gray-200 bg-opacity-30 filter backdrop-blur-xl p-5 rounded-2xl shadow-lg">
       <div className="text-2xl font-bold tracking-wider text-white mb-4">ASSETS</div>
 
-      <div className="font-medium text-xl text-gray-400 mb-2">Your items</div>
-      <div className="flex flex-col mb-6">
+      <div className="font-medium text-lg text-gray-400 mb-2">Your items</div>
+      <div className="flex flex-col mb-4">
         <AssetItem
           image={MoneyImage}
           value={Util.numberWithCommas(user.money)}
@@ -23,7 +23,7 @@ export default function AssetsList({ user, clan }) {
         />
       </div>
 
-      <div className="font-medium text-xl text-gray-400 mb-2">Clan items</div>
+      <div className="font-medium text-lg text-gray-400 mb-2">Clan items</div>
       <div className="flex flex-col space-y-4">
         <AssetItem
           image={MoneyImage}
