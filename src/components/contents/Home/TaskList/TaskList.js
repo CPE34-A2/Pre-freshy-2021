@@ -81,7 +81,7 @@ export default function TaskList({ user, clan }) {
   })
 
   return (
-    <div className="flex flex-col h-full bg-gray-200 bg-opacity-30 filter backdrop-blur-xl p-5 rounded-2xl shadow-lg">
+    <div className="flex flex-col h-full w-full bg-gray-200 bg-opacity-30 filter backdrop-blur-xl p-5 rounded-2xl shadow-lg">
       <div className="text-2xl font-bold tracking-wider text-white mb-4">TASKS</div>
 
       <div className="flex flex-col space-y-4">

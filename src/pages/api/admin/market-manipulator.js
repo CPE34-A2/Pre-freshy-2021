@@ -3,7 +3,6 @@ import middleware from '@/middlewares/middleware'
 import permission from '@/middlewares/permission/admin'
 
 import * as Response from '@/utils/response'
-import Stock from '@/models/stock'
 import Clan from '@/models/clan'
 import StockHistory from '@/models/stock-history'
 

@@ -60,7 +60,7 @@ export default function TaskItem({ user, clan, image, data, locale }) {
   // When fetching the data
   if (!data) return (
     <div className="flex flex-row items-center p-4 bg-gray-700 bg-opacity-10 filter backdrop-blur-3xl rounded-xl">
-      <div className="mr-4"><Spinner style="w-16 h-16 text-indigo-200" /></div>
+      <div className="mr-4"><Spinner style="w-11 h-11 text-indigo-200" /></div>
       <div className="font-bold text-gray-300">Loading transaction data from space station...</div>
     </div>
   )
@@ -69,7 +69,7 @@ export default function TaskItem({ user, clan, image, data, locale }) {
   if (!data.data) {
     return (
       <div className="flex flex-row items-center p-4 bg-gray-600 bg-opacity-20 filter backdrop-blur-md rounded-xl">
-        <div className="flex-none w-12 h-12 md:w-16 md:h-16 filter brightness-75 opacity-60">
+        <div className="flex-none w-11 h-11 md:w-14 md:h-14 filter brightness-75 opacity-60">
           <Image src={image} alt="" />
         </div>
 
@@ -87,25 +87,25 @@ export default function TaskItem({ user, clan, image, data, locale }) {
 
   return (
     <div className="flex flex-row items-center p-4 bg-white bg-opacity-80 rounded-xl">
-      <div className="flex-none w-12 h-12 md:w-14 md:h-14">
+      <div className="flex-none w-11 h-11 md:w-14 md:h-14">
         <Image src={image} alt="" />
       </div>
 
       <div className="flex flex-row w-full items-center justify-between ml-2 md:ml-4">
         <div className="flex flex-col">
-          <div className="hidden md:flex font-semibold text-base text-gray-800">Request Pending</div>
-          <div className="font-bold text-lg text-center md:text-left uppercase text-indigo-900">{locale.info}</div>
+          <div className="hidden md:flex font-semibold text-base xl:text-sm 2xl:text-base text-gray-800">Request Pending</div>
+          <div className="xl:hidden 2xl:flex font-bold text-lg text-center md:text-left uppercase text-indigo-900">{locale.info}</div>
         </div>
 
         <div className="flex flex-row">
-          <div className="hidden lg:flex items-center flex-row text-center ml-3 space-x-6">
+          <div className="hidden lg:flex items-center flex-row text-center ml-3 space-x-6 xl:space-x-4 2xl:space-x-6">
             <div>
               <div className="font-bold text-gray-800 text-base">{locale.received_title}</div>
-              <div className="font-bold text-lg text-indigo-700">{item.received} {locale.received_unit}</div>
+              <div className="font-bold text-lg xl:text-base 2xl:text-lg text-indigo-700">{item.received} {locale.received_unit}</div>
             </div>
             <div>
               <div className="font-bold text-gray-800 text-base">{locale.cost_title}</div>
-              <div className="font-bold text-lg text-indigo-700">{item.cost} {locale.cost_unit}</div>
+              <div className="font-bold text-lg xl:text-base 2xl:text-lg text-indigo-700">{item.cost} {locale.cost_unit}</div>
             </div>
           </div>
 
