@@ -16,7 +16,7 @@ const planetSchema = new mongoose.Schema({
 	travel_cost: {
 		type: Number
 	},
-	visiter: {
+	visitor: {
 		type: Number,
 		default: 0
 	},
