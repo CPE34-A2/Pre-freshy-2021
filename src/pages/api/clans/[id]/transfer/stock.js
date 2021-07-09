@@ -5,7 +5,7 @@ import permission from '@/middlewares/permission/clan'
 
 import * as Response from '@/utils/response'
 import Clan from '@/models/clan'
-import Stock from '@/models/stock'
+import StockHistory from '@/models/stock-history'
 import Transaction from '@/models/transaction'
 
 import moment from 'moment-timezone'
@@ -69,9 +69,10 @@ handler.post(async (req, res) => {
   let method = req.body.method
   let symbol = req.body.symbol
   const amount = parseInt(req.body.amount)
-  const currentTime = moment().utcOffset('+0700').hour()
+  const openTime = moment().set(OPEN_MARKET_TIME)
+  const closeTime = moment().set(CLOSE_MARKET_TIME)
 
-  if (currentTime < OPEN_MARKET_TIME || currentTime >= CLOSE_MARKET_TIME) {
+  if (!moment().isBetween(openTime, closeTime)) {
     return Response.denined(res, 'market closed!!!')
   }
 
@@ -108,9 +109,9 @@ handler.post(async (req, res) => {
   if (pendingTransaction)
     return Response.denined(res, 'There are still pending transaction')
 
-  const stock = await Stock
-    .findOne({ symbol: symbol })
-    .select()
+  const stock = await StockHistory
+    .findOne({ date: moment().startOf('day').toDate(), symbol: symbol })
+    .select('-_id symbol rate')
     .lean()
     .exec()
 
@@ -174,6 +175,8 @@ handler.post(async (req, res) => {
  */
 handler.patch(async (req, res) => {
   const transactionId = req.body.transaction_id
+  const openTime = moment().set(OPEN_MARKET_TIME)
+  const closeTime = moment().set(CLOSE_MARKET_TIME)
 
   if (!transactionId || !mongoose.Types.ObjectId.isValid(transactionId))
     return Response.denined(res, 'bro... you just... sent wrong transaction')
@@ -189,6 +192,13 @@ handler.patch(async (req, res) => {
   if (!transaction)
     return Response.denined(res, 'transaction not found')
 
+  if (!moment().isBetween(openTime, closeTime)) {
+    transaction.status = 'REJECT'
+    await transaction.save()
+    req.socket.server.io.emit('set.task.stock', req.user.clan_id, null)
+    return Response.denined(res, 'market closed!!! This transaction will be rejected!!!!')
+  }
+
   if (transaction.status === 'SUCCESS')
     return Response.denined(res, 'you are too late!!! this confirmation is already SUCCESS')
 
@@ -201,8 +211,9 @@ handler.patch(async (req, res) => {
   if (transaction.rejector.includes(req.user.id))
     return Response.denined(res, `You already rejected`)
 
-  const stock = await Stock
-    .findOne({ 'symbol': transaction.item.stock.symbol })
+
+  const stock = await StockHistory
+    .findOne({ date: moment().startOf('day').toDate(), symbol: transaction.item.stock.symbol })
     .select('rate')
     .lean()
     .exec()
@@ -210,6 +221,7 @@ handler.patch(async (req, res) => {
   if (stock.rate != transaction.item.stock.rate) {
     transaction.status = 'REJECT'
     await transaction.save()
+    req.socket.server.io.emit('set.task.stock', req.user.clan_id, null)
     return Response.denined(res, `The price has been changed`)
   }
   transaction.confirmer.push(req.user.id)
@@ -228,8 +240,10 @@ handler.patch(async (req, res) => {
       if (clan.properties.money < total) {
         transaction.status = 'REJECT'
         await transaction.save()
-        return Response.denined(res, 'no money, lol')
+        req.socket.server.io.emit('set.task.stock', req.user.clan_id, null)
+        return Response.denined(res, `You don't have enough money to buy`)
       }
+
       clan.properties.money -= total
       clan.properties.stocks[transaction.item.stock.symbol] += transaction.item.stock.amount
       await clan.save()
@@ -238,7 +252,8 @@ handler.patch(async (req, res) => {
       if (clan.properties.stocks[transaction.item.stock.symbol] < transaction.item.stock.amount) {
         transaction.status = 'REJECT'
         await transaction.save()
-        return Response.denined(res, 'not enough stock, lol')
+        req.socket.server.io.emit('set.task.stock', req.user.clan_id, null)
+        return Response.denined(res, `You don't have enough stocks to sell`)
       }
       clan.properties.money += total
       clan.properties.stocks[transaction.item.stock.symbol] -= transaction.item.stock.amount
@@ -270,6 +285,8 @@ handler.patch(async (req, res) => {
  */
 handler.delete(async (req, res) => {
   const transactionId = req.body.transaction_id
+  const openTime = moment().set(OPEN_MARKET_TIME)
+  const closeTime = moment().set(CLOSE_MARKET_TIME)
 
   if (!transactionId || !mongoose.Types.ObjectId.isValid(transactionId))
     return Response.denined(res, 'bro... you just... sent wrong transaction')
@@ -284,6 +301,13 @@ handler.delete(async (req, res) => {
 
   if (!transaction)
     return Response.denined(res, 'transaction not found')
+
+  if (!moment().isBetween(openTime, closeTime)) {
+    transaction.status = 'REJECT'
+    await transaction.save()
+    req.socket.server.io.emit('set.task.stock', req.user.clan_id, null)
+    return Response.denined(res, 'market closed!!! This transaction will be rejected!!!!')
+  }
 
   if (transaction.status === 'SUCCESS')
     return Response.denined(res, 'you are too late!!! this confirmation is already SUCCESS')
