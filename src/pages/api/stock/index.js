@@ -1,19 +1,13 @@
 import nextConnect from 'next-connect'
 import middleware from '@/middlewares/middleware'
 
-import Clan from '@/models/clan'
-import Stock from '@/models/stock'
 import StockHistory from '@/models/stock-history'
-
-import * as Response from '@/utils/response'
-import moment from 'moment-timezone'
+import moment from 'moment'
 
 const handler = nextConnect()
 
-const OPEN_MARKET_TIME = 9
-const CLOSE_MARKET_TIME = 22
-
-let IS_FIRSTTIME_FETCH = true
+const OPEN_MARKET_TIME = { hour: 9, minute: 0, second: 0 }
+const CLOSE_MARKET_TIME = { hour: 22, minute: 0, second: 0 }
 
 handler
   .use(middleware)
@@ -26,50 +20,33 @@ handler
  * @require User authentication
  */
 handler.get(async (req, res) => {
-  let stocks = null
+  const openTime = moment().set(OPEN_MARKET_TIME)
+  const closeTime = moment().set(CLOSE_MARKET_TIME)
+  const subtract = +!(moment().isBetween(openTime, moment().endOf('day')))
 
-  const currentTime = moment().utcOffset('+0700')
-
-  if (currentTime.hour() < OPEN_MARKET_TIME || currentTime.hour() >= CLOSE_MARKET_TIME) {
-    IS_FIRSTTIME_FETCH = true
-    return Response.denined(res, 'market closed!!!')
-  }
-
-  stocks = await Stock
-    .find()
-    .select('symbol rate')
+  const lastStocks = await StockHistory
+    .find({ date: moment().startOf('day').subtract(subtract, 'day').toDate() })
+    .select('-_id symbol rate')
+    .lean()
     .exec()
 
-  const yesterdayStockHistory = await StockHistory
-    .find({ date: new Date(currentTime.startOf('day').valueOf() - 86400000) })
-    .select('symbol rate')
+  const closedStocks = await StockHistory
+    .find({ date: moment().startOf('day').subtract(1 + subtract, 'day').toDate() })
+    .select('-_id symbol rate')
+    .lean()
     .exec()
 
-  if (IS_FIRSTTIME_FETCH) {
-    IS_FIRSTTIME_FETCH = false
-    let todayStockPrice = await StockHistory
-      .find({ date: new Date(currentTime.startOf('day').valueOf()) })
-      .select()
-      .exec()
-
-    if (todayStockPrice) {
-      todayStockPrice.forEach((e) => {
-        stocks.forEach((f) => {
-          if (f.symbol === e.symbol) {
-            f.rate = e.rate
-            f.save()
-          }
-        })
-      })
-    }
-  }
-
-  const data = stocks.map(v => ({ ...v._doc, changed: v.rate - yesterdayStockHistory.find(f => f.symbol == v.symbol).rate }))
+  const stocks = lastStocks.map(stock => (
+    {...stock, changed: stock.rate - closedStocks.find(e => e.symbol == stock.symbol).rate }
+  ))
 
   res.status(200)
     .json({
-      sucesss: !!data,
-      data: data,
+      sucesss: !!stocks,
+      data: {
+        stocks: stocks,
+        is_market_opened: (moment().isBetween(openTime, closeTime))
+      },
       timestamp: new Date()
     })
 })

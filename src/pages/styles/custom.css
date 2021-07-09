@@ -42,21 +42,21 @@ img {
 /* Custom scrollbar */
 
 ::-webkit-scrollbar {
-  width: 12px;
+  width: 10px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #b3b3b3;
+  background: rgba(255, 255, 255, 0.45);
   border-radius: 24px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #7e7e7e;
+  background: rgba(80, 80, 80, 0.8);
   border-radius: 24px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #7e7e7e;
+  background: rgba(80, 80, 80, 0.8);
 }
 
 .star-pink {
@@ -85,4 +85,34 @@ img {
 
 .star-purple {
   filter: sepia(100%) hue-rotate(40deg) saturate(0.7) brightness(0.6) contrast(4) invert();
+}
+
+/* Stock */
+
+.stock-bg {
+  background-color: #121212;
+}
+
+.stock-text-1 {
+  color: #121212;
+}
+
+.stock-text-2 {
+  color: #181818;
+}
+
+.stock-text-3 {
+  color: #404040;
+}
+
+.stock-text-4 {
+  color: #282828;
+}
+
+.stock-text-5 {
+  color: #FFFFFF
+}
+
+.stock-text-6 {
+  color: #B3B3B3;
 }

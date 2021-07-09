@@ -11,8 +11,8 @@ export default function Dashboard({ children, current, user, clan }) {
 
       <div 
         className={Util.concatClasses(
-          "flex flex-col w-full h-full md:h-screen overflow-y-auto",
-          current == 'map' ? 'dashboard-background-dark' : 'dashboard-background'
+          "flex flex-col w-full h-full md:h-screen overflow-y-auto ",
+          ['map', 'stock'].includes(current) ? 'dashboard-background-dark' : 'dashboard-background'
         )}
       >
         {children}
