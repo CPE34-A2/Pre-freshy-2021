@@ -105,16 +105,18 @@ export default function TaskVoteModal({ user, clan, image, transaction, item, lo
                     {showConfirmers(transaction.confirmer, transaction.confirm_require)}
                   </div>
 
-                  <Button
-                    type="button"
-                    name="ACCEPT"
-                    style={Util.concatClasses(
-                      'bg-purple-300 text-purple-600 font-semibold py-1 w-full rounded-lg',
-                      isAlreadyVote(transaction) ? 'cursor-not-allowed opacity-40' : 'hover:bg-purple-400 hover:text-purple-800'
-                    )}
-                    onClick={() => vote(true)}
-                    disabled={isAlreadyVote(transaction)}
-                  />
+                  {user._id != clan.leader &&
+                    <Button
+                      type="button"
+                      name="ACCEPT"
+                      style={Util.concatClasses(
+                        'bg-purple-300 text-purple-600 font-semibold py-1 w-full rounded-lg',
+                        isAlreadyVote(transaction) ? 'cursor-not-allowed opacity-40' : 'hover:bg-purple-400 hover:text-purple-800'
+                      )}
+                      onClick={() => vote(true)}
+                      disabled={isAlreadyVote(transaction)}
+                    />
+                  }
                 </div>
 
                 <div className="flex flex-col flex-grow">
@@ -122,9 +124,26 @@ export default function TaskVoteModal({ user, clan, image, transaction, item, lo
                     {showRejectors(transaction.rejector, transaction.confirm_require)}
                   </div>
 
+                  {user._id != clan.leader &&
+                    <Button
+                      type="button"
+                      name="REJECT"
+                      style={Util.concatClasses(
+                        'bg-red-300 text-red-600 font-semibold py-1 w-full rounded-lg',
+                        (isAlreadyVote(transaction) && isNotLeader()) ? 'cursor-not-allowed opacity-40' : 'hover:bg-red-400 hover:text-red-800',
+                      )}
+                      onClick={() => vote(false)}
+                      disabled={isAlreadyVote(transaction) && isNotLeader()}
+                    />
+                  }
+                </div>
+              </div>
+
+              {user._id == clan.leader &&
+                <div className="flex flex-col mb-3">
                   <Button
                     type="button"
-                    name="REJECT"
+                    name="DISCARD"
                     style={Util.concatClasses(
                       'bg-red-300 text-red-600 font-semibold py-1 w-full rounded-lg',
                       (isAlreadyVote(transaction) && isNotLeader()) ? 'cursor-not-allowed opacity-40' : 'hover:bg-red-400 hover:text-red-800',
@@ -133,13 +152,15 @@ export default function TaskVoteModal({ user, clan, image, transaction, item, lo
                     disabled={isAlreadyVote(transaction) && isNotLeader()}
                   />
                 </div>
-              </div>
+              }
 
-              <AlertNotification
-                type={notification.type}
-                info={notification.info}
-                style="mb-3"
-              />
+              {user._id != clan.leader &&
+                <AlertNotification
+                  type={notification.type}
+                  info={notification.info}
+                  style="mb-3"
+                />
+              }
             </div>
           </div>
         </div>
