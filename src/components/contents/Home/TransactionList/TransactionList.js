@@ -15,7 +15,7 @@ export default function TransactionList({ clan }) {
   }, [clan._id])
 
   return (
-    <div className="flex flex-col h-full bg-gray-300 bg-opacity-40 filter backdrop-blur-3xl p-5 rounded-2xl shadow-lg overflow-y-auto">
+    <div className="flex flex-col w-full h-full bg-gray-300 bg-opacity-40 filter backdrop-blur-3xl p-5 rounded-2xl shadow-lg overflow-y-auto">
       <div className="text-2xl font-bold tracking-wider text-white mb-4">TRANSACTIONS LOG</div>
 
       <div className="overflow-y-auto space-y-4">

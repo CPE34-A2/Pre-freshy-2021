@@ -6,12 +6,11 @@ import Link from 'next/link'
 import Image from 'next/image'
 import MockAvatar from '@/publics/avatar.png'
 
-export default function ProfileBar({ mobile, username, role }) {
-  const roleLocaleMap = {
-    user: 'Adventure',
+export default function ProfileBar({ mobile, user, leader }) {
+  const role = {
+    user: (leader) ? 'Captain' : 'Crewmate',
     admin: 'Admin'
-  }
-  role = roleLocaleMap[role]
+  }[user.role.toLowerCase()]
 
   return (
     <div
@@ -31,7 +30,7 @@ export default function ProfileBar({ mobile, username, role }) {
           </div>
         </div>
         <div className="flex flex-col text-left">
-          <span className="text-md font-bold text-indigo-300">{username}</span>
+          <span className="text-md font-bold text-indigo-300">{user._id}</span>
           <span className="text-xs font-light text-gray-300">{role}</span>
         </div>
       </div>

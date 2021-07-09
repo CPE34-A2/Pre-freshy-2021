@@ -32,7 +32,6 @@ handler.get(async (req, res) => {
   let symbol = req.query.symbol
   const rate = parseInt(req.query.rate)
   const date = moment.tz((req.query.date), "DD/MM/YYYY",  "Asia/Bangkok").utcOffset('+0700').valueOf()
-  const currentDate = moment().utcOffset('+0700').startOf('day').valueOf()
 
   if (symbol)
     symbol = symbol.toUpperCase()
@@ -63,16 +62,6 @@ handler.get(async (req, res) => {
       date: new Date(date),
       rate: rate
     })
-  }
-
-  if (currentDate == date) {
-    const stock = await Stock
-      .findOne({ 'symbol': symbol })
-      .select()
-      .exec()
-
-    stock.rate = rate
-    stock.save()
   }
 
   Response.success(res, {

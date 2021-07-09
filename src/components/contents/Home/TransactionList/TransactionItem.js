@@ -1,4 +1,5 @@
 import * as Util from '@/utils/common'
+import moment from 'moment'
 
 const statusColor = {
   PENDING: {
@@ -85,60 +86,50 @@ const resolveTransactionItems = (data) => {
 
 export default function TransactionItem({ transaction }) {
   const item = resolveTransactionItems(transaction)
-  const isStrike = transaction.status == 'REJECT' ? 'line-through' : ''
+  const isStrike = transaction.status == 'REJECT' && 'line-through'
   return (
-    <div className="flex flex-col justify-between backdrop-blur-3xl rounded-xl py-4 px-6 bg-white bg-opacity-40 filter mr-1">
+    <div className="flex flex-col justify-between rounded-xl py-4 px-6 bg-white bg-opacity-80 mr-1">
       <div className="flex flex-row justify-between items-center">
-        <div className="font-light text-sm lg:text-base text-gray-500">ID: {transaction._id}</div>
-        <div className="text-right">Status: <span className={Util.concatClasses('font-medium', statusColor[transaction.status].color)}>{transaction.status}</span></div>
+        <div className="font-light text-xs lg:text-base text-gray-700">ID: {transaction._id}</div>
+        <div className="text-right text-sm md:text-base"><span className={Util.concatClasses('font-medium', statusColor[transaction.status].color)}>{transaction.status}</span></div>
       </div>
       <div className="flex flex-row justify-between items-center">
         {(item.type != 'money' && transaction.owner.type == 'clan' && transaction.receiver.type != 'planet') &&
           <>
-            <div className="font-bold text-lg text-indigo-900">
-              <span className={isStrike}>
-                Buy {item.received} for {item.cost} coin
-              </span>
+            <div className={Util.concatClasses("font-bold text-base md:text-lg text-indigo-900", isStrike)}>
+              Bought {item.received} for {item.cost} coin
             </div>
           </>
         }
         {transaction.owner.type == 'market' &&
           <>
-            <div className="font-bold text-lg text-indigo-900">
-              <span className={isStrike}>
-                Sell {item.cost} for {item.received} coin
-              </span>
+            <div className={Util.concatClasses("font-bold text-base md:text-lg text-indigo-900", isStrike)}>
+              Sold {item.cost} for {item.received} coin
             </div>
           </>
         }
         {transaction.owner.type == 'planet' &&
           <>
-            <div className="font-bold text-lg text-indigo-900">
-              <span className={isStrike}>
-                Go to planet {transaction.owner.id} for {item.cost} fuel
-              </span>
+            <div className={Util.concatClasses("font-bold text-base md:text-lg text-indigo-900", isStrike)}>
+              Went to planet {transaction.owner.id} for {item.cost} 
             </div>
           </>
         }
         {transaction.receiver.type == 'planet' &&
           <>
-            <div className="font-bold text-lg text-indigo-900">
-              <span className={isStrike}>
-                Received planet {transaction.receiver.id}
-              </span>
+            <div className={Util.concatClasses("font-bold text-base md:text-lg text-indigo-900", isStrike)}>
+              Redeemed planet {transaction.receiver.id}
             </div>
           </>
         }
         {item.type == 'money' &&
           <>
-            <div className="font-bold text-lg text-indigo-900">
-              <span className={isStrike}>
-                Received {item.received} coin from {transaction.owner.id}
-              </span>
+            <div className={Util.concatClasses("font-bold text-base md:text-lg text-indigo-900", isStrike)}>
+              Received {item.received} coin from {transaction.owner.id}
             </div>
           </>
         }
-        <div className="text-right font-normal text-gray-500 text-sm lg:text-base">Created at {transaction.createdAt.slice(0, 10)}</div>
+        <div className="text-right font-normal text-gray-800 text-xs md:text-base">{moment(transaction.createdAt).format('D MMM YYYY')}</div>
       </div>
     </div>
   )

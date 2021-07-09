@@ -65,8 +65,8 @@ export default function Navbar({ current, user, clan }) {
               <ClanBar clan={clan} />
 
               <ProfileBar
-                username={user._id}
-                role={user.role}
+                user={user}
+                leader={user._id == clan.leader}
               />
             </>
 
@@ -89,8 +89,8 @@ export default function Navbar({ current, user, clan }) {
               </Disclosure.Panel>
 
               <ProfileBar
-                username={user._id}
-                role={user.role}
+                user={user}
+                leader={user._id == clan.leader}
                 mobile
               />
             </Transition>
