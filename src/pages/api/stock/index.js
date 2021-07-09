@@ -30,15 +30,20 @@ handler.get(async (req, res) => {
 
   const currentTime = moment().utcOffset('+0700')
 
-  if (currentTime.hour() < OPEN_MARKET_TIME || currentTime.hour() >= CLOSE_MARKET_TIME) {
-    IS_FIRSTTIME_FETCH = true
-    return Response.denined(res, 'market closed!!!')
-  }
-
   stocks = await Stock
     .find()
     .select('symbol rate')
     .exec()
+
+  if (currentTime.hour() < OPEN_MARKET_TIME || currentTime.hour() >= CLOSE_MARKET_TIME) {
+    IS_FIRSTTIME_FETCH = true
+    return res.status(200)
+    .json({
+      sucesss: !!stocks,
+      data: {stocks: stocks, is_market_opened: false},
+      timestamp: new Date()
+    })
+  }
 
   const yesterdayStockHistory = await StockHistory
     .find({ date: new Date(currentTime.startOf('day').valueOf() - 86400000) })
@@ -69,7 +74,7 @@ handler.get(async (req, res) => {
   res.status(200)
     .json({
       sucesss: !!data,
-      data: data,
+      data: {stocks: data, is_market_closed: true},
       timestamp: new Date()
     })
 })
