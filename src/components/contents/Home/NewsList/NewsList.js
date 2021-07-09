@@ -12,7 +12,7 @@ export default function NewsList() {
   }, [])
 
   return (
-    <div className="flex flex-col h-full bg-gray-300 bg-opacity-40 filter backdrop-blur-3xl p-5 rounded-2xl shadow-lg">
+    <div className="flex flex-col h-full bg-gray-200 bg-opacity-30 filter backdrop-blur-xl p-5 rounded-2xl shadow-lg w-full">
       <div className="text-2xl font-bold tracking-wider text-white mb-4">NEWS</div>
 
       <div className="overflow-y-auto space-y-6">
