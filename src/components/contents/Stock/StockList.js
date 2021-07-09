@@ -1,32 +1,30 @@
 import StockItem from '@/components/contents/Stock/StockItem'
 
-export default function StockList({ clan, stocks }) {
+export default function StockList({ clan, stocks: data }) {
+  const { stocks, is_market_opened: isMarketOpened } = data
+
   return (
-    <div className='flex flex-col bg-purple-100 rounded-2xl w-full shadow-2xl '>
-      {/* upper list */}
-      <div className='text-center rounded-t-2xl bg-indigo-700 flex flex-row py-4 px-6 w-full font-semibold text-white text-lg'>
-        {/* รายชื่อหมวดหมู่ */}
-        <div className='flex-1  md:pl-4 2xl:pl-5  '>
-          Symbol
-        </div>
-        <div className='flex-1 md:pl-20 2xl:pl-52'>
-          Last
-        </div>
-        <div className='flex-1 md:pl-4 2xl:pl-44'>
-          Change
-        </div>
-        <div className='px-2 2xl:px-32 md:px-14'>
-          Manage
+    <div className="flex flex-col stock-bg p-5 rounded-xl w-full scale-90 md:scale-100 max-w-sm md:max-w-md lg:max-w-lg">
+      <div className="flex flex-col items-center mb-2">
+        <div className="text-white font-bold text-2xl mt-2 mb-2">PORTFOLIO</div>
+        <div className="flex flex-row justify-around w-full mt-2">
+          {stocks.map(stock => (
+            <div key={stock.symbol} className="flex flex-col text-center">
+              <div className="stock-text-6">{clan.properties.stocks[stock.symbol]} {stock.symbol}</div>
+              <div className="stock-text-5">{clan.properties.stocks[stock.symbol] * stock.rate} coin</div>
+            </div>
+          ))}
         </div>
       </div>
-      {/* lower list */}
-      <div className='px-6 text-center'>
 
-        {stocks && stocks.map(stock => (
+      <div className="flex flex-col">
+        <div className="text-white font-bold text-xl text-center mt-4 -mb-2">MARKET</div>
+        {stocks.map(stock => (
           <StockItem
             key={stock.symbol}
             clan={clan}
             data={stock}
+            open={isMarketOpened}
           />
         ))}
       </div>
