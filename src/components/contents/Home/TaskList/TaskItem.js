@@ -28,14 +28,14 @@ const resolveTransactionItems = (data) => {
     if (receivedItem && receivedItem.symbol) {
       return {
         type: 'stock',
-        received: receivedItem.symbol,
+        received: `${receivedItem.amount} ${receivedItem.symbol}`,
         cost: receivedItem.rate * receivedItem.amount
       }
     } else if (lostItem && lostItem.symbol) {
       return {
         type: 'stock',
         received: lostItem.rate * lostItem.amount,
-        cost: lostItem.symbol
+        cost: `${lostItem.amount} ${lostItem.symbol}`
       }
     }
 
@@ -59,7 +59,7 @@ const resolveTransactionItems = (data) => {
 export default function TaskItem({ user, clan, image, data, locale }) {
   // When fetching the data
   if (!data) return (
-    <div className="flex flex-row items-center p-4 bg-gray-800 bg-opacity-40 filter backdrop-blur-3xl rounded-xl">
+    <div className="flex flex-row items-center p-4 bg-gray-700 bg-opacity-10 filter backdrop-blur-3xl rounded-xl">
       <div className="mr-4"><Spinner style="w-16 h-16 text-indigo-200" /></div>
       <div className="font-bold text-gray-300">Loading transaction data from space station...</div>
     </div>
@@ -68,8 +68,8 @@ export default function TaskItem({ user, clan, image, data, locale }) {
   // If pending transaction is not present
   if (!data.data) {
     return (
-      <div className="flex flex-row items-center p-4 bg-gray-800 opacity-40 filter backdrop-blur-3xl rounded-xl">
-        <div className="flex-none w-12 h-12 md:w-16 md:h-16">
+      <div className="flex flex-row items-center p-4 bg-gray-600 bg-opacity-20 filter backdrop-blur-md rounded-xl">
+        <div className="flex-none w-12 h-12 md:w-16 md:h-16 filter brightness-75 opacity-60">
           <Image src={image} alt="" />
         </div>
 
@@ -86,7 +86,7 @@ export default function TaskItem({ user, clan, image, data, locale }) {
   const confirmLeft = confirm_require - Math.max(confirmer.length - 1, rejector.length)
 
   return (
-    <div className="flex flex-row items-center p-4 bg-white bg-opacity-40 filter backdrop-blur-3xl rounded-xl xl:max-w-xl">
+    <div className="flex flex-row items-center p-4 bg-white bg-opacity-80 rounded-xl">
       <div className="flex-none w-12 h-12 md:w-14 md:h-14">
         <Image src={image} alt="" />
       </div>
