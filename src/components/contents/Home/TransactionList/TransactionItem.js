@@ -16,7 +16,8 @@ const statusColor = {
 const transactionMap = {
   clan: {
     clan: ['fuel', 'money'],
-    market: ['stock', 'money']
+    market: ['stock', 'money'],
+    planet: ['planets', '']
   },
   market: {
     clan: ['money', 'stock']
@@ -54,7 +55,7 @@ const resolveTransactionItems = (data) => {
   }
 
   
-  if (lostItem == 'nothing') {
+  if (lostItem == 'nothing' && data.item.money) {
     return {
       type: 'money',
       received: receivedItem
@@ -68,6 +69,13 @@ const resolveTransactionItems = (data) => {
     cost: lostItem
   }
 
+  if (lostItem == 'nothing' && receivedItem[0]) {
+    return {
+      type: 'planet',
+      received: receivedItem
+    }
+  }
+
   // Planet resovler
     return {
       type: 'planet',
@@ -77,6 +85,7 @@ const resolveTransactionItems = (data) => {
 
 export default function TransactionItem({ transaction }) {
   const item = resolveTransactionItems(transaction)
+  const isStrike = transaction.status == 'REJECT' ? 'line-through' : ''
   return (
     <div className="flex flex-col justify-between backdrop-blur-3xl rounded-xl py-4 px-6 bg-white bg-opacity-40 filter mr-1">
       <div className="flex flex-row justify-between items-center">
@@ -87,35 +96,45 @@ export default function TransactionItem({ transaction }) {
         {(item.type != 'money' && transaction.owner.type == 'clan' && transaction.receiver.type != 'planet') &&
           <>
             <div className="font-bold text-lg text-indigo-900">
-              Bought {item.received} for {item.cost} coin
+              <span className={isStrike}>
+                Buy {item.received} for {item.cost} coin
+              </span>
             </div>
           </>
         }
         {transaction.owner.type == 'market' &&
           <>
             <div className="font-bold text-lg text-indigo-900">
-              Sold {item.cost} for {item.received} coin
+              <span className={isStrike}>
+                Sell {item.cost} for {item.received} coin
+              </span>
             </div>
           </>
         }
         {transaction.owner.type == 'planet' &&
           <>
             <div className="font-bold text-lg text-indigo-900">
-              Went to planet {transaction.owner.id} for {item.cost} 
+              <span className={isStrike}>
+                Go to planet {transaction.owner.id} for {item.cost} fuel
+              </span>
             </div>
           </>
         }
         {transaction.receiver.type == 'planet' &&
           <>
             <div className="font-bold text-lg text-indigo-900">
-              Redeemed planet {transaction.receiver.id}
+              <span className={isStrike}>
+                Received planet {transaction.receiver.id}
+              </span>
             </div>
           </>
         }
         {item.type == 'money' &&
           <>
             <div className="font-bold text-lg text-indigo-900">
-              Received {item.received} coin from {transaction.owner.id}
+              <span className={isStrike}>
+                Received {item.received} coin from {transaction.owner.id}
+              </span>
             </div>
           </>
         }
