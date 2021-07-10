@@ -27,8 +27,9 @@ export default function Map({ user, clan, planets }) {
 
   return (
     <Dashboard current="map" user={user} clan={clan} >
+      <div className="text-white font-semibold p-4 absolute font-mono text-lg">Current Position: Planet ID {clan.position}</div>
       <div className="flex flex-col-reverse xl:flex-row w-full h-full justify-between px-12 md:p-24 scale-75 md:scale-100">
-        {(true) ? (
+        {(false) ? (
           <>
             <div className="flex flex-col items-center w-full h-full justify-center">
               <h1 className="text-white text-3xl font-bold">COMMING SOON</h1>

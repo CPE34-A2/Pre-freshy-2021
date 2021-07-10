@@ -5,7 +5,6 @@ import permission from '@/middlewares/permission/admin'
 import * as Response from '@/utils/response'
 
 import Clan from '@/models/clan'
-import Transaction from '@/models/transaction'
 import Planet from '@/models/planet'
 import User from '@/models/user'
 
@@ -43,7 +42,6 @@ handler.get(async (req, res) => {
 
   const clan = await Clan
     .findById(clanId)
-    .select('properties owned_planet_ids leader')
     .exec()
 
   if (!clan)
@@ -115,30 +113,12 @@ handler.get(async (req, res) => {
 
   await clan.save()
 
-  const transaction = await Transaction.create({
-    owner: {
-      id: req.user.id,
-      type: 'user'
-    },
-    receiver: {
-      id: clanId,
-      type: 'clan'
-    },
-    status: 'SUCCESS',
-    item: {
-      money: money,
-      fuel: fuel,
-      planets: [planetId]
-    }
-  })
-
-  if (planet) {
-    req.socket.server.io.emit('set.planet', planet._id, planet)
-  }
+  
+  req.socket.server.io.emit('set.planet', planet._id, planet)
+  req.socket.server.io.emit('set.clan', clan._id, clan)
 
   Response.success(res, {
     clan_data: clan,
-    transaction_data: transaction
   })
 })
 

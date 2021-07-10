@@ -89,9 +89,13 @@ handler.post(async (req, res) => {
     return res.status(403).json({ message: 'You arent clan leader' })
   }
 
+  if (clan.position != clan._id) {
+    return Response.denined(res, 'Your clan is not in the right position')
+  }
+
   const planet = await Planet
     .findOne({ _id: targetPlanet })
-    .select('_id travel_cost owner')
+    .select('_id travel_cost owner visitor tier')
     .exec()
 
   const dupeTransaction = await Transaction
@@ -105,11 +109,19 @@ handler.post(async (req, res) => {
     return Response.denined(res, 'There are still pending transactions')
   }
 
+  if (planet.visitor != 0) {
+    return Response.denined(res, 'This planet is shielded by a visitor')
+  }
+
   if (planet.owner != 0) {
     if (planet.owner == clan._id)
       return Response.denined(res, 'This is your planet')
     else
       return Response.denined(res, 'This planet has owner')
+  }
+
+  if (planet.tier == 'X' || planet.tier == 'HOME') {
+    return Response.denined(res, 'Cannot conquer this planet')
   }
 
   if (clan.properties.fuel < planet.travel_cost) {
@@ -195,8 +207,6 @@ handler.patch(async (req, res) => {
 
   const planet = await Planet
     .findOne({ _id: transaction.item.planets })
-    .select('_id travel_cost quest')
-    .lean()
     .exec()
 
   transaction.confirmer.push(req.user.id)
@@ -210,6 +220,8 @@ handler.patch(async (req, res) => {
 
     clan.properties.fuel -= planet.travel_cost
     clan.position = planet._id
+    planet.visitor = clan._id
+    await planet.save()
     await clan.save()
 
     transaction.status = 'SUCCESS'
@@ -220,6 +232,13 @@ handler.patch(async (req, res) => {
   req.socket.server.io.emit('set.task.travel', req.user.clan_id,
     transaction.status == 'PENDING' ? transaction : null
   )
+
+  delete planet.redeem
+
+  if (planet && clan) {
+    req.socket.server.io.emit('set.clan', clan._id, clan)
+    req.socket.server.io.emit('set.planet', planet._id, planet)
+  }
 
   Response.success(res, {
     planet_quest: transaction.status == 'SUCCESS' ? planet.quest : '',

@@ -10,16 +10,20 @@ export default function Planet({ clan, planet, image, className}) {
   const [isHover, setIsHover] = useState(false)
   const [isClick, setIsClick] = useState(false)
 
+  const shield = (planet.visitor != 0 && planet.tier != 'HOME') && 'ring-blue-300 ring-4 rounded-full'
+
   const openPopOver = () => setIsHover(true)
   const closePopOver = () => setIsHover(false)
   const openModal = () => setIsClick(true)
   const closeModal = () => setIsClick(false)
 
+  
+
   return (
     <div className="flex justify-center">
       <PlanetPopOver clan={clan} planet={planet} isHover={isHover} />
-      <PlanetModal clan={clan} planet={planet} image={image} isOpen={isClick} close={closeModal}/>
-      <div className={Util.concatClasses(className, PLANET_COLOR[planet.owner])} onMouseEnter={openPopOver} onMouseLeave={closePopOver} onClick={openModal}>
+      <PlanetModal conquerColor={PLANET_COLOR[clan._id]} clan={clan} planet={planet} image={image} isOpen={isClick} close={closeModal} />
+      <div onMouseEnter={openPopOver} onMouseLeave={closePopOver} onClick={openModal} className={Util.concatClasses('cursor-pointer',shield, className, PLANET_COLOR[planet.owner], (planet._id == clan.position && planet.tier != 'HOME' && planet.tier != 'X') ? 'animate-pulse filter brightness-150' : '')}>
         <Image className="select-none" src={image} alt="" />
       </div>
     </div>

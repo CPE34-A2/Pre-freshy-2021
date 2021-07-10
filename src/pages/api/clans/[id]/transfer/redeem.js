@@ -19,7 +19,7 @@ handler
  * @endpoint /api/clans/:id/transfer/redeem
  * @description Get rewards form code
  * 
- * @body code
+ * @body code, planet_id
  * 
  * @require User authentication
  */
@@ -48,7 +48,7 @@ handler.post(async (req, res) => {
   }
 
   const planet = await Planet
-    .findOne({ redeem: code })
+    .findOne({ _id: req.body.planet_id })
     .exec()
 
   if (!planet) {
@@ -60,7 +60,7 @@ handler.post(async (req, res) => {
   }
 
   if (planet.redeem != code) {
-    return Response.denined(res, 'code is not working for this planet')
+    return Response.denined(res, 'code is not working')
   }
 
   if (planet.owner == clan._id) {
@@ -88,9 +88,17 @@ handler.post(async (req, res) => {
 
   clan.owned_planet_ids.push(planet._id)
   clan.position = clan._id
-  await clan.save()
   planet.owner = clan._id
+  planet.visitor = 0
+  await clan.save()
   await planet.save()
+
+  delete planet.redeem
+
+  if (planet && clan) {
+    req.socket.server.io.emit('set.clan', clan._id, clan)
+    req.socket.server.io.emit('set.planet', planet._id, planet)
+  }
 
   return Response.success(res, {
     clan_id: clan._id,
