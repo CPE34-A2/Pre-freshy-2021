@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import Modal from "@/components/common/Modal"
 import { Dialog } from '@headlessui/react'
 import InputBox from '@/components/common/InputBox'
@@ -11,9 +11,21 @@ export default function PlanetConfirmModal({ planet, closeAll, clan, isOpen, clo
   const [betMoney, setBetMoney] = useState('')
   const [betFuel, setBetFuel] = useState('')
   const [betPlanetCheck, setBetPlanetCheck] = useState(new Array(clan.owned_planet_ids.length).fill(false))
-  const [notification, notify] = useState({ type: '', info: '' })
+  const [error, setError] = useState('')
+  const [isDisabled, setIsDisabled] = useState(false)
+  
+  const clearNotification = () => setError('')
 
-  const clearNotification = () => notify({ type: '', info: '' })
+  useEffect(() => {
+    setError('')
+    setBetMoney('')
+    setBetFuel('')
+    return () => {
+      setError('')
+      setBetMoney('')
+      setBetFuel('')
+    }
+  }, [isOpen])
 
   const handleMoneyChange = (e) => {
     const target = e.target;
@@ -26,7 +38,7 @@ export default function PlanetConfirmModal({ planet, closeAll, clan, isOpen, clo
     if (isNaN(value) || isStartsWithZero || (value && isNotInteger) || parseInt(value) < 0) return
 
     if (clan.properties.money < value || clan.properties.fuel < betFuel) {
-      notify({ type: 'error', info: 'Your assets is not enough' })
+      setError('Your assets is not enough')
     } else {
       clearNotification()
     }
@@ -45,7 +57,7 @@ export default function PlanetConfirmModal({ planet, closeAll, clan, isOpen, clo
     if (isNaN(value) || isStartsWithZero || (value && isNotInteger) || parseInt(value) < 0) return
 
     if (clan.properties.fuel < value || clan.properties.money < betMoney) {
-      notify({ type: 'error', info: 'Your assets is not enough' })
+      setError('Your assets is not enough')
     } else {
       clearNotification()
     }
@@ -64,7 +76,7 @@ export default function PlanetConfirmModal({ planet, closeAll, clan, isOpen, clo
   }
 
   const planetList = clan.owned_planet_ids.map((ownedPlanet, index) => {
-    return <PlanetListItem key={planet._id} index={index} planet={ownedPlanet} handlePlanetChange={handlePlanetChange} />
+    return <PlanetListItem key={ownedPlanet} index={index} planet={ownedPlanet} handlePlanetChange={handlePlanetChange} />
   })
 
   const mapIdsWithCheckBox = (planets, checkboxes) => {
@@ -73,21 +85,35 @@ export default function PlanetConfirmModal({ planet, closeAll, clan, isOpen, clo
     })
   }
 
-  const onAccept = (e) => {
+  const onAccept = async (e) => {
+    setIsDisabled(true)
     e.preventDefault()
     if (isBattle) {
-      fetchApi('POST', `/api/clans/${clan._id}/battle/phase01`, {
+      return fetchApi('POST', `/api/clans/${clan._id}/battle/phase01`, {
         target_planet: planet._id,
         bet_money: betMoney,
         bet_fuel: betFuel,
         bet_planet_ids: mapIdsWithCheckBox(clan.owned_planet_ids, betPlanetCheck).toString()
+      }).then(async response => {
+        if (response.status == 200) {
+          closeAll()
+        } else {
+          setError((await response.json()).message)
+        }
+        setIsDisabled(false)
       })
     } else {
-      fetchApi('POST', `/api/clans/${clan._id}/transfer/planet`, {
+      return fetchApi('POST', `/api/clans/${clan._id}/transfer/planet`, {
         target_planet: planet._id
+      }).then(async response => {
+        if (response.status == 200) {
+          closeAll()
+        } else {
+          setError((await response.json()).message)
+        }
+        setIsDisabled(false)
       })
     }
-    closeAll()
   }
 
   let initialFocus = useRef(null)
@@ -102,10 +128,9 @@ export default function PlanetConfirmModal({ planet, closeAll, clan, isOpen, clo
         {isBattle &&
           <>
             <div className="text-xl font-bold text-purple-900 text-center mb-4 tracking-widest">BATTLE</div>
-            <form onSubmit={onAccept} autoComplete="off" className="flex flex-col">
+            <form onSubmit={async () => await onAccept()} autoComplete="off" className="flex flex-col">
               <InputBox
                 name="betMoney"
-                ref={initialFocus}
                 type="text"
                 pattern="\d*"
                 placeholder="Stake Money"
@@ -128,21 +153,16 @@ export default function PlanetConfirmModal({ planet, closeAll, clan, isOpen, clo
                   {planetList}
                 </div>
               </div>
-
-              <AlertNotification
-                type={notification.type}
-                info={notification.info}
-                style="mb-3"
-              />
-
               <div className="flex flex-row space-x-4 mt-4">
                 <button
                   type="submit"
+                  disabled={isDisabled}
                   className="bg-purple-300 hover:bg-purple-400  text-purple-600 hover:text-purple-800 font-semibold py-1 w-full rounded-xl focus:outline-none"
                 >
                   Confirm
                 </button>
                 <button
+                  ref={initialFocus}
                   type="reset"
                   onClick={close}
                   className="bg-red-300 hover:bg-red-400 text-red-600 hover:text-red-800 font-semibold py-1 w-full rounded-xl focus:outline-none"
@@ -150,6 +170,11 @@ export default function PlanetConfirmModal({ planet, closeAll, clan, isOpen, clo
                   Reject
                 </button>
               </div>
+              <AlertNotification
+                type="error"
+                info={error}
+                style="mt-3"
+              />
             </form>
           </>
         }
@@ -159,7 +184,8 @@ export default function PlanetConfirmModal({ planet, closeAll, clan, isOpen, clo
             <div className="flex flex-row mt-4 space-x-4">
               <button
                 ref={initialFocus}
-                onClick={onAccept}
+                onClick={async (e) => await onAccept(e)}
+                disabled={isDisabled}
                 className="bg-purple-300 hover:bg-purple-400 text-purple-600 hover:text-purple-800 font-semibold py-1 w-full rounded-xl focus:outline-none"
               >
                 Confirm</button>
@@ -170,6 +196,11 @@ export default function PlanetConfirmModal({ planet, closeAll, clan, isOpen, clo
                 Reject
               </button>
             </div>
+            <AlertNotification
+              type="error"
+              info={error}
+              style="mt-3"
+            />
           </>
         }
       </div>

@@ -97,28 +97,28 @@ export default function TransactionItem({ transaction }) {
         {(item.type != 'money' && transaction.owner.type == 'clan' && transaction.receiver.type != 'planet') &&
           <>
             <div className={Util.concatClasses("font-bold text-base md:text-lg text-indigo-900", isStrike)}>
-              Bought {item.received} for {item.cost} coin
+              Buy {item.received} for {item.cost} coin
             </div>
           </>
         }
         {transaction.owner.type == 'market' &&
           <>
             <div className={Util.concatClasses("font-bold text-base md:text-lg text-indigo-900", isStrike)}>
-              Sold {item.cost} for {item.received} coin
+              Sell {item.cost} for {item.received} coin
             </div>
           </>
         }
         {transaction.owner.type == 'planet' &&
           <>
             <div className={Util.concatClasses("font-bold text-base md:text-lg text-indigo-900", isStrike)}>
-              Went to planet {transaction.owner.id} for {item.cost} 
+              Go to planet {transaction.owner.id} for {item.cost} fuel
             </div>
           </>
         }
         {transaction.receiver.type == 'planet' &&
           <>
             <div className={Util.concatClasses("font-bold text-base md:text-lg text-indigo-900", isStrike)}>
-              Redeemed planet {transaction.receiver.id}
+              Received planet {transaction.receiver.id}
             </div>
           </>
         }

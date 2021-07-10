@@ -9,12 +9,19 @@ import { getPlanets } from '@/pages/api/planets/index'
 
 import Map from '@/components/contents/Map/Map'
 
-export default function MapPage({ user: rawUser, planets: rawPlanets, clan: clan }) {
+export default function MapPage({ user: rawUser, planets: rawPlanets, clan: rawClan }) {
   const [planets, setPlanets] = useState(rawPlanets)
+  const [clan, setClan] = useState(rawClan)
 
   // WebSocket event listeners for real-time updating 
+  useSocket('set.clan', (clanId, clan) => {
+    (clanId == clan._id) && setClan(clan)
+  })
+  
   useSocket('set.planet', (planetId, planet) => {
     const newPlanets = planets.slice()
+    delete planet.redeem
+    delete planet.quest
     newPlanets[planetId - 1] = planet
     setPlanets(newPlanets)
   })
