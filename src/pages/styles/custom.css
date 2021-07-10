@@ -42,21 +42,19 @@ img {
 /* Custom scrollbar */
 
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 1.55rem;
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.45);
+  box-shadow: inset 0 0 10px 10px rgba(255, 255, 255, 0.4);
+  border: solid 0.5rem transparent;
   border-radius: 24px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(80, 80, 80, 0.8);
+  box-shadow: inset 0 0 10px 10px rgba(75, 75, 75, 0.8);
+  border: solid 0.6rem transparent;
   border-radius: 24px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(80, 80, 80, 0.8);
 }
 
 .star-pink {
