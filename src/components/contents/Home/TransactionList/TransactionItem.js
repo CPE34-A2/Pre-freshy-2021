@@ -88,7 +88,7 @@ export default function TransactionItem({ transaction }) {
   const item = resolveTransactionItems(transaction)
   const isStrike = transaction.status == 'REJECT' && 'line-through'
   return (
-    <div className="flex flex-col justify-between rounded-xl py-4 px-6 bg-white bg-opacity-80 mr-1">
+    <div className="flex flex-col justify-between rounded-xl py-4 px-6 bg-white bg-opacity-80">
       <div className="flex flex-row justify-between items-center">
         <div className="font-light text-xs lg:text-base text-gray-700">ID: {transaction._id}</div>
         <div className="text-right text-sm md:text-base"><span className={Util.concatClasses('font-medium', statusColor[transaction.status].color)}>{transaction.status}</span></div>

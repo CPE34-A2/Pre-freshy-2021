@@ -3,6 +3,7 @@ import AssetsList from './AssetsList/AssetsList'
 import TaskList from './TaskList/TaskList'
 import NewsList from './NewsList/NewsList'
 import TransactionList from './TransactionList/TransactionList'
+import BattleList from './BattleList/BattleList'
 
 export default function Home({ user, clan }) {
   return (
@@ -26,11 +27,21 @@ export default function Home({ user, clan }) {
             </div>
           </div>
 
-          <div className="hidden 2xl:flex w-full flex-grow overflow-y-auto">
-            <TransactionList
-              user={user}
-              clan={clan}
-            />
+          <div className="w-full flex-shrink lg:flex lg:flex-col xl:flex-row h-full overflow-y-auto 2xl:space-x-8">
+            {/* Show on large screen only (reason of ordering, move below news card) */}
+            <div className="hidden 2xl:flex flex-grow h-full w-full xl:max-w-xl">
+              <TransactionList
+                user={user}
+                clan={clan}
+              />
+            </div>
+
+            <div className="flex-grow w-full h-full">
+              <BattleList
+                user={user}
+                clan={clan}
+              />
+            </div>
           </div>
         </div>
 
@@ -43,7 +54,7 @@ export default function Home({ user, clan }) {
           </div>
 
           {/* For mobile */}
-          <div className="flex 2xl:hidden h-full overflow-y-auto mt-8">
+          <div className="2xl:hidden overflow-y-auto">
             <TransactionList
               user={user}
               clan={clan}
