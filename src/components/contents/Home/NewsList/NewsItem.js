@@ -21,7 +21,7 @@ export default function NewsItem({ news }) {
     }
   }
 
-  const [time, setTime] = useState({ locale: '' })
+  const [time, setTime] = useState({ locale: moment(news.createdAt).fromNow() })
 
   // Update time every 1 min
   useEffect(() => {
