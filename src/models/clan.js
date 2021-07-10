@@ -64,7 +64,7 @@ const clanSchema = new mongoose.Schema({
 	owned_planet_ids: [{
 		type: Number,
 		min: 1,
-		max: 35
+		max: 42
 	}]
 })
 
