@@ -1,6 +1,7 @@
 import mongoose from 'mongoose'
 import nextConnect from 'next-connect'
 import middleware from '@/middlewares/middleware'
+import permission from '@/middlewares/permission/clan'
 import * as Response from '@/utils/response'
 
 import Clan from '@/models/clan'
@@ -11,6 +12,7 @@ const handler = nextConnect()
 
 handler
   .use(middleware)
+  .use(permission)
 
 /**
  * @method Patch
