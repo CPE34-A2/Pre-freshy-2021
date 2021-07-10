@@ -28,7 +28,7 @@ export default function NewsModal({ img, title, content, category }) {
         open={isOpen}
         close={closeModal}
       >
-        <div className="transition-all transform flex flex-col py-7 px-12 max-w-xl mx-6 md:mx-0 bg-white rounded-3xl shadow-xl">
+        <div className="transition-all transform flex flex-col py-7 px-8 lg:px-12 max-w-xl mx-6 md:mx-0 bg-white rounded-3xl shadow-xl">
           <button
             className="absolute top-0 right-0 m-4 focus:outline-none"
             onClick={closeModal}
@@ -36,7 +36,7 @@ export default function NewsModal({ img, title, content, category }) {
             <XIcon className="w-5 h-5 text-gray-400 hover:text-gray-800" />
           </button>
 
-          <div className="absolute top-0 left-0 m-5 flex items-center justify-center">
+          <div className="absolute top-0 left-0 m-5 flex items-center justify-center scale-75 md:scale-100">
             <span className="mr-2 text-sm font-medium text-gray-700">TH</span>
             <Switch
               checked={isEnglish}
@@ -52,16 +52,16 @@ export default function NewsModal({ img, title, content, category }) {
           </div>
 
           <div className="flex flex-col justify-center w-full">
-            <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-20 mx-auto w-32 h-32 z-20">
+            <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-10 md:-translate-y-20 mx-auto w-24 h-24 md:w-32 md:h-32 z-20">
               {img}
             </div>
 
-            <div className="bg-white w-32 h-32 rounded-full absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-20 z-10" />
+            <div className="bg-white rounded-full absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-10 md:-translate-y-20 w-24 h-24 md:w-32 md:h-32 z-10" />
 
             <div className="flex flex-col justify-center text-center mt-5 mb-3 z-20">
               <h3 
                 className={Util.concatClasses(
-                  'font-semibold text-2xl mt-2 mb-4 uppercase tracking-wide decoration-clone bg-clip-text bg-gradient-to-b text-transparent',
+                  'font-semibold text-xl md:text-2xl mt-2 mb-3 md:mb-4 uppercase tracking-wide decoration-clone bg-clip-text bg-gradient-to-b text-transparent',
                   (category.toUpperCase() == 'DAILY') && 'from-yellow-500 to-red-500',
                   (category.toUpperCase() == 'DISASTER') && 'from-red-400 to-red-600'
                 )}
@@ -69,7 +69,7 @@ export default function NewsModal({ img, title, content, category }) {
                 {title}
               </h3>
 
-              <p className="text-xl text-gray-600 mb-4">{isEnglish ? content[1] : content[0]}</p>
+              <p className="text-base md:text-xl text-gray-600 mb-4">{isEnglish ? content[1] : content[0]}</p>
             </div>
           </div>
         </div>
