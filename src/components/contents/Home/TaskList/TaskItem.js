@@ -74,7 +74,7 @@ export default function TaskItem({ user, clan, image, data, locale }) {
         </div>
 
         <div className="flex flex-row items-center ml-2 md:ml-4">
-          <div className="font-semibold uppercase text-base md:text-lg tracking-wide text-gray-300">{locale.not_found}</div>
+          <div className="font-light uppercase text-base xl:text-lg tracking-wide text-gray-300">{locale.not_found}</div>
         </div>
       </div>
     )
@@ -94,7 +94,7 @@ export default function TaskItem({ user, clan, image, data, locale }) {
       <div className="flex flex-row w-full items-center justify-between ml-2 md:ml-4">
         <div className="flex flex-col">
           <div className="hidden md:flex font-semibold text-base xl:text-sm 2xl:text-base text-gray-800">Request Pending</div>
-          <div className="xl:hidden 2xl:flex font-bold text-lg text-center md:text-left uppercase text-indigo-900">{locale.info}</div>
+          <div className="xl:hidden 2xl:flex font-bold text-base xl:text-lg text-center md:text-left uppercase text-indigo-900">{locale.info}</div>
         </div>
 
         <div className="flex flex-row">
