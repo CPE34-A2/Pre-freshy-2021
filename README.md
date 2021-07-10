@@ -49,4 +49,29 @@ yarn install
 yarn dev
 ```
 
-**We are grateful to the community for contributing bug fixes and improvements on our website**. **HAPPY CODING ☕**
+**We are grateful to the community for contributing bug fixes and improvements on our website**
+
+---
+
+### ⚙ Contributors
+
+**Fullstack Developer**
+- [@riflowth](https://github.com/riflowth)
+- [@eltfshr](https://github.com/eltfshr)
+- [@XiaoXuxxxx](https://github.com/XiaoXuxxxx)
+- [@Porping](https://github.com/Porping)
+
+**Graphic Artist**
+- [@tmrwithu](https://github.com/tmrwithu)
+- [@jate-koh](https://github.com/jate-koh)
+
+**DevOps**
+- [@waranatcpe](https://github.com/waranatcpe)
+
+---
+
+### 📷 Preview
+
+The part of some website features
+
+<img src="https://i.imgur.com/NpTiNmJ.jpeg" alt="CPE PRE-FRESHY 2021" width="">
