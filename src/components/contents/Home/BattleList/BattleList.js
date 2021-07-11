@@ -1,16 +1,62 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState } from 'react'
+import useSocket from '@/hooks/useSocket'
 import fetchAPI from '@/utils/fetch'
+import BattleItem from './BattleItem'
+import Spinner from '@/components/common/Spinner'
 
 export default function BattleList({ user, clan }) {
-  const [battle, setBattle] = useState('')
+  const [battles, setBattles] = useState(null)
+
+  const fetchBattles = () => {
+    fetchAPI('GET', `/api/clans/${clan._id}/battle?firstIndex=0&lastIndex=6&status=pending`)
+      .then(async response => setBattles((await response.json()).data) || null)
+  }
+
+  // Fetch after render finised
+  useEffect(() => {
+    fetchBattles()
+  }, [clan.id])
+
+  // WebSocket event listeners for real-time updating 
+  useSocket('set.battle', async (target, data) => {
+    console.log(target, clan._id)
+    if (target.includes(clan._id)) {
+      const newBattles = battles.filter(battle => battle._id != data._id)
+      data.status != 'REJECT' && newBattles.push(data)
+      setBattles(newBattles)
+
+      console.log(newBattles)
+    }
+  })
 
   return (
     <div className="flex flex-col w-full h-full bg-gray-300 bg-opacity-40 filter backdrop-blur-3xl p-5 rounded-2xl shadow-lg">
       <div className="text-2xl font-bold tracking-wider text-white mb-4">BATTLE</div>
 
-      <div className="overflow-y-auto space-y-4">
+      {battles && battles.length != 0 && (
+        <div className="grid grid-cols-1 lg:grid-cols-2 overflow-y-auto gap-5 h-96 2xl:h-full">
+          {battles.map(battle => (
+            <BattleItem
+              key={battle._id}
+              data={battle}
+              user={user}
+              clan={clan}
+            />
+          ))}
+        </div>
+      )}
 
-      </div>
+      {battles && battles.length == 0 && (
+        <div className="font-semibold text-lg text-gray-600 w-full h-full flex items-center justify-center mb-6">NO BATTLE PENDING</div>
+      )}
+
+      {!battles && (
+        <div className="font-semibold text-lg text-gray-600 w-full h-full flex items-center justify-center mb-6">
+          <div className="mr-4"><Spinner style="w-8 h-8" /></div>
+          <span>LOADING BATTLE DATA</span>
+        </div>
+      )}
+
     </div>
   )
 }
