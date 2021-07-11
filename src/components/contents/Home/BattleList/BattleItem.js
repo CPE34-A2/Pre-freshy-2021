@@ -48,6 +48,14 @@ export default function BattleItem({ user, clan, data }) {
     phaseData.isAttackerIsMe = isAttackerIsMe
   }
 
+  let waitingText
+
+  if (currentPhase == 1) {
+    waitingText = isAttackerIsMe ? 'crewmate' : 'attacker'
+  } else if (currentPhase == 2) {
+    waitingText = isAttackerIsMe ? 'defender' : 'crewmate'
+  }
+
   return (
     <div className="flex flex-col flex-grow items-center justify-between bg-white bg-opacity-30 h-full rounded-xl py-5 px-3">
       <div className="flex flex-col items-center text-center">
@@ -57,7 +65,7 @@ export default function BattleItem({ user, clan, data }) {
 
         {(currentPhase != 3) ? (
           <p className="text-gray-700 text-sm lg:text-base font-semibold mt-1">
-            waiting for {isAttackerIsMe ? 'defender' : 'attacker'}
+            waiting for {waitingText}
           </p>
         ) : (
           <p className="text-gray-700 text-lg font-semibold mt-1">

@@ -19,13 +19,10 @@ export default function BattleList({ user, clan }) {
 
   // WebSocket event listeners for real-time updating 
   useSocket('set.battle', async (target, data) => {
-    console.log(target, clan._id)
     if (target.includes(clan._id)) {
       const newBattles = battles.filter(battle => battle._id != data._id)
       data.status != 'REJECT' && newBattles.push(data)
       setBattles(newBattles)
-
-      console.log(newBattles)
     }
   })
 

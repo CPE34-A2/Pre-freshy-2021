@@ -127,9 +127,12 @@ export default function BattleModal({ user, phaseData, isLeader, planet, img, ta
                 <div className="font-extrabold text-lg text-indigo-900">
                   {planet.stakes.planet_ids.length} <span className="text-gray-800 font-medium">star</span>
                 </div>
-                <div className="tracking-wider leading-none text-sm text-gray-500">
-                  ({planet.stakes.planet_ids.toString()})
-                </div>
+
+                {planet.stakes.planet_ids.length != 0 && (
+                  <div className="tracking-wider leading-none text-sm text-gray-500">
+                    ({planet.stakes.planet_ids.toString()})
+                  </div>
+                )}
               </div>
 
               {((phaseData.isAttackerIsMe && phaseData.current == 1) || (!phaseData.isAttackerIsMe && phaseData.current == 2))&&
