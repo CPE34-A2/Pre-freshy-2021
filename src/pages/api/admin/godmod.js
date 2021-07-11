@@ -114,7 +114,6 @@ handler.get(async (req, res) => {
 
   await clan.save()
 
-  console.log('godmod: ' + clan._id)
   req.socket.server.io.emit('set.clan', clan._id, clan)
 
   Response.success(res, {

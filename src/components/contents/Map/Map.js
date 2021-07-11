@@ -12,7 +12,6 @@ import { useState } from 'react'
 
 export default function Map({ user, clan, planets }) {
   const [isClick, setIsClick] = useState(false)
-  console.log(isClick)
   function filterTier(planet, tier) {
     return planet.tier == tier
   }
