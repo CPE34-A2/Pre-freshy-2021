@@ -30,7 +30,7 @@ const SYMBOL = ['MINT', 'ECML', 'HCA', 'LING', 'MALP']
 handler.get(async (req, res) => {
   let symbol = req.query.symbol
   const rate = parseInt(req.query.rate)
-  const date = moment((req.query.date), "DD/MM/YYYY",  "Asia/Bangkok").utcOffset('+0700').valueOf()
+  let date = req.query.date
 
   if (symbol)
     symbol = symbol.toUpperCase()
@@ -44,11 +44,11 @@ handler.get(async (req, res) => {
   if (rate < 0)
     return Response.denined(res, 'amount must be a positive integer')
 
-  if (!new Date(date).getTime())
+  if (!moment().isValid(date))
     return Response.denined(res, 'date is not valid')
 
   const stockHistory = await StockHistory
-    .findOne({ symbol: symbol, date: new Date(date) })
+    .findOne({ symbol: symbol, date: moment((req.query.date), "DD/MM/YYYY") })
     .select()
     .exec()
 
@@ -58,7 +58,7 @@ handler.get(async (req, res) => {
   } else {
     var newStockHistory = await StockHistory.create({
       symbol: symbol,
-      date: new Date(date),
+      date: moment((req.query.date), "DD/MM/YYYY"),
       rate: rate
     })
   }
