@@ -126,8 +126,6 @@ handler.post(async (req, res) => {
     .lean()
     .exec()
 
-  console.log(latestPlanetAttacked)
-
   if (latestPlanetAttacked)
     return Response.denined(res, `The target planet has attacked cooldown (remaining time: ${moment.utc(moment(latestPlanetAttacked.updatedAt).diff(moment())).format("HH:mm:ss")})`)
 
@@ -161,6 +159,8 @@ handler.post(async (req, res) => {
     status: 'PENDING'
   })
 
+  req.socket.server.io.emit('set.battle', [battle.attacker, battle.defender], battle)
+  
   Response.success(res, battle)
 })
 
@@ -286,6 +286,8 @@ handler.patch(async (req, res) => {
 
     battle.current_phase = 2
     await battle.save()
+
+    req.socket.server.io.emit('set.battle', [battle.attacker, battle.defender], battle)
 
     req.socket.server.io.emit('set.clan', attackerClan._id, attackerClan)
     req.socket.server.io.emit('set.clan.money', attackerClan._id, attackerClan.properties.money)
@@ -417,6 +419,7 @@ handler.delete(async (req, res) => {
   }
 
   await battle.save()
+  req.socket.server.io.emit('set.battle', [battle.attacker, battle.defender], battle)
 
   Response.success(res, battle)
 })

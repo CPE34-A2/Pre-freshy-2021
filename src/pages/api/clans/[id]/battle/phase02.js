@@ -68,6 +68,8 @@ handler.patch(async (req, res) => {
     await battle.save()
   }
 
+  req.socket.server.io.emit('set.battle', [battle.attacker, battle.defender], battle)
+
   return Response.success(res, battle)
 })
 
@@ -160,6 +162,7 @@ handler.delete(async (req, res) => {
   }
 
   await battle.save()
+  req.socket.server.io.emit('set.battle', [battle.attacker, battle.defender], battle)
 
   Response.success(res, battle)
 })

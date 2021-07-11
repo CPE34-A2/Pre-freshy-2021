@@ -105,6 +105,8 @@ handler.post(async (req, res) => {
 
     req.socket.server.io.emit('set.planet', defenderPlanet._id, defenderPlanet)
 
+    req.socket.server.io.emit('set.battle', [battle.attacker, battle.defender], battle)
+
     return Response.success(res, `The war is ended like it never happended`)
 
   }
@@ -158,6 +160,8 @@ handler.post(async (req, res) => {
 
     delete defenderPlanet.redeem
     req.socket.server.io.emit('set.planet', defenderPlanet._id, defenderPlanet)
+
+    req.socket.server.io.emit('set.battle', [battle.attacker, battle.defender], battle)
 
     return Response.success(res, `Attacker win!!!`)
   }
@@ -224,6 +228,8 @@ handler.post(async (req, res) => {
 
     delete defenderPlanet.redeem
     req.socket.server.io.emit('set.planet', defenderPlanet._id, defenderPlanet)
+
+    req.socket.server.io.emit('set.battle', [battle.attacker, battle.defender], battle)
 
     return Response.success(res, `Defender win!!!`)
   }
