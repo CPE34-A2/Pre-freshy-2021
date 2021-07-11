@@ -62,7 +62,7 @@ handler.post(async (req, res) => {
   if (command == 'REVERT') {
     if (battle.current_phase <= 1) {
       battle.phase01.status = 'REJECT'
-      battle.status == 'REJECT'
+      battle.status = 'REJECT'
       battle.current_phase = 0
       await battle.save()
 
