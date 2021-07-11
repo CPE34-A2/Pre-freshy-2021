@@ -18,7 +18,7 @@ export default function TransactionList({ clan }) {
     <div className="flex flex-col h-full w-full bg-gray-300 bg-opacity-40 filter backdrop-blur-3xl p-5 rounded-2xl shadow-lg">
       <div className="text-2xl font-bold tracking-wider text-white mb-4">TRANSACTIONS LOG</div>
 
-      <div className="overflow-y-auto space-y-4 h-64 lg:h-auto">
+      <div className="overflow-y-auto space-y-4 h-64 2xl:h-full">
         {transactions && transactions.map(item => (
           <TransactionItem 
             key={item._id}

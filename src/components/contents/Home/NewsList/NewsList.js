@@ -15,7 +15,7 @@ export default function NewsList() {
     <div className="flex flex-col h-full bg-gray-200 bg-opacity-30 filter backdrop-blur-xl p-5 rounded-2xl shadow-lg w-full">
       <div className="text-2xl font-bold tracking-wider text-white mb-4">NEWS</div>
 
-      <div className="overflow-y-auto space-y-6 h-96 lg:h-auto">
+      <div className="overflow-y-auto space-y-6 h-96 2xl:h-full">
         {news && news.map(item => (
           <NewsItem
             key={item._id}

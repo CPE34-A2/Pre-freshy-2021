@@ -36,7 +36,7 @@ export default function NewsItem({ news }) {
     <div className="flex flex-col p-6 md:px-8 bg-white bg-opacity-95 rounded-xl w-full">
 
       <div className="flex flex-row items-center justify-center space-x-1 md:space-x-2">
-        <div className="flex-none w-20 h-20 md:w-24 md:h-24">
+        <div className="flex-none w-20 h-20 lg:w-16 lg:h-16 xl:w-24 xl:h-24">
           {newsMap[news.category].img}
         </div>
 
@@ -45,18 +45,18 @@ export default function NewsItem({ news }) {
             <div className="flex flex-row justify-between items-center">
               <span 
                 className={Util.concatClasses(
-                  'font-bold text-base md:text-lg tracking-wide decoration-clone bg-clip-text bg-gradient-to-b text-transparent',
+                  'font-bold text-base xl:text-lg tracking-wide decoration-clone bg-clip-text bg-gradient-to-b text-transparent',
                   (news.category.toUpperCase() == 'DAILY') && 'from-yellow-500 to-red-500',
                   (news.category.toUpperCase() == 'DISASTER') && 'from-red-400 to-red-600'
                 )}
               >
                 {newsMap[news.category].badge}
               </span>
-              <span className="font-light text-xs md:text-base text-gray-700">
+              <span className="font-light text-xs xl:text-base text-gray-700">
                 {time.locale}
               </span>
             </div>
-            <span className="font-bold text-xl md:text-2xl text-gray-700 mb-1 mt-1 md:mt-0">
+            <span className="font-bold text-xl xl:text-2xl text-gray-700 mb-1 mt-1 md:mt-0">
               {news.title}
             </span>
           </div>

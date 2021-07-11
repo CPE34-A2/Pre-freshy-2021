@@ -11,7 +11,7 @@ export default function Home({ user, clan }) {
       <div className="items-stretch 2xl:h-full flex flex-col 2xl:flex-row p-8 xl:p-12 space-y-8 2xl:space-y-0 2xl:space-x-8">
 
         <div className="flex flex-col flex-grow space-y-8">
-          <div className="w-full flex-shrink lg:flex lg:flex-col xl:flex-row space-y-8 xl:space-y-0 xl:space-x-8">
+          <div className="w-full flex-shrink md:flex md:flex-col lg:flex-row space-y-8 lg:space-y-0 lg:space-x-8">
             <div className="flex-grow xl:max-w-lg">
               <AssetsList
                 user={user}
@@ -36,17 +36,25 @@ export default function Home({ user, clan }) {
               />
             </div>
 
-            <div className="flex-grow w-full h-full">
-              <BattleList
-                user={user}
-                clan={clan}
-              />
+            <div className="flex flex-col-reverse lg:flex-row flex-grow w-full h-full lg:space-x-8 2xl:space-x-0">
+              <div className="flex 2xl:hidden flex-shrink w-full 2xl:h-full mt-8 lg:mt-0">
+                <NewsList
+                  user={user}
+                  clan={clan}
+                />
+              </div>
+              <div className="flex flex-grow w-full h-full">
+                <BattleList
+                  user={user}
+                  clan={clan}
+                />
+              </div>
             </div>
           </div>
         </div>
 
-        <div className="flex flex-col h-full flex-grow space-y-8 2xl:space-y-0 2xl:max-w-3xl">
-          <div className="flex flex-shrink h-full w-full">
+        <div className="flex flex-col h-full flex-grow 2xl:max-w-3xl">
+          <div className="hidden 2xl:flex flex-shrink w-full 2xl:h-full">
             <NewsList
               user={user}
               clan={clan}
@@ -54,7 +62,7 @@ export default function Home({ user, clan }) {
           </div>
 
           {/* For mobile */}
-          <div className="2xl:hidden overflow-y-auto">
+          <div className="2xl:hidden overflow-y-auto 2xl:h-full">
             <TransactionList
               user={user}
               clan={clan}

@@ -93,12 +93,12 @@ export default function TaskItem({ user, clan, image, data, locale }) {
 
       <div className="flex flex-row w-full items-center justify-between ml-2 md:ml-4">
         <div className="flex flex-col">
-          <div className="hidden md:flex font-semibold text-base xl:text-sm 2xl:text-base text-gray-800">Request Pending</div>
-          <div className="xl:hidden 2xl:flex font-bold text-base xl:text-lg text-center md:text-left uppercase text-indigo-900">{locale.info}</div>
+          <div className="hidden md:flex font-semibold text-base xl:text-base text-gray-800">Request Pending</div>
+          <div className="font-bold text-base xl:text-lg text-center md:text-left uppercase text-indigo-900">{locale.info}</div>
         </div>
 
         <div className="flex flex-row">
-          <div className="hidden lg:flex items-center flex-row text-center ml-3 space-x-6 xl:space-x-4 2xl:space-x-6">
+          <div className="hidden xl:flex items-center flex-row text-center ml-3 space-x-6 xl:space-x-4 2xl:space-x-6">
             <div>
               <div className="font-bold text-gray-800 text-base">{locale.received_title}</div>
               <div className="font-bold text-lg xl:text-base 2xl:text-lg text-indigo-700">{item.received} {locale.received_unit}</div>
