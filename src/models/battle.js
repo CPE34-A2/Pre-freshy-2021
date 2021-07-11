@@ -60,6 +60,6 @@ const battleSchema = new mongoose.Schema({
     enum: [ 'PENDING', 'ATTACKER_WON', 'DEFENDER_WON', 'REJECT', 'DENIED' ],
     require: true 
   }
-})
+}, { timestamps: true })
 
 export default mongoose.models.Battle || mongoose.model('Battle', battleSchema)
