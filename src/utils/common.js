@@ -16,5 +16,5 @@ export function getClanName(clanId) {
     'นิวอามสตรองครองหัวใจ',
     'ดาวอังคารไม่ขึ้นคานนะครับ',
     'Space X เข้ามาระวังเคล็ดนะค้าบ'
-  ][clanId]
+  ][clanId - 1]
 }
