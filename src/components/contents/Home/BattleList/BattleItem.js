@@ -36,17 +36,20 @@ export default function BattleItem({ user, clan, data }) {
   const planetColor = planetColorMap[data.defender - 1]
 
   const currentPhase = data.current_phase
+  const targetClanName = Util.getClanName(isAttackerIsMe ? data.defender : data.attacker)
 
-  if (currentPhase != 3) {
-    var phaseData = data[`phase0${currentPhase}`]
+  var phaseData = {}
+
+  if (currentPhase != 3 && currentPhase != 0) {
+    phaseData = data[`phase0${currentPhase}`]
     var currentProgress = Math.max(phaseData.confirmer.length - (+(currentPhase == 1)), phaseData.rejector.length)
-    var targetClanName = Util.getClanName(isAttackerIsMe ? data.defender : data.attacker)
 
-    phaseData.id = data._id
-    phaseData.current = currentPhase
     phaseData.confirm_require = data.confirm_require
     phaseData.isAttackerIsMe = isAttackerIsMe
   }
+
+  phaseData.id = data._id
+  phaseData.current = currentPhase
 
   let waitingText
 
@@ -63,17 +66,25 @@ export default function BattleItem({ user, clan, data }) {
           {isAttackerIsMe ? 'ATTACKER' : 'DEFENDER'}
         </div>
 
-        {(currentPhase != 3) ? (
+        {(currentPhase == 1 || currentPhase == 2) && (
           <p className="text-gray-700 text-sm lg:text-base font-semibold mt-1">
             waiting for {waitingText}
           </p>
-        ) : (
+        )}
+        
+        {(currentPhase == 3) && (
           <p className="text-gray-700 text-lg font-semibold mt-1">
             battling...
           </p>
         )}
 
-        {(currentPhase != 3) && <p className="text-gray-700 text-sm lg:text-base  font-medium">({currentProgress}/3)</p>}
+        {(currentPhase == 0) && (
+          <p className="text-gray-700 text-lg font-semibold mt-1">
+            {data.status}
+          </p>
+        )}
+
+        {(currentPhase != 3 && currentPhase != 0) && <p className="text-gray-700 text-sm lg:text-base  font-medium">({currentProgress}/3)</p>}
       </div>
 
       <div className="flex flex-col items-center">

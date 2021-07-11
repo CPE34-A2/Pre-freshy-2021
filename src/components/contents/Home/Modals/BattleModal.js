@@ -58,14 +58,94 @@ export default function BattleModal({ user, phaseData, isLeader, planet, img, ta
       })
   }
 
-  const isAlreadyAccepted = () => phaseData.confirmer.includes(user._id)
-  const isAlreadyRejected = () => (phaseData.rejector.includes(user._id) && !isLeader)
-  const isAlreadyVote = () => (isAlreadyAccepted() || isAlreadyRejected())
+  if (phaseData.current != 0) {
+    var isAlreadyAccepted = () => phaseData.confirmer.includes(user._id)
+    var isAlreadyRejected = () => (phaseData.rejector.includes(user._id) && !isLeader)
+    var isAlreadyVote = () => (isAlreadyAccepted() || isAlreadyRejected())
 
-  useEffect(() => {
-    isAlreadyAccepted() && notify({ type: 'success', info: <>You have <b>accepted</b> this pending</> })
-    isAlreadyRejected() && notify({ type: 'success', info: <>You have <b>rejected</b> this pending</> })
-  }, [phaseData])
+    useEffect(() => {
+      isAlreadyAccepted() && notify({ type: 'success', info: <>You have <b>accepted</b> this pending</> })
+      isAlreadyRejected() && notify({ type: 'success', info: <>You have <b>rejected</b> this pending</> })
+    }, [phaseData])
+  }
+
+  if (phaseData.current == 0) {
+    return (
+      <>
+        <button
+          className="bg-indigo-700 hover:bg-indigo-800 px-4 py-1 text-white text-sm font-medium rounded-lg w-full focus:outline-none"
+          onClick={openModal}
+        >
+          VIEW MORE
+        </button>
+
+        <Modal
+          open={isOpen}
+          close={closeModal}
+        >
+          <div className="transition-all transform flex flex-col py-7 px-12 max-w-md mx-6 md:mx-0 bg-white rounded-3xl shadow-xl">
+            <button
+              className="absolute top-0 right-0 m-4 focus:outline-none"
+              onClick={closeModal}
+            >
+              <XIcon className="w-5 h-5 text-gray-400 hover:text-gray-800" />
+            </button>
+
+            <div className="flex flex-col justify-center w-56 md:w-72">
+              <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-11 mx-auto w-24 h-24 z-20">
+                <Image className={img.color} src={img.src} alt="" />
+              </div>
+
+              <div className="bg-white w-32 h-32 rounded-full absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-14 z-10" />
+
+              <div className="flex flex-col justify-center text-center mt-3 z-20">
+                {phaseData.current != 0 && (
+                  <h3 className="font-semibold text-base text-gray-500 uppercase tracking-widest mt-2">
+                    {phaseData.isAttackerIsMe ? 'DECLARE WAR TO' : 'INCOMING ATTACK'}
+                  </h3>
+                )}
+                <h4 className="font-bold text-xl tracking-wide text-indigo-900">{targetClanName}</h4>
+
+                <div className="flex flex-row space-x-5 justify-around mt-6">
+                  <div className="flex flex-col items-center">
+                    <div className="w-12 h-12 mb-2">
+                      <Image src={MoneyImage} alt="" />
+                    </div>
+                    <div className="font-extrabold text-lg text-indigo-900">
+                      {Util.numberWithCommas(planet.stakes.money)} <span className="text-gray-800 font-medium">coin</span>
+                    </div>
+                  </div>
+                  <div className="flex flex-col items-center">
+                    <div className="w-12 h-12 mb-2">
+                      <Image src={GallonImage} alt="" />
+                    </div>
+                    <div className="font-extrabold text-lg text-indigo-900">
+                      {Util.numberWithCommas(planet.stakes.fuel)} <span className="text-gray-800 font-medium">gallon</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex flex-col items-center mt-2 mb-3">
+                  <div className="w-12 h-12 mb-2">
+                    <Image src={StarImage} alt="" />
+                  </div>
+                  <div className="font-extrabold text-lg text-indigo-900">
+                    {planet.stakes.planet_ids.length} <span className="text-gray-800 font-medium">star</span>
+                  </div>
+
+                  {planet.stakes.planet_ids.length != 0 && (
+                    <div className="tracking-wider leading-none text-sm text-gray-500">
+                      ({planet.stakes.planet_ids.toString()})
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        </Modal>
+      </>
+    )
+  }
 
   return (
     <>
@@ -135,7 +215,7 @@ export default function BattleModal({ user, phaseData, isLeader, planet, img, ta
                 )}
               </div>
 
-              {((phaseData.isAttackerIsMe && phaseData.current == 1) || (!phaseData.isAttackerIsMe && phaseData.current == 2))&&
+              {((phaseData.isAttackerIsMe && phaseData.current == 1) || (!phaseData.isAttackerIsMe && phaseData.current == 2)) &&
                 <div className="flex flex-row justify-between space-x-4 my-2">
                   <div className="flex flex-col flex-grow">
                     <div className="flex flex-row justify-center space-x-2 mb-2">
