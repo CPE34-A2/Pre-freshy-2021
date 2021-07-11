@@ -8,7 +8,7 @@ import Clan from '@/models/clan'
 import StockHistory from '@/models/stock-history'
 import Transaction from '@/models/transaction'
 
-import moment from 'moment-timezone'
+import moment from 'moment'
 
 const handler = nextConnect()
 
@@ -19,8 +19,8 @@ handler
 const EXPECTED_REQUIRER = 3
 const SYMBOL = ['MINT', 'ECML', 'HCA', 'LING', 'MALP']
 const METHOD = ['BUY', 'SELL']
-const OPEN_MARKET_TIME = 9
-const CLOSE_MARKET_TIME = 22
+const OPEN_MARKET_TIME = { hour: 9, minute: 0, second: 0 }
+const CLOSE_MARKET_TIME = { hour: 22, minute: 0, second: 0 }
 
 /**
  * @method GET
