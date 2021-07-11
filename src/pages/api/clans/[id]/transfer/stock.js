@@ -71,7 +71,6 @@ handler.post(async (req, res) => {
   const amount = parseInt(req.body.amount)
   const openTime = moment().set(OPEN_MARKET_TIME)
   const closeTime = moment().set(CLOSE_MARKET_TIME)
-  console.log(openTime)
 
   if (!moment().isBetween(openTime, closeTime)) {
     return Response.denined(res, 'market closed!!!')
