@@ -27,16 +27,21 @@ handler.get(async (req, res) => {
 	const clanId = req.query.id
 	const firstIndex = parseInt(req.query.firstIndex) || 0
 	const lastIndex = parseInt(req.query.lastIndex) || 0
+
 	let status = req.query.status
+	status = status && status.toUpperCase()
 
 	let battles = null
 
-	if (!status || !STATUS.includes(status))
-		status = null
-
-	if (status) {
+	if (STATUS.includes(status)) {
+		const isNormalStatus = !['WIN', 'LOSE'].includes(status) 
 		battles = Battle
-			.find({ $or: [{ attacker: clanId, status: !['WIN', 'LOSE'].includes(status) ? status : (status == 'WIN' ? 'ATTACKER_WON' : 'DEFENDER_WON') }, { defender: clanId, status: !['WIN', 'LOSE'].includes(status) ? status : (status == 'WIN' ? 'DEFENDER_WON' : 'ATTACKER_WON') }] })
+			.find({
+				$or: [
+					{ attacker: clanId, status: isNormalStatus ? status : (status == 'WIN' ? 'ATTACKER_WON' : 'DEFENDER_WON') },
+					{ defender: clanId, status: isNormalStatus ? status : (status == 'WIN' ? 'DEFENDER_WON' : 'ATTACKER_WON') }
+				]
+			})
 	} else {
 		battles = Battle
 			.find({ $or: [{ attacker: clanId }, { defender: clanId }] })
