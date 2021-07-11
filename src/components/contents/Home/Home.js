@@ -46,7 +46,7 @@ export default function Home({ user, clan }) {
         </div>
 
         <div className="flex flex-col h-full flex-grow space-y-8 2xl:space-y-0 2xl:max-w-3xl">
-          <div className="flex flex-shrink h-full w-full">
+          <div className="flex flex-shrink w-full">
             <NewsList
               user={user}
               clan={clan}
