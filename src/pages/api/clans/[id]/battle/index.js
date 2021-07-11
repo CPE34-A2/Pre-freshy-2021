@@ -10,6 +10,8 @@ handler
 	.use(middleware)
 	.use(permission)
 
+const STATUS = ['PENDING', 'WIN', 'LOSE', 'REJECT', 'DENIED']
+
 /**
  * @method GET
  * @endpoint /api/clans/:id/battle
@@ -17,6 +19,7 @@ handler
  * 
  * @param firstIndex
  * @param lastIndex
+ * @param status (*optional)
  * 
  * @require User authentication
  */
@@ -24,18 +27,28 @@ handler.get(async (req, res) => {
 	const clanId = req.query.id
 	const firstIndex = parseInt(req.query.firstIndex) || 0
 	const lastIndex = parseInt(req.query.lastIndex) || 0
+	let status = req.query.status
+
 	let battles = null
 
-	if (!isNaN(clanId) && firstIndex >= 0 && lastIndex > 0 && lastIndex - firstIndex > 0){
-		battles = await Battle
+	if (!status || !STATUS.includes(status))
+		status = null
+
+	if (status) {
+		battles = Battle
+			.find({ $or: [{ attacker: clanId, status: !['WIN', 'LOSE'].includes(status) ? status : (status == 'WIN' ? 'ATTACKER_WON' : 'DEFENDER_WON') }, { defender: clanId, status: !['WIN', 'LOSE'].includes(status) ? status : (status == 'WIN' ? 'DEFENDER_WON' : 'ATTACKER_WON') }] })
+	} else {
+		battles = Battle
 			.find({ $or: [{ attacker: clanId }, { defender: clanId }] })
-			.sort({'updatedAt': -1})
-			.select()
-			.skip(firstIndex)
-			.limit(lastIndex - firstIndex + 1)
-			.lean()
-			.exec()
 	}
+
+	battles = await battles
+		.sort({ 'updatedAt': -1 })
+		.select()
+		.skip(firstIndex)
+		.limit(lastIndex - firstIndex + 1)
+		.lean()
+		.exec()
 
 	res.status(battles ? 200 : 400)
 		.json({
