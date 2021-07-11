@@ -44,7 +44,7 @@ handler.get(async (req, res) => {
   if (rate < 0)
     return Response.denined(res, 'amount must be a positive integer')
 
-  if (!moment().isValid(date))
+  if (!date || !moment((req.query.date), "DD/MM/YYYY").isValid())
     return Response.denined(res, 'date is not valid')
 
   const stockHistory = await StockHistory
