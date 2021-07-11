@@ -14,7 +14,7 @@ const handler = nextConnect()
 
 const MONEY_POINT_PER_UNIT = 1 / 2
 const FUEL_POINT_PER_UNIT = 1 / 6
-const EXPECTED_REQUIRER = 2
+const EXPECTED_REQUIRER = 3
 
 handler
   .use(middleware)

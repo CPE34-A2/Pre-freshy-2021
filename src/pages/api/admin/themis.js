@@ -203,13 +203,6 @@ handler.post(async (req, res) => {
     if (!stakePlanets)
       return Response.denined(res, 'error finding stake planets')
 
-    stakePlanets.forEach(async planet => {
-      planet.owner = defenderClan._id
-      planet.save()
-      delete planet.redeem
-      req.socket.server.io.emit('set.planet', planet._id, planet)
-    })
-
     attackerClan.position = attackerClan._id
     defenderPlanet.visitor = 0
     
@@ -220,6 +213,13 @@ handler.post(async (req, res) => {
     await attackerClan.save()
     await defenderClan.save()
     await battle.save()
+
+    stakePlanets.forEach(async planet => {
+      planet.owner = defenderClan._id
+      await planet.save()
+      delete planet.redeem
+      req.socket.server.io.emit('set.planet', planet._id, planet)
+    })
 
     req.socket.server.io.emit('set.clan', attackerClan._id, attackerClan)
     req.socket.server.io.emit('set.clan.money', attackerClan._id, attackerClan.properties.money)
