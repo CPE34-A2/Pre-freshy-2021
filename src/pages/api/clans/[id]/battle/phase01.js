@@ -8,6 +8,8 @@ import Clan from '@/models/clan'
 import Planet from '@/models/planet'
 import Battle from '@/models/battle'
 
+import moment from 'moment'
+
 const handler = nextConnect()
 
 const MONEY_POINT_PER_UNIT = 1 / 2
@@ -73,7 +75,7 @@ handler.post(async (req, res) => {
   attackerPlanets.forEach((e) => {
     if (e.visitor != 0)
       return Response.denined(res, `Your stake planets is under attack!!!`)
-      
+
     if (e._id == req.user.clan_id)
       return Response.denined(res, `Your can't stake your home planet`)
   })
@@ -107,6 +109,17 @@ handler.post(async (req, res) => {
 
   if (defenderPlanet.visitor != 0)
     return Response.denined(res, `The target planet is under attack!!!!`)
+
+  const latestPlanetAttacked = await Battle
+    .findOne({ target_planet_id: defenderPlanet._id, status: {$in: ['ATTACKER_WON', 'DEFENDER_WON']}, updatedAt: { $gte: moment().add(-24, 'hours').toDate(), $lt: moment().toDate()} })
+    .select()
+    .lean()
+    .exec()
+
+  console.log(latestPlanetAttacked)
+
+  if (latestPlanetAttacked)
+    return Response.denined(res, `The target planet has attacked cooldown (remaining time: ${moment.utc(moment(latestPlanetAttacked.updatedAt).diff(moment())).format("HH:mm:ss")})`)
 
   // validating properties of attacker
   if (attackerClan.properties.money < betMoney)
