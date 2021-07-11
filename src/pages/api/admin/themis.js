@@ -60,12 +60,13 @@ handler.post(async (req, res) => {
 
   // excute command 
   if (command == 'REVERT') {
-    if (battle.current_phase == 1) {
+    if (battle.current_phase <= 1) {
       battle.phase01.status = 'REJECT'
       battle.status == 'REJECT'
       battle.current_phase = 0
       await battle.save()
 
+      req.socket.server.io.emit('set.battle', [battle.attacker, battle.defender], battle)
       return Response.success(res, `End phase01 compleded!!!`)
     }
 
@@ -112,8 +113,10 @@ handler.post(async (req, res) => {
   }
 
   if (command == 'ATTACKER_WIN') {
-    if (battle.current_phase == 1)
+    if (battle.current_phase <= 1) {
+      req.socket.server.io.emit('set.battle', [battle.attacker, battle.defender], battle)
       return Response.denined(res, `The war is not declared yet!!! You can't force someone to be defeated`)
+    }
 
     const attackerClan = await Clan
       .findById(battle.attacker)
@@ -167,8 +170,10 @@ handler.post(async (req, res) => {
   }
 
   if (command == 'DEFENDER_WIN') {
-    if (battle.current_phase == 1)
+    if (battle.current_phase <= 1) {
+      req.socket.server.io.emit('set.battle', [battle.attacker, battle.defender], battle)
       return Response.denined(res, `The war is not declared yet!!! You can't force someone to be defeated`)
+    }
 
     const attackerClan = await Clan
       .findById(battle.attacker)
