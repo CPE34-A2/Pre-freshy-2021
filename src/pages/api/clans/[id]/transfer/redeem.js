@@ -97,6 +97,7 @@ handler.post(async (req, res) => {
 
   if (planet && clan) {
     req.socket.server.io.emit('set.clan', clan._id, clan)
+    req.socket.server.io.emit('set.clan.planets', clan._id, clan.owned_planet_ids)
     req.socket.server.io.emit('set.planet', planet._id, planet)
   }
 

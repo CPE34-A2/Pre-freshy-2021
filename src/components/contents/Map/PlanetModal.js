@@ -11,7 +11,7 @@ import InputBox from "@/components/common/InputBox"
 import * as Util from '@/utils/common'
 import AlertNotification from "@/components/common/AlertNotification"
 
-export default function PlanetModal({ clan, planet, image, isOpen, close, conquerColor }) {
+export default function PlanetModal({ clan, planet, image, isModalOpen, close, conquerColor }) {
   const [isClick, setIsClick] = useState(false)
   const [planetQuest, setPlanetQuest] = useState('')
   const [redeemInput, setRedeemInput] = useState ('')
@@ -20,7 +20,7 @@ export default function PlanetModal({ clan, planet, image, isOpen, close, conque
   const [isDisabled, setIsDisabled] = useState(false)
   const [showInfo, setShowInfo] = useState(true)
 
-  let initialFocus = useRef(null)
+  let initialFocus = useRef()
 
   useEffect(() => {
     if (clan.position == planet._id && clan._id != planet.owner) {
@@ -39,7 +39,7 @@ export default function PlanetModal({ clan, planet, image, isOpen, close, conque
       setError('')
       setRedeemInput('')
     }
-  }, [isOpen])
+  }, [isModalOpen])
 
   useEffect(() => {
     if (planet._id != clan.position || planet.tier == 'HOME') {
@@ -49,7 +49,7 @@ export default function PlanetModal({ clan, planet, image, isOpen, close, conque
     } else {
       setShowInfo(true)
     }
-  }, [isOpen])
+  }, [isModalOpen, planet.owner, planet.visitor, clan.position])
 
   const openConfirmModal = () => setIsClick(true)
   const closeConfirmModal = () => setIsClick(false)
@@ -76,12 +76,12 @@ export default function PlanetModal({ clan, planet, image, isOpen, close, conque
 
   return (
     <Modal
-      open={isOpen}
+      open={isModalOpen}
       close={close}
       initialFocus={initialFocus}
     >
       <div className="transition-all transform flex flex-col py-8 px-9 max-w-xl mx-6 md:mx-0 bg-white rounded-3xl shadow-xl scale-75 md:scale-100">
-        {showInfo &&
+        {showInfo ?
           <>
             <div className="flex flex-row w-full justify-center">
 
@@ -140,18 +140,16 @@ export default function PlanetModal({ clan, planet, image, isOpen, close, conque
               </div>
             </div>
 
-            {(planet.owner != clan._id && planet.tier != 'HOME' && planet.tier != 'X') &&
+            {(planet.owner != clan._id && planet.tier != 'HOME' && planet.tier != 'X' && clan.position != planet._id) &&
               <div className="flex justify-center mt-4">
                 <div onClick={openConfirmModal} className="animate-pulse transition duration-150 ease-in-out hover:animate-none hover:scale-110 w-20 h-20 hover:cursor-pointer drop-shadow-md">
                   <Image src={isBattle ? Battle : Conquer} alt="" />
                 </div>
               </div>
             }
-            <PlanetConfirmModal planet={planet} closeAll={close} close={closeConfirmModal} isOpen={isClick} clan={clan} isBattle={isBattle} />
+            <PlanetConfirmModal planet={planet} closeAll={close} close={closeConfirmModal} isConfirmOpen={isClick} clan={clan} isBattle={isBattle} />
           </>
-        }
-
-        {!showInfo &&
+          :
           <>
             <div className="flex flex-row w-full justify-center">
 

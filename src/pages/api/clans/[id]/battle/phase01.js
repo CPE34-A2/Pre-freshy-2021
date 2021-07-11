@@ -28,7 +28,7 @@ handler
 * @body bet_money
 * @body bet_fuel
 * @body bet_planet_ids
-* @body target_planet_id
+* @body target_planet
 * 
 * @require User authentication / Clan leadership
 */
@@ -36,7 +36,7 @@ handler.post(async (req, res) => {
   const betMoney = parseInt(req.body.bet_money) || 0
   const betFuel = parseInt(req.body.bet_fuel) || 0
   let betPlanetIds = req.body.bet_planet_ids
-  const targetPlanetId = parseInt(req.body.target_planet_id) || []
+  const targetPlanetId = parseInt(req.body.target_planet)
 
   betPlanetIds ? betPlanetIds = [...new Set(betPlanetIds.split(',').map((e) => parseInt(e)))] : betPlanetIds = []
 
@@ -72,13 +72,23 @@ handler.post(async (req, res) => {
     .select()
     .exec()
 
+  let attackedError = false
+  let homeError = false
+
   attackerPlanets.forEach((e) => {
     if (e.visitor != 0)
-      return Response.denined(res, `Your stake planets is under attack!!!`)
-
+      attackedError = true
     if (e._id == req.user.clan_id)
-      return Response.denined(res, `Your can't stake your home planet`)
+      homeError = true
   })
+
+  if (attackedError) {
+    return Response.denined(res, `Your stake planets is under attack!!!`)
+  }
+
+  if (homeError) {
+    return Response.denined(res, `Your can't stake your home planet`)
+  }
 
   const attackerPlanetIds = attackerPlanets.map(e => e._id)
 
@@ -124,14 +134,13 @@ handler.post(async (req, res) => {
   // validating properties of attacker
   if (attackerClan.properties.money < betMoney)
     return Response.denined(res, `low money`)
-
   if (attackerClan.properties.fuel < betFuel + defenderPlanet.travel_cost)
-    return Response.denined(res, `low fuel`)
+    return Response.denined(res, `low fuel to travel`)
 
   const betWeight = (betMoney * MONEY_POINT_PER_UNIT) + (betFuel * FUEL_POINT_PER_UNIT) + (attackerPlanets.map(e => e.point).reduce((a, b) => a + b, 0))
 
   if (betWeight < defenderPlanet.point)
-    return Response.denined(res, `Did you think the diamond's value is as same as the coal's one?`)
+    return Response.denined(res, `Total stakes worth less than the planet's point`)
 
   const battle = await Battle.create({
     current_phase: 1,
@@ -195,13 +204,10 @@ handler.patch(async (req, res) => {
   // validate the relation between battle planet and stake.
   const defenderPlanet = await Planet
     .findById(battle.target_planet_id)
-    .select()
-    .lean()
     .exec()
 
   const attackerClan = await Clan
     .findById(req.user.clan_id)
-    .select()
     .exec()
 
   if (attackerClan.properties.fuel < defenderPlanet.travel_cost + battle.stakes.fuel) {
@@ -234,17 +240,22 @@ handler.patch(async (req, res) => {
 
   const attackerPlanets = await Planet
     .find({ 'owner': req.user.clan_id, '_id': { $in: battle.stakes.planet_ids } })
-    .select()
     .exec()
+
+  let attackedError = false
 
   attackerPlanets.forEach(async (e) => {
     if (e.visitor != 0) {
       battle.status = 'REJECT'
       battle.phase01.status = 'REJECT'
-      await battle.save()
-      return Response.denined(res, `Battle rejected: Stake planets are under attack!!!`)
+      attackedError = true
     }
   })
+
+  if (attackedError) {
+    await battle.save()
+    return Response.denined(res, `Battle rejected: Stake planets are under attack!!!`)
+  }
 
   // validate the voter and reqester
   if (battle.phase01.rejector.includes(req.user.id))
@@ -265,6 +276,7 @@ handler.patch(async (req, res) => {
     attackerClan.position = battle.target_planet_id
     defenderPlanet.visitor = battle.attacker
     await attackerClan.save()
+    await defenderPlanet.save()
 
     battle.phase01.status = 'SUCCESS'
 
@@ -274,6 +286,14 @@ handler.patch(async (req, res) => {
 
     battle.current_phase = 2
     await battle.save()
+
+    req.socket.server.io.emit('set.clan', attackerClan._id, attackerClan)
+    req.socket.server.io.emit('set.clan.money', attackerClan._id, attackerClan.properties.money)
+    req.socket.server.io.emit('set.clan.fuel', attackerClan._id, attackerClan.properties.fuel)
+    req.socket.server.io.emit('set.clan.planets', attackerClan._id, attackerClan.owned_planet_ids)
+
+    delete defenderPlanet.redeem
+    req.socket.server.io.emit('set.planet', defenderPlanet._id, defenderPlanet)
   }
 
   return Response.success(res, battle)
@@ -325,6 +345,7 @@ handler.delete(async (req, res) => {
   const attackerClan = await Clan
     .findById(req.user.clan_id)
     .select()
+    .lean()
     .exec()
 
   if (attackerClan.properties.fuel < defenderPlanet.travel_cost + battle.stakes.fuel) {
@@ -360,14 +381,20 @@ handler.delete(async (req, res) => {
     .select()
     .exec()
 
+  let attackedError = false
+
   attackerPlanets.forEach(async (e) => {
     if (e.visitor != 0) {
       battle.status = 'REJECT'
       battle.phase01.status = 'REJECT'
-      await battle.save()
-      return Response.denined(res, `Battle rejected: Stake planets are under attack!!!`)
+      attackedError = true
     }
   })
+
+  if (attackedError) {
+    await battle.save()
+    return Response.denined(res, `Battle rejected: Stake planets are under attack!!!`)
+  }
 
   const clan = await Clan
     .findById(req.user.clan_id)

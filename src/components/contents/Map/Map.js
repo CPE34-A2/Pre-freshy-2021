@@ -9,9 +9,9 @@ import Dashboard from '@/components/common/Dashboard'
 
 export default function Map({ user, clan, planets }) {
   function filterTier(planet, tier) {
-    return planet.tier == tier ? true : false
+    return planet.tier == tier
   }
-
+  
   const planetHome = planets.filter(planet => filterTier(planet, 'HOME'))
   const planetD = planets.filter(planet => filterTier(planet, 'D'))
   const planetC = planets.filter(planet => filterTier(planet, 'C'))

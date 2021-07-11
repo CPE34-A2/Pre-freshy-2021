@@ -7,7 +7,7 @@ import fetchApi from '@/utils/fetch'
 import AlertNotification from '@/components/common/AlertNotification'
 import PlanetListItem from './PlanetListItem'
 
-export default function PlanetConfirmModal({ planet, closeAll, clan, isOpen, close, isBattle }) {
+export default function PlanetConfirmModal({ planet, closeAll, clan, isConfirmOpen, close, isBattle }) {
   const [betMoney, setBetMoney] = useState('')
   const [betFuel, setBetFuel] = useState('')
   const [betPlanetCheck, setBetPlanetCheck] = useState(new Array(clan.owned_planet_ids.length).fill(false))
@@ -25,7 +25,7 @@ export default function PlanetConfirmModal({ planet, closeAll, clan, isOpen, clo
       setBetMoney('')
       setBetFuel('')
     }
-  }, [isOpen])
+  }, [isConfirmOpen])
 
   const handleMoneyChange = (e) => {
     const target = e.target;
@@ -96,6 +96,7 @@ export default function PlanetConfirmModal({ planet, closeAll, clan, isOpen, clo
         bet_planet_ids: mapIdsWithCheckBox(clan.owned_planet_ids, betPlanetCheck).toString()
       }).then(async response => {
         if (response.status == 200) {
+          close()
           closeAll()
         } else {
           setError((await response.json()).message)
@@ -107,6 +108,7 @@ export default function PlanetConfirmModal({ planet, closeAll, clan, isOpen, clo
         target_planet: planet._id
       }).then(async response => {
         if (response.status == 200) {
+          close()
           closeAll()
         } else {
           setError((await response.json()).message)
@@ -116,19 +118,19 @@ export default function PlanetConfirmModal({ planet, closeAll, clan, isOpen, clo
     }
   }
 
-  let initialFocus = useRef(null)
+  let initialFocus = useRef()
 
   return (
     <Modal
-      open={isOpen}
+      open={isConfirmOpen}
       close={close}
       initialFocus={initialFocus}
     >
       <div className="transition-all transform flex flex-col py-7 px-12 max-w-sm mx-6 md:mx-0 bg-white rounded-3xl shadow-xl" >
-        {isBattle &&
+        {isBattle ?
           <>
             <div className="text-xl font-bold text-purple-900 text-center mb-4 tracking-widest">BATTLE</div>
-            <form onSubmit={async () => await onAccept()} autoComplete="off" className="flex flex-col">
+            <form onSubmit={async (e) => await onAccept(e)} autoComplete="off" className="flex flex-col">
               <InputBox
                 name="betMoney"
                 type="text"
@@ -177,8 +179,7 @@ export default function PlanetConfirmModal({ planet, closeAll, clan, isOpen, clo
               />
             </form>
           </>
-        }
-        {!isBattle &&
+          :
           <>
             <div className="text-lg font-semibold text-purple-900 text-center">Do you want to conquer this planet?</div>
             <div className="flex flex-row mt-4 space-x-4">

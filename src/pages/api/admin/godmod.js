@@ -109,12 +109,12 @@ handler.get(async (req, res) => {
       clan.owned_planet_ids.splice(index, 1)
     }
     await planet.save()
+    req.socket.server.io.emit('set.planet', planet._id, planet)
   }
 
   await clan.save()
 
-  
-  req.socket.server.io.emit('set.planet', planet._id, planet)
+  console.log('godmod: ' + clan._id)
   req.socket.server.io.emit('set.clan', clan._id, clan)
 
   Response.success(res, {

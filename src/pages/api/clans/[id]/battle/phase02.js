@@ -107,6 +107,13 @@ handler.delete(async (req, res) => {
   if (battle.phase02.status === 'REJECT')
     return Response.denined(res, `Voted failed: battle already rejected`)
 
+  // validate the voter and reqester
+  if (battle.phase02.rejector.includes(req.user.id))
+  return Response.denined(res, `Voted failed: You already rejected the vote`)
+
+  if (battle.phase02.confirmer.includes(req.user.id))
+  return Response.denined(res, `Voted failed: You already accepted the vote`)
+
   // save the voter to rejector
   battle.phase02.rejector.push(req.user.id)
 
@@ -114,15 +121,11 @@ handler.delete(async (req, res) => {
   if (battle.phase02.rejector.length == battle.confirm_require) {
     const attackerPlanet = await Planet
       .findById(battle.attacker)
-      .select()
       .exec()
 
     const defenderPlanet = await Planet
       .findById(battle.target_planet_id)
-      .select()
       .exec()
-
-    attackerPlanet.visitor = 0
 
     const penaltyPlanetPoint = parseInt(defenderPlanet.point / 4.0)
     attackerPlanet.point = attackerPlanet.point + penaltyPlanetPoint
@@ -130,13 +133,13 @@ handler.delete(async (req, res) => {
 
     const attackerClan = await Clan
       .findById(battle.attacker)
-      .select()
       .exec()
 
     attackerClan.properties.fuel += parseInt((defenderPlanet.travel_cost * 2) / 3)
     attackerClan.position = attackerClan._id
     attackerClan.properties.fuel += battle.stakes.fuel
     attackerClan.properties.money += battle.stakes.money
+    defenderPlanet.visitor = 0
 
     battle.phase02.status = 'REJECT'
     battle.status = 'DENIED'
@@ -144,6 +147,16 @@ handler.delete(async (req, res) => {
     await attackerClan.save()
     await attackerPlanet.save()
     await defenderPlanet.save()
+
+    req.socket.server.io.emit('set.clan', attackerClan._id, attackerClan)
+    req.socket.server.io.emit('set.clan.money', attackerClan._id, attackerClan.properties.money)
+    req.socket.server.io.emit('set.clan.fuel', attackerClan._id, attackerClan.properties.fuel)
+    req.socket.server.io.emit('set.clan.planets', attackerClan._id, attackerClan.owned_planet_ids)
+
+    delete attackerPlanet.redeem
+    delete defenderPlanet.redeem
+    req.socket.server.io.emit('set.planet', attackerPlanet._id, attackerPlanet)
+    req.socket.server.io.emit('set.planet', defenderPlanet._id, defenderPlanet)
   }
 
   await battle.save()

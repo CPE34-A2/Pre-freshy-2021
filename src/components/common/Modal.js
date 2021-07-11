@@ -1,12 +1,13 @@
 import { Fragment } from 'react'
 import { Transition, Dialog } from '@headlessui/react'
 
-export default function Modal({ children, open, close }) {
+export default function Modal({ children, open, close, initialFocus }) {
   return (
     <Transition show={open} as={Fragment}>
       <Dialog
         as="div"
         onClose={close}
+        initialFocus={initialFocus}
         className="fixed inset-0 z-20"
       >
         <div className="flex flex-col justify-center items-center h-screen">

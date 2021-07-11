@@ -15,9 +15,9 @@ export default function MapPage({ user: rawUser, planets: rawPlanets, clan: rawC
 
   // WebSocket event listeners for real-time updating 
   useSocket('set.clan', (clanId, clan) => {
-    (clanId == clan._id) && setClan(clan)
+    clanId == rawClan._id && setClan(clan)
   })
-  
+
   useSocket('set.planet', (planetId, planet) => {
     const newPlanets = planets.slice()
     delete planet.redeem

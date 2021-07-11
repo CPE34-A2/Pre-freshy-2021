@@ -25,6 +25,10 @@ export default function IndexPage({ user: rawUser, clan: rawClan }) {
     (clanId == user.clan_id) && setClan({ ...clan, properties: { ...clan.properties, fuel } })
   })
 
+  useSocket('set.clan.planets', (clanId, owned_planet_ids) => {
+    (clanId == user.clan_id) && setClan({ ...clan, owned_planet_ids })
+  })
+
   return (
     <Home 
       user={user}
