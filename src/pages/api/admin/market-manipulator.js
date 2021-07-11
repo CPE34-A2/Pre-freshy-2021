@@ -6,7 +6,7 @@ import * as Response from '@/utils/response'
 import Clan from '@/models/clan'
 import StockHistory from '@/models/stock-history'
 
-import moment from 'moment-timezone'
+import moment from 'moment'
 
 const handler = nextConnect()
 
@@ -30,7 +30,7 @@ const SYMBOL = ['MINT', 'ECML', 'HCA', 'LING', 'MALP']
 handler.get(async (req, res) => {
   let symbol = req.query.symbol
   const rate = parseInt(req.query.rate)
-  const date = moment.tz((req.query.date), "DD/MM/YYYY",  "Asia/Bangkok").utcOffset('+0700').valueOf()
+  const date = moment((req.query.date), "DD/MM/YYYY",  "Asia/Bangkok").utcOffset('+0700').valueOf()
 
   if (symbol)
     symbol = symbol.toUpperCase()
