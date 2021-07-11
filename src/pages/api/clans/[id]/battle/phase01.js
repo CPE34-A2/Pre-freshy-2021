@@ -287,8 +287,6 @@ handler.patch(async (req, res) => {
     battle.current_phase = 2
     await battle.save()
 
-    req.socket.server.io.emit('set.battle', [battle.attacker, battle.defender], battle)
-
     req.socket.server.io.emit('set.clan', attackerClan._id, attackerClan)
     req.socket.server.io.emit('set.clan.money', attackerClan._id, attackerClan.properties.money)
     req.socket.server.io.emit('set.clan.fuel', attackerClan._id, attackerClan.properties.fuel)
@@ -297,6 +295,8 @@ handler.patch(async (req, res) => {
     delete defenderPlanet.redeem
     req.socket.server.io.emit('set.planet', defenderPlanet._id, defenderPlanet)
   }
+
+  req.socket.server.io.emit('set.battle', [battle.attacker, battle.defender], battle)
 
   return Response.success(res, battle)
 })
