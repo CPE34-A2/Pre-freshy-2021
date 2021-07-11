@@ -15,7 +15,7 @@ export default function Map({ user, clan, planets }) {
   function filterTier(planet, tier) {
     return planet.tier == tier
   }
-  
+
   const planetHome = planets.filter(planet => filterTier(planet, 'HOME'))
   const planetD = planets.filter(planet => filterTier(planet, 'D'))
   const planetC = planets.filter(planet => filterTier(planet, 'C'))
@@ -34,41 +34,25 @@ export default function Map({ user, clan, planets }) {
 
   return (
     <Dashboard current="map" user={user} clan={clan} >
-      {(process.env.NEXT_PUBLIC_MAP_FEATURE_ENABLED) &&
-        <>
-          <div onClick={openModal} className="text-white font-semibold p-4 absolute font-mono md:text-lg">Current Position: Planet ID {clan.position}</div>
-          <button
-            type="button"
-            onClick={openModal}
-            className="absolute right-0 top-12 md:top-0 m-4 text-white cursor-pointer z-20"
-          >
-            <InformationCircleIcon className="w-10 h-10" />
-          </button>
-          <MapRule isOpen={isClick} close={closeModal} />
-        </>
-      }
+      <div onClick={openModal} className="text-white font-semibold p-4 absolute font-mono md:text-lg">Current Position: Planet ID {clan.position}</div>
+      <button
+        type="button"
+        onClick={openModal}
+        className="absolute right-0 top-12 md:top-0 m-4 text-white cursor-pointer z-20"
+      >
+        <InformationCircleIcon className="w-10 h-10" />
+      </button>
+      <MapRule isOpen={isClick} close={closeModal} />
 
       <div className="flex flex-col-reverse xl:flex-row w-full h-full justify-between px-12 md:p-24 scale-75 md:scale-100">
-        {(!process.env.NEXT_PUBLIC_MAP_FEATURE_ENABLED) ? (
-          <>
-            <div className="flex flex-col items-center w-full h-screen justify-center">
-              <h1 className="text-white text-3xl font-bold">COMMING SOON</h1>
-              <h1 className="text-gray-500 text-3xl font-bold">COMMING SOON</h1>
-              <h1 className="text-white text-3xl font-bold">COMMING SOON</h1>
-            </div>
-          </>
-        ) : (
-          <>
-            <PlanetCol clan={clan} planets={theOne} image={TheOne} className="w-40 h-40" />
-            <PlanetCol clan={clan} planets={planetB} image={B} className="w-28 h-28" />
-            <PlanetCol clan={clan} planets={planetX1} image={X} className="w-24 h-24" />
-            <PlanetCol clan={clan} planets={planetX2} image={X} className="w-24 h-24" />
-            <PlanetCol clan={clan} planets={planetC} image={C} className="w-16 h-16" />
-            <PlanetCol clan={clan} planets={planetD1} image={D} className="w-12 h-12" />
-            <PlanetCol clan={clan} planets={planetD2} image={D} className="w-12 h-12" />
-            <PlanetCol clan={clan} planets={planetHome} image={Home} className="w-14 h-14" />
-          </>
-        )}
+        <PlanetCol clan={clan} planets={theOne} image={TheOne} className="w-40 h-40" />
+        <PlanetCol clan={clan} planets={planetB} image={B} className="w-28 h-28" />
+        <PlanetCol clan={clan} planets={planetX1} image={X} className="w-24 h-24" />
+        <PlanetCol clan={clan} planets={planetX2} image={X} className="w-24 h-24" />
+        <PlanetCol clan={clan} planets={planetC} image={C} className="w-16 h-16" />
+        <PlanetCol clan={clan} planets={planetD1} image={D} className="w-12 h-12" />
+        <PlanetCol clan={clan} planets={planetD2} image={D} className="w-12 h-12" />
+        <PlanetCol clan={clan} planets={planetHome} image={Home} className="w-14 h-14" />
       </div>
     </Dashboard>
 
