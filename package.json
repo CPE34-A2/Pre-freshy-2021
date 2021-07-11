@@ -15,7 +15,6 @@
     "connect-mongo": "^4.4.1",
     "express-session": "^1.17.2",
     "moment": "^2.29.1",
-    "moment-timezone": "^0.5.33",
     "mongoose": "^5.12.14",
     "next": "11.0.0",
     "next-connect": "^0.10.1",
