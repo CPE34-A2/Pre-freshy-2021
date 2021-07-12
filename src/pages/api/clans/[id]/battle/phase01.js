@@ -288,9 +288,6 @@ handler.patch(async (req, res) => {
     await battle.save()
 
     req.socket.server.io.emit('set.clan', attackerClan._id, attackerClan)
-    req.socket.server.io.emit('set.clan.money', attackerClan._id, attackerClan.properties.money)
-    req.socket.server.io.emit('set.clan.fuel', attackerClan._id, attackerClan.properties.fuel)
-    req.socket.server.io.emit('set.clan.planets', attackerClan._id, attackerClan.owned_planet_ids)
 
     delete defenderPlanet.redeem
     req.socket.server.io.emit('set.planet', defenderPlanet._id, defenderPlanet)

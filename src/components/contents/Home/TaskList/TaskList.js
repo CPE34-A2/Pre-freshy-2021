@@ -68,7 +68,7 @@ export default function TaskList({ user, clan }) {
   }, [clan._id])
 
   // WebSocket event listeners for real-time updating 
-  useSocket('set.task.fuel', async (targetClanId, data) => {
+  useSocket('set.task.fuel', (targetClanId, data) => {
     (targetClanId == clan._id) && setFuel({ data: data })
   })
 

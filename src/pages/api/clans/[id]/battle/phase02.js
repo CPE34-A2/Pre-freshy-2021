@@ -69,6 +69,8 @@ handler.patch(async (req, res) => {
     battle.current_phase = 3
     await battle.save()
 
+    console.log(Util.getClanName(battle.attacker), Util.getClanName(battle.defender), battle.stakes)
+
     Discord.alertBet(
       Util.getClanName(battle.attacker),
       Util.getClanName(battle.defender),
@@ -153,15 +155,13 @@ handler.delete(async (req, res) => {
 
     battle.phase02.status = 'REJECT'
     battle.status = 'DENIED'
+    battle.current_phase = 0
 
     await attackerClan.save()
     await attackerPlanet.save()
     await defenderPlanet.save()
 
     req.socket.server.io.emit('set.clan', attackerClan._id, attackerClan)
-    req.socket.server.io.emit('set.clan.money', attackerClan._id, attackerClan.properties.money)
-    req.socket.server.io.emit('set.clan.fuel', attackerClan._id, attackerClan.properties.fuel)
-    req.socket.server.io.emit('set.clan.planets', attackerClan._id, attackerClan.owned_planet_ids)
 
     delete attackerPlanet.redeem
     delete defenderPlanet.redeem
