@@ -17,6 +17,10 @@ export default function IndexPage({ user: rawUser, clan: rawClan }) {
     (userId == user._id) && setUser({ ...user, money: money })
   })
 
+  useSocket('set.clan', (clanId, clanData) => {
+    (clanId == user.clan_id) && setClan(clanData)
+  })
+
   useSocket('set.clan.money', (clanId, money) => {
     (clanId == user.clan_id) && setClan({ ...clan, properties: { ...clan.properties, money } })
   })
