@@ -58,20 +58,20 @@ export default function BattleModal({ user, phaseData, isLeader, planet, img, ta
       })
   }
 
-  if (phaseData.current != 0) {
+  if (phaseData.current != 0 && phaseData.current != 3) {
     var isAlreadyAccepted = () => phaseData.confirmer.includes(user._id)
     var isAlreadyRejected = () => phaseData.rejector.includes(user._id)
     var isAlreadyVote = () => (isAlreadyAccepted() || isAlreadyRejected())
   }
 
   useEffect(() => {
-    if (phaseData.current != 0) {
+    if (phaseData.current != 0 && phaseData.current != 3) {
       isAlreadyAccepted() && notify({ type: 'success', info: <>You have <b>accepted</b> this pending</> })
       isAlreadyRejected() && notify({ type: 'success', info: <>You have <b>rejected</b> this pending</> })
     }
   }, [phaseData])
 
-  if (phaseData.current == 0) {
+  if (phaseData.current == 0 || phaseData.current == 3) {
     return (
       <>
         <button
@@ -140,6 +140,10 @@ export default function BattleModal({ user, phaseData, isLeader, planet, img, ta
                       {planet.stakes.planet_ids.map((planet) => <div>{planet}({Util.getPlanetTier(planet)})</div>)}
                     </div>
                   )}
+                </div>
+
+                <div className="mt-4 mb-2 text-gray-600 text-sm text-semibold font-mono tracking-widest">
+                  {phaseData.id}
                 </div>
               </div>
             </div>

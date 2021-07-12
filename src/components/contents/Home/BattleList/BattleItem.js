@@ -106,7 +106,7 @@ export default function BattleItem({ user, clan, data }) {
       </div>
 
       <div className="mt-2 w-full">
-        {((currentPhase != 3) && (data.status != 'DENIED')) && (
+        {(data.status != 'DENIED') && (
           <BattleModal
             planet={data}
             img={{ src: planetData.img, color: planetColor }}
