@@ -63,6 +63,9 @@ handler.post(async (req, res) => {
     planet.visitor = 0
     clan.position = clan._id
 
+    await planet.save()
+    await clan.save()
+
     req.socket.server.io.emit('set.clan', clan._id, clan)
     req.socket.server.io.emit('set.planet', planet._id, planet)
 
