@@ -30,7 +30,7 @@ export default function NewsItem({ news }) {
     }, 1000 * 60)
 
     return () => clearInterval(timer)
-  }, [time])
+  }, [time, news.createdAt])
   
   return (
     <div className="flex flex-col p-6 md:px-8 bg-white bg-opacity-95 rounded-xl w-full">

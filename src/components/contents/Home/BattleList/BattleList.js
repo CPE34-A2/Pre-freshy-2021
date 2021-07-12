@@ -4,17 +4,17 @@ import fetchAPI from '@/utils/fetch'
 import BattleItem from './BattleItem'
 import Spinner from '@/components/common/Spinner'
 
+const fetchBattles = (clanId, setState) => {
+  fetchAPI('GET', `/api/clans/${clanId}/battle?firstIndex=0&lastIndex=6&status=pending`)
+    .then(async response => setState((await response.json()).data) || null)
+}
+
 export default function BattleList({ user, clan }) {
   const [battles, setBattles] = useState(null)
 
-  const fetchBattles = () => {
-    fetchAPI('GET', `/api/clans/${clan._id}/battle?firstIndex=0&lastIndex=6&status=pending`)
-      .then(async response => setBattles((await response.json()).data) || null)
-  }
-
   // Fetch after render finised
   useEffect(() => {
-    fetchBattles()
+    fetchBattles(clan._id, setBattles)
   }, [clan.id])
 
   // WebSocket event listeners for real-time updating 

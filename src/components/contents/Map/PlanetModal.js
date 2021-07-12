@@ -30,7 +30,7 @@ export default function PlanetModal({ clan, planet, image, isModalOpen, close, c
           setPlanetQuest(data.data.quest)
         })
       }
-  }, [planet.visitor])
+  }, [planet.visitor, clan._id, clan.position, planet._id, planet.owner])
 
   useEffect(() => {
     setError('')
