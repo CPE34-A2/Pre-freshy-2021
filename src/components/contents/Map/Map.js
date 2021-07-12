@@ -47,14 +47,14 @@ export default function Map({ user, clan, planets }) {
       <MapRule isOpen={isClick} close={closeModal} />
 
       <div className="flex flex-col-reverse xl:flex-row w-full h-full justify-between px-12 md:p-24 scale-75 md:scale-100">
-        <PlanetCol clan={clan} planets={theOne} image={TheOne} className="w-40 h-40" />
-        <PlanetCol clan={clan} planets={planetB} image={B} className="w-28 h-28" />
-        <PlanetCol clan={clan} planets={planetX1} image={X} className="w-24 h-24" />
-        <PlanetCol clan={clan} planets={planetX2} image={X} className="w-24 h-24" />
-        <PlanetCol clan={clan} planets={planetC} image={C} className="w-16 h-16" />
-        <PlanetCol clan={clan} planets={planetD1} image={D} className="w-12 h-12" />
-        <PlanetCol clan={clan} planets={planetD2} image={D} className="w-12 h-12" />
-        <PlanetCol clan={clan} planets={planetHome} image={Home} className="w-14 h-14" />
+        <PlanetCol user={user} clan={clan} planets={theOne} image={TheOne} className="w-40 h-40" />
+        <PlanetCol user={user} clan={clan} planets={planetB} image={B} className="w-28 h-28" />
+        <PlanetCol user={user} clan={clan} planets={planetX1} image={X} className="w-24 h-24" />
+        <PlanetCol user={user} clan={clan} planets={planetX2} image={X} className="w-24 h-24" />
+        <PlanetCol user={user} clan={clan} planets={planetC} image={C} className="w-16 h-16" />
+        <PlanetCol user={user} clan={clan} planets={planetD1} image={D} className="w-12 h-12" />
+        <PlanetCol user={user} clan={clan} planets={planetD2} image={D} className="w-12 h-12" />
+        <PlanetCol user={user} clan={clan} planets={planetHome} image={Home} className="w-14 h-14" />
       </div>
     </Dashboard>
 

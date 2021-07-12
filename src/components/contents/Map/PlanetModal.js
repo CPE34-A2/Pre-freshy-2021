@@ -11,7 +11,7 @@ import InputBox from "@/components/common/InputBox"
 import * as Util from '@/utils/common'
 import AlertNotification from "@/components/common/AlertNotification"
 
-export default function PlanetModal({ clan, planet, image, isModalOpen, close, conquerColor }) {
+export default function PlanetModal({ user, clan, planet, image, isModalOpen, close, conquerColor }) {
   const [isClick, setIsClick] = useState(false)
   const [planetQuest, setPlanetQuest] = useState('')
   const [redeemInput, setRedeemInput] = useState ('')
@@ -44,7 +44,8 @@ export default function PlanetModal({ clan, planet, image, isModalOpen, close, c
   useEffect(() => {
     if (planet._id != clan.position || planet.tier == 'HOME') {
       setShowInfo(true)
-    } else if (planet._id == clan.position && planet.tier != 'HOME' && planet.tier != 'X' && planet.owner == 0) {
+    } 
+    if ((user.role == 'admin' && planet.visitor != 0) || planet._id == clan.position && planet.tier != 'HOME' && planet.tier != 'X' && planet.owner == 0) {
       setShowInfo(false)
     } else {
       setShowInfo(true)
@@ -71,6 +72,17 @@ export default function PlanetModal({ clan, planet, image, isModalOpen, close, c
         setError((await response.json()).message)
       }
       setIsDisabled(false)
+    })
+  }
+
+  const handleAbort = async () => {
+    setIsDisabled(true)
+    return fetchAPI('POST', `/api/clans/${planet.visitor}/transfer/redeem`, {
+      planet_id: planet._id,
+      code: 'getRektyouFuck'
+    }).then(async response => {
+      setIsDisabled(false)
+      close()
     })
   }
 
@@ -206,6 +218,17 @@ export default function PlanetModal({ clan, planet, image, isModalOpen, close, c
                   CONQUER
                 </button>
               </div>
+              {(user.role == 'admin' || (user.role == 'mod' && user.clan_id == clan._id)) &&
+                <div className="mt-4">
+                  <button
+                  disabled={isDisabled}
+                  className="bg-red-700 text-red-400 py-1 w-full rounded-xl focus:outline-none disabled:cursor-not-allowed"
+                  onClick={async () => await handleAbort()}
+                  >
+                    Abort Mission
+                  </button>
+                </div>
+              }
               <AlertNotification
                 type="error"
                 style="mt-3"

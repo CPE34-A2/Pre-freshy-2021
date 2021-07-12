@@ -6,7 +6,7 @@ import * as Util from '@/utils/common'
 
 const PLANET_COLOR = ['', 'star-pink', 'star-orange', 'star-yellow', 'star-green', 'star-light-blue', 'star-blue', 'star-purple']
 
-export default function Planet({ clan, planet, image, className }) {
+export default function Planet({ user, clan, planet, image, className }) {
   const [isHover, setIsHover] = useState(false)
   const [isClick, setIsClick] = useState(false)
   
@@ -21,7 +21,7 @@ export default function Planet({ clan, planet, image, className }) {
   return (
     <div className="flex justify-center">
       <PlanetPopOver clan={clan} planet={planet} isHover={isHover} />
-      <PlanetModal conquerColor={PLANET_COLOR[clan._id]} clan={clan} planet={planet} image={image} isModalOpen={isClick} close={closeModal} />
+      <PlanetModal user={user} conquerColor={PLANET_COLOR[clan._id]} clan={clan} planet={planet} image={image} isModalOpen={isClick} close={closeModal} />
       <div onMouseEnter={openPopOver} onMouseLeave={closePopOver} onClick={openModal} className={Util.concatClasses('cursor-pointer', shield, className, PLANET_COLOR[planet.owner], pulse)}>
         <Image className="select-none" src={image} alt="" />
       </div>

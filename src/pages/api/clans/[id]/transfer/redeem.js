@@ -43,7 +43,7 @@ handler.post(async (req, res) => {
     .lean()
     .exec()
 
-  if ((clan.leader != req.user.id) && (user.role != 'admin')) {
+  if ((clan.leader != req.user.id) && (user.role != 'admin') && (user.role != 'mod')) {
     return Response.denined(res, 'You arent clan leader')
   }
 
@@ -55,7 +55,7 @@ handler.post(async (req, res) => {
     return Response.denined(res, 'Planet not found')
   }
 
-  if (planet._id != clan.position) {
+  if ((planet._id != clan.position) && user.role != 'admin') {
     return Response.denined(res, 'Planet not found')
   }
 
