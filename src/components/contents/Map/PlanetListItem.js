@@ -1,3 +1,5 @@
+import * as Util from '@/utils/common'
+
 export default function PlanetListItem({ planet, index, handlePlanetChange }) {
   return (
     <div className="flex flex-row">
@@ -11,7 +13,7 @@ export default function PlanetListItem({ planet, index, handlePlanetChange }) {
             />
           </div>
           <div className="font-semibold">
-            {planet}
+            {planet} <span className="text-gray-400 font-light">({Util.getPlanetTier(planet)})</span>
           </div>
         </>
       }
