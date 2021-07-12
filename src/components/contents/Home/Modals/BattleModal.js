@@ -60,7 +60,7 @@ export default function BattleModal({ user, phaseData, isLeader, planet, img, ta
 
   if (phaseData.current != 0) {
     var isAlreadyAccepted = () => phaseData.confirmer.includes(user._id)
-    var isAlreadyRejected = () => (phaseData.rejector.includes(user._id) && !isLeader)
+    var isAlreadyRejected = () => phaseData.rejector.includes(user._id)
     var isAlreadyVote = () => (isAlreadyAccepted() || isAlreadyRejected())
   }
 
@@ -136,8 +136,8 @@ export default function BattleModal({ user, phaseData, isLeader, planet, img, ta
                   </div>
 
                   {planet.stakes.planet_ids.length != 0 && (
-                    <div className="tracking-wider leading-none text-sm text-gray-500">
-                      ({planet.stakes.planet_ids.toString()})
+                    <div className="tracking-wider leading-none text-sm text-gray-500 flex flex-row items-center justify-center space-x-1">
+                      {planet.stakes.planet_ids.map((planet) => <div>{planet}({Util.getPlanetTier(planet)})</div>)}
                     </div>
                   )}
                 </div>
@@ -211,8 +211,8 @@ export default function BattleModal({ user, phaseData, isLeader, planet, img, ta
                 </div>
 
                 {planet.stakes.planet_ids.length != 0 && (
-                  <div className="tracking-wider leading-none text-sm text-gray-500">
-                    ({planet.stakes.planet_ids.toString()})
+                  <div className="tracking-wider leading-none text-sm text-gray-500 flex flex-row items-center justify-center space-x-1">
+                    {planet.stakes.planet_ids.map((planet) => <div>{planet}({Util.getPlanetTier(planet)})</div>)}
                   </div>
                 )}
               </div>
@@ -249,10 +249,10 @@ export default function BattleModal({ user, phaseData, isLeader, planet, img, ta
                         name="REJECT"
                         style={Util.concatClasses(
                           'bg-red-300 text-red-600 font-semibold py-1 w-full rounded-lg',
-                          (isAlreadyVote(phaseData) && (!isLeader && (phaseData.current == 1))) ? 'cursor-not-allowed opacity-40' : 'hover:bg-red-400 hover:text-red-800',
+                          isAlreadyVote(phaseData) ? 'cursor-not-allowed opacity-40' : 'hover:bg-red-400 hover:text-red-800',
                         )}
                         onClick={() => vote(false)}
-                        disabled={isAlreadyVote(phaseData) && (!isLeader && (phaseData.current == 1))}
+                        disabled={isAlreadyVote(phaseData)}
                       />
                     }
                   </div>
@@ -274,7 +274,7 @@ export default function BattleModal({ user, phaseData, isLeader, planet, img, ta
                 </div>
               }
 
-              {(!isLeader && phaseData.current == 1) || (!phaseData.isAttackerIsMe && phaseData.current == 2) &&
+              {((!isLeader && phaseData.isAttackerIsMe && phaseData.current == 1) || (!phaseData.isAttackerIsMe && phaseData.current == 2)) &&
                 <AlertNotification
                   type={notification.type}
                   info={notification.info}
