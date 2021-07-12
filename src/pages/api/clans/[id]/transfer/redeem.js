@@ -60,7 +60,13 @@ handler.post(async (req, res) => {
   }
 
   if (planet.redeem != code) {
-    return Response.denined(res, 'code is not working')
+    planet.visitor = 0
+    clan.position = clan._id
+
+    req.socket.server.io.emit('set.clan', clan._id, clan)
+    req.socket.server.io.emit('set.planet', planet._id, planet)
+
+    return Response.denined(res, 'Your code is incorrect. You will be teleport to your home planet.')
   }
 
   if (planet.owner == clan._id) {
