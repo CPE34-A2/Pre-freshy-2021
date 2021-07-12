@@ -161,7 +161,7 @@ export default function PlanetModal({ clan, planet, image, isModalOpen, close, c
                 <div className="bg-white w-28 h-28 rounded-full absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-16 z-10" />
 
                 <Dialog.Title as="h3">
-                  <div className="font-bold text-xl z-20 mt-6 text-indigo-800 tracking-wider">
+                  <div className="font-bold text-xl z-20 mt-4 text-indigo-800 tracking-wider">
                     CONQUER PLANET
                   </div>
                 </Dialog.Title>
@@ -176,26 +176,27 @@ export default function PlanetModal({ clan, planet, image, isModalOpen, close, c
               </button>
             </div>
 
-            <div className="flex flex-col text-center px-4">
+            <div className="flex flex-col text-center px-4 mt-3">
               <div className="flex justify-center">
                 <div className="">
                   <div className="text-gray-500 text-lg">Quest</div>
                   <div className="font-semibold text-xl">{planetQuest}</div>
                 </div>
               </div>
-              <div className="flex justify-center mt-1">
-                <div className="">
-                  <div className="text-gray-500 text-lg">Redeem</div>
+              <div className="flex flex-col justify-center mt-3">
+                <div className="mb-2">
+                  <div className="text-gray-500 text-lg">Redeem Code</div>
                   <InputBox 
-                    placeholder="Redeem Code"
+                    placeholder="This is not an answer"
                     type="text"
-                    style="mb-3 rounded-lg ring-gray-400 text-center"
+                    style="rounded-lg ring-gray-500 text-center"
                     onChange={handleRedeemChange}
                     value={redeemInput}
                   />
                 </div>
+                <div className="font-bold text-sm text-red-400 uppercase">You have only one chance</div>
               </div>
-              <div >
+              <div className="mt-4">
                 <button
                   ref={initialFocus}
                   onClick={async () => await handleConquer()}
