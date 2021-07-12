@@ -75,7 +75,7 @@ export default function PlanetConfirmModal({ planet, closeAll, clan, isConfirmOp
     setBetPlanetCheck(newPlanets)
   }
 
-  const planetList = clan.owned_planet_ids.map((ownedPlanet, index) => {
+  const planetList = clan.owned_planet_ids.sort((a, b) => a - b).map((ownedPlanet, index) => {
     return <PlanetListItem key={ownedPlanet} index={index} planet={ownedPlanet} handlePlanetChange={handlePlanetChange} />
   })
 

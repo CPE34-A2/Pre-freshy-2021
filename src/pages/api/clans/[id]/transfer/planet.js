@@ -147,6 +147,8 @@ handler.post(async (req, res) => {
     }
   })
 
+  req.socket.server.io.emit('set.task.travel', req.user.clan_id, transaction)
+
   Response.success(res, {
     transaction_id: transaction._id,
     transaction_status: transaction.status,

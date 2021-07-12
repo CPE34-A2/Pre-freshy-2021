@@ -18,3 +18,13 @@ export function getClanName(clanId) {
     'Space X เข้ามาระวังเคล็ดนะค้าบ'
   ][clanId - 1]
 }
+
+export function getPlanetTier(planetId) {
+  return (
+    planetId <= 7 ? 'HOME' 
+    : planetId <= 21 ? 'D' 
+    : planetId <= 29 ? 'C' 
+    : planetId <= 32 ? 'B' 
+    : planetId <= 41 ? 'X' : 'S'
+  )
+}
