@@ -121,7 +121,7 @@ handler.post(async (req, res) => {
     return Response.denined(res, `The target planet is under attack!!!!`)
 
   const latestPlanetAttacked = await Battle
-    .findOne({ target_planet_id: defenderPlanet._id, status: {$in: ['ATTACKER_WON', 'DEFENDER_WON']}, updatedAt: { $gte: moment().add(-24, 'hours').toDate(), $lt: moment().toDate()} })
+    .findOne({ target_planet_id: defenderPlanet._id, status: { $in: ['ATTACKER_WON', 'DEFENDER_WON'] }, updatedAt: { $gte: moment().add(-24, 'hours').toDate(), $lt: moment().toDate() } })
     .select()
     .lean()
     .exec()
@@ -160,7 +160,7 @@ handler.post(async (req, res) => {
   })
 
   req.socket.server.io.emit('set.battle', [battle.attacker, battle.defender], battle)
-  
+
   Response.success(res, battle)
 })
 
@@ -200,6 +200,9 @@ handler.patch(async (req, res) => {
 
   if (battle.phase01.status === 'REJECT')
     return Response.denined(res, `Voted failed: battle already rejected`)
+
+  if (battle.phase01.confirmer.length > battle.confirm_require)
+    return Response.denined(res, `Voted failed: vote already completed`)
 
   // validate the relation between battle planet and stake.
   const defenderPlanet = await Planet
@@ -333,6 +336,9 @@ handler.delete(async (req, res) => {
 
   if (battle.phase01.status === 'REJECT')
     return Response.denined(res, `Voted failed: battle already rejected`)
+
+  if (battle.phase01.rejector.length > battle.confirm_require)
+    return Response.denined(res, `Voted failed: vote already completed`)
 
   // validate the relation between battle planet and stake.
   const defenderPlanet = await Planet

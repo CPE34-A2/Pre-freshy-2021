@@ -66,12 +66,18 @@ export default function BattleItem({ user, clan, data }) {
           {isAttackerIsMe ? 'ATTACKER' : 'DEFENDER'}
         </div>
 
-        {(currentPhase == 1 || currentPhase == 2) && (
+        {(currentPhase == 1 || (currentPhase == 2 && data.status != 'DENIED')) && (
           <p className="text-gray-700 text-sm lg:text-base font-semibold mt-1">
             waiting for {waitingText}
           </p>
         )}
-        
+
+        {(data.status == 'DENIED') && (
+          <p className="text-gray-700 text-sm lg:text-base font-semibold mt-1">
+            defender surrender
+          </p>
+        )}
+
         {(currentPhase == 3) && (
           <p className="text-gray-700 text-lg font-semibold mt-1">
             battling...
@@ -95,12 +101,12 @@ export default function BattleItem({ user, clan, data }) {
         </div>
 
         <div className="flex flex-col items-center text-center leading-none">
-          <div className="font-semibold lg:text-lg">#{planetId}</div>          
+          <div className="font-semibold lg:text-lg">#{planetId}</div>
         </div>
       </div>
 
       <div className="mt-2 w-full">
-        {currentPhase != 3 && (
+        {(data.status != 'DENIED') && (
           <BattleModal
             planet={data}
             img={{ src: planetData.img, color: planetColor }}
