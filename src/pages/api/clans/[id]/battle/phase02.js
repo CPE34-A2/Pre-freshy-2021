@@ -153,6 +153,7 @@ handler.delete(async (req, res) => {
 
     battle.phase02.status = 'REJECT'
     battle.status = 'DENIED'
+    battle.current_phase = 0
 
     await attackerClan.save()
     await attackerPlanet.save()
