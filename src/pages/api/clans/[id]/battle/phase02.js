@@ -12,6 +12,8 @@ import Battle from '@/models/battle'
 
 const handler = nextConnect()
 
+const EXPECTED_REQUIRER = 3
+
 handler
   .use(middleware)
   .use(permission)
@@ -51,6 +53,9 @@ handler.patch(async (req, res) => {
 
   if (battle.phase02.status === 'REJECT')
     return Response.denined(res, `Voted failed: battle already rejected`)
+
+  if (battle.phase02.confirmer.length > battle.confirm_require)
+    return Response.denined(res, `Voted failed: vote already completed`)
 
   // validate the voter and reqester
   if (battle.phase02.rejector.includes(req.user.id))
@@ -121,10 +126,13 @@ handler.delete(async (req, res) => {
 
   // validate the voter and reqester
   if (battle.phase02.rejector.includes(req.user.id))
-  return Response.denined(res, `Voted failed: You already rejected the vote`)
+    return Response.denined(res, `Voted failed: You already rejected the vote`)
 
   if (battle.phase02.confirmer.includes(req.user.id))
-  return Response.denined(res, `Voted failed: You already accepted the vote`)
+    return Response.denined(res, `Voted failed: You already accepted the vote`)
+
+  if (battle.phase02.rejector.length > battle.confirm_require)
+    return Response.denined(res, `Voted failed: vote already completed`)
 
   // save the voter to rejector
   battle.phase02.rejector.push(req.user.id)
