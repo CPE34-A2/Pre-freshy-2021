@@ -15,7 +15,7 @@ export default function PlanetModal({ user, clan, planet, image, isModalOpen, cl
   const [isClick, setIsClick] = useState(false)
   const [planetQuest, setPlanetQuest] = useState('')
   const [redeemInput, setRedeemInput] = useState ('')
-  const isBattle = planet.owner != 0 ? true : false
+  const isBattle = planet.owner != 0
   const [error, setError] = useState('')
   const [isDisabled, setIsDisabled] = useState(false)
   const [showInfo, setShowInfo] = useState(true)
@@ -45,7 +45,7 @@ export default function PlanetModal({ user, clan, planet, image, isModalOpen, cl
     if (planet._id != clan.position || planet.tier == 'HOME') {
       setShowInfo(true)
     } 
-    if ((user.role == 'admin' && planet.visitor != 0) || planet._id == clan.position && planet.tier != 'HOME' && planet.tier != 'X' && planet.owner == 0) {
+    if ((user.role == 'admin' && planet.visitor != 0 && planet.owner == 0) || planet._id == clan.position && planet.tier != 'HOME' && planet.tier != 'X' && planet.owner == 0) {
       setShowInfo(false)
     } else {
       setShowInfo(true)
@@ -62,6 +62,11 @@ export default function PlanetModal({ user, clan, planet, image, isModalOpen, cl
 
   const handleConquer = async () => {
     setIsDisabled(true)
+    if (redeemInput == '') {
+      setError('Cannot redeem empty code')
+      setIsDisabled(false)
+      return
+    }
     return fetchAPI('POST', `/api/clans/${clan._id}/transfer/redeem`, {
       planet_id: planet._id,
       code: redeemInput
@@ -70,6 +75,7 @@ export default function PlanetModal({ user, clan, planet, image, isModalOpen, cl
         close()
       } else {
         setError((await response.json()).message)
+        close()
       }
       setIsDisabled(false)
     })
@@ -150,9 +156,18 @@ export default function PlanetModal({ user, clan, planet, image, isModalOpen, cl
                   <div className="font-semibold text-xl">{isBattle ? Util.getClanName(planet.owner) : 'None'}</div>
                 </div>
               </div>
+
+              {planet.visitor != 0 &&
+                <div className="flex justify-center mt-2">
+                  <div className="">
+                    <div className="text-gray-500 text-lg">Visitor</div>
+                    <div className="font-semibold text-xl">{Util.getClanName(planet.visitor)}</div>
+                  </div>
+                </div>
+              }
             </div>
 
-            {(planet.owner != clan._id && planet.tier != 'HOME' && planet.tier != 'X' && clan.position != planet._id) &&
+            {(planet.owner != clan._id && planet.tier != 'HOME' && planet.tier != 'X' && clan.position != planet._id && planet.visitor == 0) &&
               <div className="flex justify-center mt-4">
                 <div onClick={openConfirmModal} className="animate-pulse transition duration-150 ease-in-out hover:animate-none hover:scale-110 w-20 h-20 hover:cursor-pointer drop-shadow-md">
                   <Image src={isBattle ? Battle : Conquer} alt="" />
