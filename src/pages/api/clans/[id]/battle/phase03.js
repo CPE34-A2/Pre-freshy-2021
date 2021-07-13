@@ -68,7 +68,7 @@ handler.post(async (req, res) => {
     return Response.denined(res, 'clan not found')
 
   if (clan.leader != req.user.id) {
-    return Response.denined(res, 'You are not clan leader')
+    return Response.denined(res, 'only clan leader can perform this action')
   }
 
   battle.game = game

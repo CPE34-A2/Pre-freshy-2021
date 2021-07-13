@@ -86,11 +86,11 @@ handler.post(async (req, res) => {
     return Response.denined(res, 'clan not found')
 
   if ((clan.leader != req.user.id) && (user.role != 'admin')) {
-    return res.status(403).json({ message: 'You arent clan leader' })
+    return res.status(403).json({ message: 'only clan leader can perform this action' })
   }
 
   if (clan.position != clan._id) {
-    return Response.denined(res, 'Your clan is not in the right position')
+    return Response.denined(res, 'You must finish up the current quest first before going to another planet')
   }
 
   const planet = await Planet
@@ -106,7 +106,7 @@ handler.post(async (req, res) => {
     })
 
   if (dupeTransaction) {
-    return Response.denined(res, 'There are still pending transactions')
+    return Response.denined(res, `There are still pending travel's transactions`)
   }
 
   if (planet.visitor != 0) {
