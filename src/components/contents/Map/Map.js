@@ -34,19 +34,19 @@ export default function Map({ user, clan, planets }) {
 
   return (
     <Dashboard current="map" user={user} clan={clan} >
-      <div className="flex flex-row">
-        <div className="text-white font-semibold p-4 font-mono md:text-lg">Current Position: Planet ID {clan.position}</div>
+      <div className="flex flex-row justify-between">
+        <div className="text-white font-semibold m-4 font-mono md:text-lg">Current Position: Planet ID {clan.position}</div>
         <button
           type="button"
           onClick={openModal}
-          className="ml-auto m-4 text-white cursor-pointer z-10"
+          className="m-4 z-10"
         >
-          <InformationCircleIcon className="w-7 h-7 md:w-10 md:h-10" />
+          <InformationCircleIcon className="w-7 h-7 text-white hover:text-gray-400" />
         </button>
       </div>
       <MapRule isOpen={isClick} close={closeModal} />
 
-      <div className="flex flex-col-reverse xl:flex-row w-full h-full justify-between px-12 md:p-24 scale-75 md:scale-100">
+      <div className="flex flex-col-reverse xl:flex-row w-full h-full justify-between px-12 tranform -translate-y-16 md:-translate-y-0 md md:p-24 md:pt-12 scale-75 md:scale-100">
         <PlanetCol user={user} clan={clan} planets={theOne} image={TheOne} className="w-40 h-40" />
         <PlanetCol user={user} clan={clan} planets={planetB} image={B} className="w-28 h-28" />
         <PlanetCol user={user} clan={clan} planets={planetX1} image={X} className="w-24 h-24" />
