@@ -93,7 +93,7 @@ handler.post(async (req, res) => {
   const attackerPlanetIds = attackerPlanets.map(e => e._id)
 
   if (betPlanetIds.filter(e => !attackerPlanetIds.includes(e)) != 0)
-    return Response.denined(res, `imagine using someone else's planet to bet your battle`)
+    return Response.denined(res, `imagine using someone else's planet to involve your battle`)
 
   // validating about defender
   const defenderPlanet = await Planet
@@ -217,21 +217,21 @@ handler.patch(async (req, res) => {
     battle.status = 'REJECT'
     battle.phase01.status = 'REJECT'
     await battle.save()
-    return Response.success(res, `Battle rejected: Clan's fuel is not enough for traveling and staking`)
+    return Response.denined(res, `Battle rejected: Clan's fuel is not enough for traveling and staking`)
   }
 
   if (attackerClan.properties.money < battle.stakes.money) {
     battle.status = 'REJECT'
     battle.phase01.status = 'REJECT'
     await battle.save()
-    return Response.success(res, `Battle rejected: Clan's money is not enough for staking`)
+    return Response.denined(res, `Battle rejected: Clan's money is not enough for staking`)
   }
 
   if (battle.stakes.planet_ids.filter(e => !attackerClan.owned_planet_ids.includes(e)).length) {
     battle.status = 'REJECT'
     battle.phase01.status = 'REJECT'
     await battle.save()
-    return Response.success(res, `Battle rejected: Clan's planets is not enough for staking`)
+    return Response.denined(res, `Battle rejected: Clan's planets is not enough for staking`)
   }
 
   if (defenderPlanet.visitor != 0) {

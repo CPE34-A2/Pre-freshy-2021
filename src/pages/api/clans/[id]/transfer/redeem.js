@@ -24,11 +24,13 @@ handler
  * @require User authentication
  */
 handler.post(async (req, res) => {
-  const code = req.body.code
+  let code = req.body.code
 
   if (code == null) {
     return Response.denined(res, 'Please enter a code')
   }
+
+  code = code.trim()
 
   const clan = await Clan
     .findById(req.query.id)
@@ -44,7 +46,7 @@ handler.post(async (req, res) => {
     .exec()
 
   if ((clan.leader != req.user.id) && (user.role != 'admin') && (user.role != 'mod')) {
-    return Response.denined(res, 'You arent clan leader')
+    return Response.denined(res, 'only clan leader can perform this action')
   }
 
   const planet = await Planet
@@ -107,6 +109,7 @@ handler.post(async (req, res) => {
   if (planet && clan) {
     req.socket.server.io.emit('set.clan', clan._id, clan)
     req.socket.server.io.emit('set.planet', planet._id, planet)
+    req.socket.server.io.emit('set.transaction', clan._id, transaction)
   }
 
   return Response.success(res, {

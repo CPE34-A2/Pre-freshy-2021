@@ -94,35 +94,31 @@ export default function TransactionItem({ transaction }) {
         <div className="text-right text-sm md:text-base"><span className={Util.concatClasses('font-medium', statusColor[transaction.status].color)}>{transaction.status}</span></div>
       </div>
       <div className="flex flex-row justify-between items-center">
-        {(item.type != 'money' && transaction.owner.type == 'clan' && transaction.receiver.type != 'planet') &&
+        {(item.type != 'money' && transaction.owner.type == 'clan' && transaction.receiver.type != 'planet') ?
           <>
             <div className={Util.concatClasses("font-bold text-base md:text-lg text-indigo-900", isStrike)}>
               Buy {item.received} for {item.cost} coin
             </div>
           </>
-        }
-        {transaction.owner.type == 'market' &&
+        : transaction.owner.type == 'market' ?
           <>
             <div className={Util.concatClasses("font-bold text-base md:text-lg text-indigo-900", isStrike)}>
               Sell {item.cost} for {item.received} coin
             </div>
           </>
-        }
-        {transaction.owner.type == 'planet' &&
+        : transaction.owner.type == 'planet' ?
           <>
             <div className={Util.concatClasses("font-bold text-base md:text-lg text-indigo-900", isStrike)}>
               Go to planet {transaction.owner.id} for {item.cost} fuel
             </div>
           </>
-        }
-        {transaction.receiver.type == 'planet' &&
+        : transaction.receiver.type == 'planet' ?
           <>
             <div className={Util.concatClasses("font-bold text-base md:text-lg text-indigo-900", isStrike)}>
               Received planet {transaction.receiver.id}
             </div>
           </>
-        }
-        {item.type == 'money' &&
+        : item.type == 'money' &&
           <>
             <div className={Util.concatClasses("font-bold text-base md:text-lg text-indigo-900", isStrike)}>
               Received {item.received} coin from {transaction.owner.id}
