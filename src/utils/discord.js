@@ -14,7 +14,7 @@ export function alertBet(challenger, challenged, items) {
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
-      content: 'ฝากถึง @everyone อย่าลืมไปตรวจสอบหน้าเว็บด้วยจ้า',
+      content: '',
       embeds: [{
         title: ':fireworks: มีการเดิมพันเกิดขึ้น',
         color: 3286641,
