@@ -18,7 +18,7 @@ export default function Stock({ user, clan }) {
 
   return (
     <Dashboard current="stock" user={user} clan={clan}>
-      <div className="w-full h-full flex flex-col items-center justify-center">
+      <div className="w-full h-full flex flex-col items-center justify-center scale-95 md:scale-75 lg:scale-90 2xl:scale-100">
         {stocks && (
           <StockList
             clan={clan}
