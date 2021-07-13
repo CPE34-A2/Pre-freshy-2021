@@ -35,13 +35,13 @@ export default function Map({ user, clan, planets }) {
   return (
     <Dashboard current="map" user={user} clan={clan} >
       <div className="flex flex-row justify-between">
-        <div className="text-white font-semibold m-4 font-mono md:text-lg">Current Position: Planet ID {clan.position}</div>
+        <div className="text-white font-semibold m-4 font-mono text-sm md:text-lg">Current Position: Planet ID {clan.position}</div>
         <button
           type="button"
           onClick={openModal}
           className="m-4 z-10"
         >
-          <InformationCircleIcon className="w-7 h-7 text-white hover:text-gray-400" />
+          <InformationCircleIcon className="w-5 h-5 md:w-7 md:h-7 text-white hover:text-gray-400" />
         </button>
       </div>
       <MapRule isOpen={isClick} close={closeModal} />
