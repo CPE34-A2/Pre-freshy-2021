@@ -148,6 +148,7 @@ handler.post(async (req, res) => {
   })
 
   req.socket.server.io.emit('set.task.travel', req.user.clan_id, transaction)
+  req.socket.server.io.emit('set.transaction', clan._id, transaction)
 
   Response.success(res, {
     transaction_id: transaction._id,
@@ -230,7 +231,7 @@ handler.patch(async (req, res) => {
   }
 
   await transaction.save()
-
+  req.socket.server.io.emit('set.transaction', clan._id, transaction)
   req.socket.server.io.emit('set.task.travel', req.user.clan_id,
     transaction.status == 'PENDING' ? transaction : null
   )
@@ -277,7 +278,7 @@ handler.delete(async (req, res) => {
 
   let clan = await Clan
     .findById(req.query.id)
-    .select('properties leader owned_planet_ids')
+    .select('properties leader owned_planet_ids _id')
     .exec()
 
   if (!transaction) {
@@ -311,7 +312,7 @@ handler.delete(async (req, res) => {
   }
 
   await transaction.save()
-
+  req.socket.server.io.emit('set.transaction', clan._id, transaction)
   req.socket.server.io.emit('set.task.travel', req.user.clan_id,
     transaction.status == 'PENDING' ? transaction : null
   )

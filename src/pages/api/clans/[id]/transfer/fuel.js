@@ -115,6 +115,7 @@ handler.post(async (req, res) => {
   })
 
   req.socket.server.io.emit('set.task.fuel', req.user.clan_id, transaction)
+  req.socket.server.io.emit('set.transaction', clan._id, transaction)
 
   Response.success(res, {
     transaction_id: transaction._id,
@@ -139,7 +140,7 @@ handler.patch(async (req, res) => {
 
   const clan = await Clan
     .findById(req.query.id)
-    .select('properties')
+    .select('properties _id')
     .exec()
 
   if (!mongoose.Types.ObjectId.isValid(req.body.transaction_id)) {
@@ -195,6 +196,7 @@ handler.patch(async (req, res) => {
 
   await transaction.save()
 
+  req.socket.server.io.emit('set.transaction', clan._id, transaction)
   req.socket.server.io.emit('set.task.fuel', req.user.clan_id,
     transaction.status == 'PENDING' ? transaction : null
   )
@@ -221,7 +223,7 @@ handler.patch(async (req, res) => {
 handler.delete(async (req, res) => {
   const clan = await Clan
     .findById(req.query.id)
-    .select('properties leader')
+    .select('properties leader _id')
     .exec()
 
   if (!mongoose.Types.ObjectId.isValid(req.body.transaction_id)) {
@@ -263,7 +265,7 @@ handler.delete(async (req, res) => {
   }
 
   await transaction.save()
-
+  req.socket.server.io.emit('set.transaction', clan._id, transaction)
   req.socket.server.io.emit('set.task.fuel', req.user.clan_id,
     transaction.status == 'PENDING' ? transaction : null
   )

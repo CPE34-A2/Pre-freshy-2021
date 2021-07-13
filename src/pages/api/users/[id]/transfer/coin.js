@@ -44,7 +44,7 @@ handler.post(async (req, res) => {
   clan.properties.money += amount
   await clan.save()
 
-  await Transaction.create({
+  const transaction = await Transaction.create({
     owner: {
       id: user._id,
       type: 'user'
@@ -59,6 +59,7 @@ handler.post(async (req, res) => {
     }
   })
 
+  req.socket.server.io.emit('set.transaction', user.clan_id, transaction)
   req.socket.server.io.emit('set.user.money', user._id, user.money)
   req.socket.server.io.emit('set.clan.money', user.clan_id, clan.properties.money)
 

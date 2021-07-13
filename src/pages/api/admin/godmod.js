@@ -7,6 +7,7 @@ import * as Response from '@/utils/response'
 import Clan from '@/models/clan'
 import Planet from '@/models/planet'
 import User from '@/models/user'
+import Transaction from '@/models/transaction'
 
 const handler = nextConnect()
 
@@ -100,6 +101,23 @@ handler.get(async (req, res) => {
 
       planet.owner = clan._id
       clan.owned_planet_ids = [...clan.owned_planet_ids, planet]
+
+      const transaction = await Transaction.create({
+        owner: {
+          id: clan._id,
+          type: 'clan'
+        },
+        receiver: {
+          id: planet._id,
+          type: 'planet'
+        },
+        item: {
+          planets: [planet.id]
+        },
+        status: 'SUCCESS'
+      })
+      req.socket.server.io.emit('set.transaction', clan._id, transaction)
+
     } else { //remove planet
       if (planet.owner != clanId)
         return Response.denined(res, 'this planet is not owned by this clan')
@@ -108,6 +126,7 @@ handler.get(async (req, res) => {
       let index = clan.owned_planet_ids.indexOf(Math.abs(planetId))
       clan.owned_planet_ids.splice(index, 1)
     }
+    
     await planet.save()
     req.socket.server.io.emit('set.planet', planet._id, planet)
   }

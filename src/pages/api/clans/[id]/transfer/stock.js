@@ -156,7 +156,7 @@ handler.post(async (req, res) => {
       }
     }
   })
-
+  req.socket.server.io.emit('set.transaction', clan._id, newTransaction)
   req.socket.server.io.emit('set.task.stock', req.user.clan_id,
     newTransaction.status == 'PENDING' ? newTransaction : null
   )
@@ -262,7 +262,7 @@ handler.patch(async (req, res) => {
 
     transaction.status = 'SUCCESS'
     await transaction.save()
-
+    req.socket.server.io.emit('set.transaction', clan._id, transaction)
     req.socket.server.io.emit('set.clan.money', req.user.clan_id, clan.properties.money) // index
     req.socket.server.io.emit('set.clan.stock', req.user.clan_id, clan.properties.stocks) // stock
   }
@@ -317,7 +317,7 @@ handler.delete(async (req, res) => {
 
   const clan = await Clan
     .findById(req.user.clan_id)
-    .select('properties leader')
+    .select('properties leader _id')
     .exec()
 
   if (transaction.confirmer.includes(req.user.id) && (req.user.id != clan.leader))
@@ -333,7 +333,7 @@ handler.delete(async (req, res) => {
   }
 
   await transaction.save()
-
+  req.socket.server.io.emit('set.transaction', clan._id, transaction)
   req.socket.server.io.emit('set.task.stock', req.user.clan_id,
     transaction.status == 'PENDING' ? transaction : null
   )
