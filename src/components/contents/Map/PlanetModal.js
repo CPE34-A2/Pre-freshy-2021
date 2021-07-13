@@ -212,7 +212,7 @@ export default function PlanetModal({ user, clan, planet, image, isModalOpen, cl
                 <button
                   ref={initialFocus}
                   onClick={async () => await handleConquer()}
-                  className={Util.concatClasses(conquerColor, "bg-pink-400 font-bold text-red-300 py-1 w-full rounded-xl focus:outline-none disabled:cursor-not-allowed")}
+                  className={Util.concatClasses(conquerColor, "hover:bg-pink-300 hover:text-red-400 bg-pink-400 font-bold text-red-300 py-1 w-full rounded-xl focus:outline-none disabled:cursor-not-allowed")}
                   disabled={isDisabled}
                 >
                   CONQUER
@@ -222,7 +222,7 @@ export default function PlanetModal({ user, clan, planet, image, isModalOpen, cl
                 <div className="mt-4">
                   <button
                   disabled={isDisabled}
-                  className="bg-red-700 text-red-400 py-1 w-full rounded-xl focus:outline-none disabled:cursor-not-allowed"
+                  className="text-red-200 bg-red-600 hover:bg-red-700 py-1 w-full rounded-xl focus:outline-none disabled:cursor-not-allowed"
                   onClick={async () => await handleAbort()}
                   >
                     Abort Mission

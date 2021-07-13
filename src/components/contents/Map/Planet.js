@@ -23,7 +23,7 @@ export default function Planet({ user, clan, planet, image, className }) {
       <PlanetPopOver clan={clan} planet={planet} isHover={isHover} />
       <PlanetModal user={user} conquerColor={PLANET_COLOR[clan._id]} clan={clan} planet={planet} image={image} isModalOpen={isClick} close={closeModal} />
       <div onMouseEnter={openPopOver} onMouseLeave={closePopOver} onClick={openModal} className={Util.concatClasses('cursor-pointer', shield, className, PLANET_COLOR[planet.owner], pulse)}>
-        <Image className="select-none" src={image} alt="" />
+        <Image className={Util.concatClasses("select-none", isHover && 'animate-pulse')} src={image} alt="" />
       </div>
     </div>
   )
