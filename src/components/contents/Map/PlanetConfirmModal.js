@@ -136,7 +136,7 @@ export default function PlanetConfirmModal({ planet, closeAll, clan, isConfirmOp
                 type="text"
                 pattern="\d*"
                 placeholder="Stake Money"
-                style="mb-2 rounded-lg ring-gray-400"
+                style="mb-2 rounded-lg ring-gray-500"
                 onChange={handleMoneyChange}
                 value={betMoney}
               />
@@ -145,7 +145,7 @@ export default function PlanetConfirmModal({ planet, closeAll, clan, isConfirmOp
                 type="text"
                 pattern="\d*"
                 placeholder="Stake Fuel"
-                style="mb-2 rounded-lg ring-gray-400"
+                style="mb-2 rounded-lg ring-gray-500"
                 onChange={handleFuelChange}
                 value={betFuel}
               />
