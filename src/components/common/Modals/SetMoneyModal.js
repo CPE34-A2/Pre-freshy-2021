@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import Modal from '@/components/common/Modal'
-import { CogIcon, XIcon } from '@heroicons/react/outline'
+import { AdjustmentsIcon, XIcon } from '@heroicons/react/outline'
 import InputBox from '@/components/common/InputBox'
 import AlertNotification from '@/components/common/AlertNotification'
 import fetchAPI from '@/utils/fetch'
@@ -45,7 +45,7 @@ export default function SetMoneyModal({ user }) {
         onClick={openModal}
       >
         <div className="flex flex-row items-center">
-          <CogIcon className="w-5 h-5 mr-3" /> Admin
+          <AdjustmentsIcon className="w-5 h-5 mr-3" /> Admin
         </div>
       </button>
 
