@@ -16,19 +16,25 @@ export default function SetMoneyModal({ user }) {
   const [amount, setAmount] = useState('')
   const [isSetting, setIsSetting] = useState(false)
 
-  const handleAmountChange = (e) => setAmount(e.target.value)
-  const handleUserIdChange = (e) => setUserId(e.target.value)
+  const handleAmountChange = (e) => {
+    setAmount(e.target.value)
+  }
+  
+  const handleUserIdChange = (e) => {
+    setUserId(e.target.value)
+  }
 
   const addMoney = (e) => {
     e.preventDefault()
     setIsSetting(true)
+    notify({ type: '', info: '' })
 
     fetchAPI('GET', `/api/admin/user-enforcer/?user_id=${userId}&money=${amount}`)
       .then(async response => {
-        const data = await response.json()
+        let data = await response.json()
         if (response.status == 200) {
-          const moneyData = data.message.money
-          notify({ type: 'success', info: <>before: <b>{moneyData.before}</b> / after <b>{moneyData.after}</b></> })
+          data = data.message
+          notify({ type: 'success', info: <><b>{data.userId}</b> | before: <b>{data.money.before}</b> / after <b>{data.money.after}</b></> })
         } else {
           notify({ type: 'error', info: data.message })
         }
