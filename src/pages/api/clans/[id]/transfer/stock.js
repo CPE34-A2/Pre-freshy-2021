@@ -107,7 +107,7 @@ handler.post(async (req, res) => {
     .exec()
 
   if (pendingTransaction)
-    return Response.denined(res, 'There are still pending transaction')
+    return Response.denined(res, `There are still pending stock's transaction`)
 
   const stock = await StockHistory
     .findOne({ date: moment().startOf('day').toDate(), symbol: symbol })

@@ -85,11 +85,11 @@ handler.post(async (req, res) => {
     })
 
   if (dupeTransaction) {
-    return Response.denined(res, `There're still pending transaction`)
+    return Response.denined(res, `There're still pending fuel's transaction`)
   }
 
   if ((clan.leader != req.user.id) && (user.role != 'admin')) {
-    return res.status(403).json({ message: `You aren't clan leader` })
+    return res.status(403).json({ message: `only clan leader can perform this action` })
   }
 
   if (clan.properties.money < price)

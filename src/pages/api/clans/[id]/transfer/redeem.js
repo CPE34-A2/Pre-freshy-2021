@@ -46,7 +46,7 @@ handler.post(async (req, res) => {
     .exec()
 
   if ((clan.leader != req.user.id) && (user.role != 'admin') && (user.role != 'mod')) {
-    return Response.denined(res, 'You arent clan leader')
+    return Response.denined(res, 'only clan leader can perform this action')
   }
 
   const planet = await Planet
