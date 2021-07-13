@@ -1,11 +1,11 @@
 import nextConnect from 'next-connect'
 import middleware from '@/middlewares/middleware'
 import permission from '@/middlewares/permission/admin'
-import bcrypt from 'bcryptjs'
 
 import * as Response from '@/utils/response'
 import User from '@/models/user'
 import Clan from '@/models/clan'
+import Transaction from '@/models/transaction'
 
 const handler = nextConnect()
 
@@ -93,6 +93,20 @@ handler.get(async (req, res) => {
 
   if (money) {
     req.socket.server.io.emit('set.user.money', user._id, user.money)
+    await Transaction.create({
+      owner: {
+        id: user._id,
+        type: user.role
+      },
+      receiver: {
+        id: userId,
+        type: 'user'
+      },
+      status: 'SUCCESS',
+      item: {
+        money: money
+      }
+    })
   }
 
   return Response.success(res, {
