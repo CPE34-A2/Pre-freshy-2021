@@ -12,8 +12,8 @@ import moment from 'moment'
 
 const handler = nextConnect()
 
-const MONEY_POINT_PER_UNIT = 0.5
-const FUEL_POINT_PER_UNIT = 1.5
+const POINT_PER_MONEY_UNIT = 0.5
+const POINT_PER_FUEL_UNIT = 1.5
 const EXPECTED_REQUIRER = 3
 
 handler
@@ -135,7 +135,7 @@ handler.post(async (req, res) => {
   if (attackerClan.properties.fuel < betFuel + defenderPlanet.travel_cost)
     return Response.denined(res, `low fuel to travel`)
 
-  const betWeight = (betMoney * MONEY_POINT_PER_UNIT) + (betFuel * FUEL_POINT_PER_UNIT) + (attackerPlanets.map(e => e.point).reduce((a, b) => a + b, 0))
+  const betWeight = (betMoney * POINT_PER_MONEY_UNIT) + (betFuel * POINT_PER_FUEL_UNIT) + (attackerPlanets.map(e => e.point).reduce((a, b) => a + b, 0))
 
   if (betWeight < defenderPlanet.point)
     return Response.denined(res, `Total stakes worth less than the planet's point`)
