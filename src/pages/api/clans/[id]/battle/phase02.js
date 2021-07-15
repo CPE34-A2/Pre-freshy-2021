@@ -155,7 +155,7 @@ handler.delete(async (req, res) => {
       .findById(battle.attacker)
       .exec()
 
-    attackerClan.properties.fuel += parseInt((defenderPlanet.travel_cost * 2) / 3)
+    attackerClan.properties.fuel += parseInt(defenderPlanet.travel_cost / 4)
     attackerClan.position = attackerClan._id
     attackerClan.properties.fuel += battle.stakes.fuel
     attackerClan.properties.money += battle.stakes.money
