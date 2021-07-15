@@ -273,7 +273,7 @@ handler.patch(async (req, res) => {
 
   // If the confirmer equal to expected require, then lock the properties of attacker and going to the next phase
   if (battle.confirm_require + 1 == battle.phase01.confirmer.length) {
-    attackerClan.properties.fuel -= defenderPlanet.travel_cost * 0.5
+    attackerClan.properties.fuel -= defenderPlanet.travel_cost
     attackerClan.properties.fuel -= battle.stakes.fuel
     attackerClan.properties.money -= battle.stakes.money
     attackerClan.position = battle.target_planet_id
