@@ -27,8 +27,8 @@ export default function MapRule({ isOpen, close }) {
         </div>
         <div className="flex flex-col font-mono my-2 divide-y-2 w-60 space-y-2">
           <div className="font-medium">
-            <div>6 coins = 1 planet point</div>
-            <div>2 fuels = 1 planet point</div>
+            <div>1 coins = 0.5 planet point</div>
+            <div>1 fuels = 1.5 planet point</div>
           </div>
           <div className="text-sm pt-2">
             <span className="font-semibold">Planet with shield indicates that the planet is either:</span>
