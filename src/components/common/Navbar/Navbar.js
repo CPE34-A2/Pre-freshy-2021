@@ -1,5 +1,5 @@
 import { Disclosure, Transition } from "@headlessui/react"
-import { MenuIcon, TemplateIcon, MapIcon, ChartSquareBarIcon } from "@heroicons/react/outline"
+import { MenuIcon, TemplateIcon, MapIcon, ChartSquareBarIcon, FireIcon } from "@heroicons/react/outline"
 
 import Image from 'next/image'
 import Logo from '@/publics/logo.png'
@@ -16,6 +16,7 @@ export default function Navbar({ current, user, clan }) {
     { name: 'Home', icon: <TemplateIcon className="w-5 h-5 mr-3" />, href: '/', current: (current == 'home') },
     { name: 'Map', icon: <MapIcon className="w-5 h-5 mr-3" />, href: '/map', current: (current == 'map') },
     { name: 'Stock', icon: <ChartSquareBarIcon className="w-5 h-5 mr-3" />, href: '/stock', current: (current == 'stock') },
+    { name: 'Leaderboard', icon: <FireIcon className="w-5 h-5 mr-3" />, href: '/leaderboard', current: (current == 'leaderboard') },
     { name: 'Settings', modal: <ChangePasswordModal /> },
     { name: 'Admin', modal: <SetMoneyModal user={user} /> }
   ]
