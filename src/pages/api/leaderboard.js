@@ -14,7 +14,7 @@ handler
  * @method GET
  * @endpoint /api/leaderboard
  * @description Get leaderboard information
- * @param sort option: POINT, OWNED_PLANET, SEC
+ * @param sort option: point, total-planet, sec
  * 
  * @require User authentication
  */
