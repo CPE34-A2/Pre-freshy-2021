@@ -1,7 +1,4 @@
-import { useState } from 'react'
-
 import middleware from '@/middlewares/middleware'
-import useSocket from '@/hooks/useSocket'
 
 import { getUser } from '@/pages/api/users/[id]/index'
 import { getClan } from '@/pages/api/clans/[id]/index'

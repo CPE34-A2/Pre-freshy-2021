@@ -15,8 +15,8 @@ export default function StockItem({ data, isSortedByPlanets }) {
       <div className="flex flex-col items-end">
         <div className="font-semibold text-lg text-white">
           {isSortedByPlanets ?
-            <span>{data.totalPoint}</span> :
-            <span>{data.owned_planet_ids.length}</span>
+            <span>{data.owned_planet_ids.length}</span> :
+            <span>{data.totalPoint}</span>
           }
         </div>
       </div>
