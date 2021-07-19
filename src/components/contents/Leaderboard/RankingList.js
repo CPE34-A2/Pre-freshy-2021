@@ -1,9 +1,7 @@
 import RankingItem from '@/components/contents/Leaderboard/RankingItem'
 import { Switch } from '@headlessui/react'
 import { useState, useEffect } from 'react'
-import * as Util from '@/utils/common'
-
-
+import Spinner from '@/components/common/Spinner'
 
 export default function RankingList({ leaderboard: data }) {
   const [isSortedByPlanets, setSortedByPlanets] = useState(false)
@@ -22,36 +20,47 @@ export default function RankingList({ leaderboard: data }) {
       <div className="flex flex-col">
         <div className="text-4xl font-extrabold text-transparent text-center mt-4 mb-6 bg-clip-text bg-gradient-to-br from-pink-400 to-red-600">Leaderboard</div>
 
-        <div className="flex flex-row justify-between mb-4">
-          <div className="flex items-center">
-            <span className="mr-2 text-base font-medium text-pink-400">จำนวนดาว</span>
-            <Switch
-              checked={isSortedByPlanets}
-              onChange={setSortedByPlanets}
-              className="inline-flex items-center h-5 rounded-full w-11 focus:outline-none transform bg-gray-500"
-            >
-              <span
-                className={`${isSortedByPlanets ? 'translate-x-6' : 'translate-x-1'
-                  } pointer-events-none inline-block w-3 h-3 transform bg-white rounded-full transition ease-in-out duration-300`}
-              />
-            </Switch>
-            <span className="ml-2 text-base font-medium text-pink-400">แต้ม</span>
+        {!data ?
+          <div className="mb-2 h-96">
+            <div className="flex flex-row h-full justify-center items-center p-4 rounded-xl">
+              <div className="mr-4"><Spinner style="w-8 h-8 text-indigo-200" /></div>
+              <div className="font-bold text-gray-300">Loading data...</div>
+            </div>
           </div>
+          :
+          <div className="mb-2">
+            <div className="flex flex-row justify-between mb-4">
+              <div className="flex items-center">
+                <span className="mr-2 text-base font-medium text-pink-400">จำนวนดาว</span>
+                <Switch
+                  checked={isSortedByPlanets}
+                  onChange={setSortedByPlanets}
+                  className="inline-flex items-center h-5 rounded-full w-11 focus:outline-none transform bg-gray-500"
+                >
+                  <span
+                    className={`${isSortedByPlanets ? 'translate-x-6' : 'translate-x-1'
+                      } pointer-events-none inline-block w-3 h-3 transform bg-white rounded-full transition ease-in-out duration-300`}
+                  />
+                </Switch>
+                <span className="ml-2 text-base font-medium text-pink-400">แต้ม</span>
+              </div>
 
-          <div className="text-pink-400 font-bold text-lg">
-            {isSortedByPlanets ? 'ดาว' : 'แต้ม'}
+              <div className="text-pink-400 font-bold text-lg">
+                {isSortedByPlanets ? 'ดาว' : 'แต้ม'}
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              {data && data.map(clan => (
+                <RankingItem
+                  key={clan._id}
+                  data={clan}
+                  isSortedByPlanets={isSortedByPlanets}
+                />
+              ))}
+            </div>
           </div>
-        </div>
-
-        <div className="space-y-2">
-          {data && data.map(clan => (
-            <RankingItem
-              key={clan._id}
-              data={clan}
-              isSortedByPlanets={isSortedByPlanets}
-            />
-          ))}
-        </div>
+        }
       </div>
     </div >
   )
