@@ -33,6 +33,10 @@ const showRejectors = (rejected, require) => {
   return confirmers
 }
 
+const isAlreadyAccepted = (transaction, user) => transaction.confirmer.includes(user._id)
+const isAlreadyRejected = (transaction, user, clan) => (transaction.rejector.includes(user._id) && (user._id != clan.leader))
+const isAlreadyVote = (transaction, user, clan) => (isAlreadyAccepted(transaction, user) || isAlreadyRejected(transaction, user, clan))
+
 export default function TaskVoteModal({ user, clan, image, transaction, item, locale }) {
   const [isOpen, setIsOpen] = useState(false)
   const [notification, notify] = useState({ type: '', info: '' })
@@ -54,15 +58,12 @@ export default function TaskVoteModal({ user, clan, image, transaction, item, lo
       })
   }
 
-  const isAlreadyAccepted = () => transaction.confirmer.includes(user._id)
-  const isAlreadyRejected = () => (transaction.rejector.includes(user._id) && (user._id != clan.leader))
-  const isAlreadyVote = () => (isAlreadyAccepted() || isAlreadyRejected())
   const isNotLeader = () => (user._id != clan.leader)
 
   useEffect(() => {
-    isAlreadyAccepted() && notify({ type: 'success', info: <>You have <b>accepted</b> this transaction</> })
-    isAlreadyRejected() && notify({ type: 'success', info: <>You have <b>rejected</b> this transaction</> })
-  }, [transaction, isAlreadyAccepted, isAlreadyRejected])
+    isAlreadyAccepted(transaction, user) && notify({ type: 'success', info: <>You have <b>accepted</b> this transaction</> })
+    isAlreadyRejected(transaction, user, clan) && notify({ type: 'success', info: <>You have <b>rejected</b> this transaction</> })
+  }, [transaction, user, clan])
 
   return (
     <>
@@ -111,10 +112,10 @@ export default function TaskVoteModal({ user, clan, image, transaction, item, lo
                       name="ACCEPT"
                       style={Util.concatClasses(
                         'bg-purple-300 text-purple-600 font-semibold py-1 w-full rounded-lg',
-                        isAlreadyVote(transaction) ? 'cursor-not-allowed opacity-40' : 'hover:bg-purple-400 hover:text-purple-800'
+                        isAlreadyVote(transaction, user, clan) ? 'cursor-not-allowed opacity-40' : 'hover:bg-purple-400 hover:text-purple-800'
                       )}
                       onClick={() => vote(true)}
-                      disabled={isAlreadyVote(transaction)}
+                      disabled={isAlreadyVote(transaction, user, clan)}
                     />
                   }
                 </div>
@@ -130,10 +131,10 @@ export default function TaskVoteModal({ user, clan, image, transaction, item, lo
                       name="REJECT"
                       style={Util.concatClasses(
                         'bg-red-300 text-red-600 font-semibold py-1 w-full rounded-lg',
-                        (isAlreadyVote(transaction) && isNotLeader()) ? 'cursor-not-allowed opacity-40' : 'hover:bg-red-400 hover:text-red-800',
+                        (isAlreadyVote(transaction, user, clan) && isNotLeader()) ? 'cursor-not-allowed opacity-40' : 'hover:bg-red-400 hover:text-red-800',
                       )}
                       onClick={() => vote(false)}
-                      disabled={isAlreadyVote(transaction) && isNotLeader()}
+                      disabled={isAlreadyVote(transaction, user, clan) && isNotLeader()}
                     />
                   }
                 </div>
@@ -146,10 +147,10 @@ export default function TaskVoteModal({ user, clan, image, transaction, item, lo
                     name="DISCARD"
                     style={Util.concatClasses(
                       'bg-red-300 text-red-600 font-semibold py-1 w-full rounded-lg',
-                      (isAlreadyVote(transaction) && isNotLeader()) ? 'cursor-not-allowed opacity-40' : 'hover:bg-red-400 hover:text-red-800',
+                      (isAlreadyVote(transaction, user, clan) && isNotLeader()) ? 'cursor-not-allowed opacity-40' : 'hover:bg-red-400 hover:text-red-800',
                     )}
                     onClick={() => vote(false)}
-                    disabled={isAlreadyVote(transaction) && isNotLeader()}
+                    disabled={isAlreadyVote(transaction, user, clan) && isNotLeader()}
                   />
                 </div>
               }
