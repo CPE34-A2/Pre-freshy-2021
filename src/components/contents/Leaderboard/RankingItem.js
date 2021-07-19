@@ -1,7 +1,7 @@
 export default function StockItem({ data, isSortedByPlanets }) {
 
   return (
-    <div className="flex flex-row justify-between items-center border-b py-4 border-gray-700">
+    <div className="flex flex-row justify-between items-center border-b pt-4 pb-6 border-gray-700">
 
       <div className="flex flex-row h-full items-stretch">
         <div className="flex flex-col justify-center">
@@ -13,15 +13,14 @@ export default function StockItem({ data, isSortedByPlanets }) {
       </div>
 
       <div className="flex flex-col items-end">
-        <div className="font-bold text-base text-white">
+        <div className="font-semibold text-lg text-white">
           {isSortedByPlanets ?
             <span>{data.totalPoint}</span> :
             <span>{data.owned_planet_ids.length}</span>
           }
         </div>
       </div>
-
-
+      
     </div>
   )
 }

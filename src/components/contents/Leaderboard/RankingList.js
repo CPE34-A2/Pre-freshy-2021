@@ -20,9 +20,9 @@ export default function RankingList({ leaderboard: data }) {
   return (
     <div className="flex flex-col bg-gray-900 p-5 rounded-xl w-full scale-90 md:scale-100 max-w-sm md:max-w-md lg:max-w-lg">
       <div className="flex flex-col">
-        <div className="text-4xl font-extrabold text-transparent text-center mt-4 mb-4 bg-clip-text bg-gradient-to-br from-pink-400 to-red-600 ">Leaderboard</div>
+        <div className="text-4xl font-extrabold text-transparent text-center mt-4 mb-6 bg-clip-text bg-gradient-to-br from-pink-400 to-red-600">Leaderboard</div>
 
-        <div className="flex flex-row justify-between">
+        <div className="flex flex-row justify-between mb-4">
           <div className="flex items-center">
             <span className="mr-2 text-base font-medium text-pink-400">จำนวนดาว</span>
             <Switch
@@ -43,13 +43,15 @@ export default function RankingList({ leaderboard: data }) {
           </div>
         </div>
 
-        {data && data.map(clan => (
-          <RankingItem
-            key={clan._id}
-            data={clan}
-            isSortedByPlanets={isSortedByPlanets}
-          />
-        ))}
+        <div className="space-y-2">
+          {data && data.map(clan => (
+            <RankingItem
+              key={clan._id}
+              data={clan}
+              isSortedByPlanets={isSortedByPlanets}
+            />
+          ))}
+        </div>
       </div>
     </div >
   )
