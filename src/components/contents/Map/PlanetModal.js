@@ -153,7 +153,7 @@ export default function PlanetModal({ user, clan, planet, image, isModalOpen, cl
               <div className="flex justify-center mt-6">
                 <div className="">
                   <div className="text-gray-500 text-lg">Owner</div>
-                  <div className="font-semibold text-xl">{isBattle ? Util.getClanName(planet.owner) : 'None'}</div>
+                  <div className="font-semibold text-xl">{isBattle ? Util.getClanName(planet.owner) : (planet.point == 0) ? 'กลุ่มพันธมิตรโจรสลัด' : 'None'}</div>
                 </div>
               </div>
 
