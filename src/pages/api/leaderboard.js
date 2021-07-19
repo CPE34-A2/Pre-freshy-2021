@@ -40,7 +40,9 @@ handler.get(async (req, res) => {
     .populate({
       path: 'owned_planet_ids',
       model: 'Planet',
+      select: '_id'
     })
+    .select('-members -properties -fuel_rate -position -leader')
     .sort({ _id: 1 })
     .lean()
     .exec()
