@@ -8,9 +8,7 @@ import { getClan } from '@/pages/api/clans/[id]/index'
 
 import Leaderboard from '@/components/contents/Leaderboard/Leaderboard'
 
-export default function StockPage({ user, clan: rawClan }) {
-  const [clan, setClan] = useState(rawClan)
-
+export default function LeaderboardPage({ user, clan }) {
   return (
     <Leaderboard
       user={user}
